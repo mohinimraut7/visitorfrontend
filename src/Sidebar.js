@@ -3042,61 +3042,61 @@ export default function Sidebar() {
 
     // DASHBOARD
     if (path === '/' || path === '/dashboard') {
-      return (
-        <Box sx={{ p: { xs: 2, sm: 4 } }}>
-          <Typography variant="h4" fontWeight="bold" color="#0040B9" gutterBottom>
-            डॅशबोर्ड - Dashboard
-          </Typography>
+      // return (
+      //   <Box sx={{ p: { xs: 2, sm: 4 } }}>
+      //     <Typography variant="h4" fontWeight="bold" color="#0040B9" gutterBottom>
+      //       डॅशबोर्ड - Dashboard
+      //     </Typography>
 
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #0040B9, #002D80)', color: 'white' }}>
-                <CardContent>
-                  <PeopleIcon sx={{ fontSize: 50, opacity: 0.8 }} />
-                  <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>1,248</Typography>
-                  <Typography variant="h6">आजची व्हिजिटर्स</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #32B5AD, #20B2AA)', color: 'white' }}>
-                <CardContent>
-                  <HowToRegIcon sx={{ fontSize: 50, opacity: 0.8 }} />
-                  <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>89</Typography>
-                  <Typography variant="h6">एंट्री पूर्ण</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #FB404B, #E91E63)', color: 'white' }}>
-                <CardContent>
-                  <PendingActionsIcon sx={{ fontSize: 50, opacity: 0.8 }} />
-                  <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>12</Typography>
-                  <Typography variant="h6">प्रलंबित</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={12} sm={6} md={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #4CAF50, #8BC34A)', color: 'white' }}>
-                <CardContent>
-                  <CheckCircleIcon sx={{ fontSize: 50, opacity: 0.8 }} />
-                  <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>98.2%</Typography>
-                  <Typography variant="h6">सफलता दर</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
+      //     <Grid container spacing={3} sx={{ mt: 2 }}>
+      //       <Grid item xs={12} sm={6} md={3}>
+      //         <Card sx={{ background: 'linear-gradient(135deg, #0040B9, #002D80)', color: 'white' }}>
+      //           <CardContent>
+      //             <PeopleIcon sx={{ fontSize: 50, opacity: 0.8 }} />
+      //             <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>1,248</Typography>
+      //             <Typography variant="h6">आजची व्हिजिटर्स</Typography>
+      //           </CardContent>
+      //         </Card>
+      //       </Grid>
+      //       <Grid item xs={12} sm={6} md={3}>
+      //         <Card sx={{ background: 'linear-gradient(135deg, #32B5AD, #20B2AA)', color: 'white' }}>
+      //           <CardContent>
+      //             <HowToRegIcon sx={{ fontSize: 50, opacity: 0.8 }} />
+      //             <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>89</Typography>
+      //             <Typography variant="h6">एंट्री पूर्ण</Typography>
+      //           </CardContent>
+      //         </Card>
+      //       </Grid>
+      //       <Grid item xs={12} sm={6} md={3}>
+      //         <Card sx={{ background: 'linear-gradient(135deg, #FB404B, #E91E63)', color: 'white' }}>
+      //           <CardContent>
+      //             <PendingActionsIcon sx={{ fontSize: 50, opacity: 0.8 }} />
+      //             <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>12</Typography>
+      //             <Typography variant="h6">प्रलंबित</Typography>
+      //           </CardContent>
+      //         </Card>
+      //       </Grid>
+      //       <Grid item xs={12} sm={6} md={3}>
+      //         <Card sx={{ background: 'linear-gradient(135deg, #4CAF50, #8BC34A)', color: 'white' }}>
+      //           <CardContent>
+      //             <CheckCircleIcon sx={{ fontSize: 50, opacity: 0.8 }} />
+      //             <Typography variant="h4" fontWeight="bold" sx={{ mt: 2 }}>98.2%</Typography>
+      //             <Typography variant="h6">सफलता दर</Typography>
+      //           </CardContent>
+      //         </Card>
+      //       </Grid>
+      //     </Grid>
 
-          {/* <Paper sx={{ mt: 5, p: 4, borderRadius: 4, boxShadow: 6 }}>
-            <Typography variant="h5" fontWeight="bold" color="#0040B9" gutterBottom>
-              स्वागत आहे, {user?.username || "अधिकारी"} साहेब!
-            </Typography>
-            <Typography color="text.secondary">
-              ठाणे ग्रामीण पोलीस डिजिटल पोर्टल - आजचे अपडेट्स पहा
-            </Typography>
-          </Paper> */}
-        </Box>
-      );
+      //     {/* <Paper sx={{ mt: 5, p: 4, borderRadius: 4, boxShadow: 6 }}>
+      //       <Typography variant="h5" fontWeight="bold" color="#0040B9" gutterBottom>
+      //         स्वागत आहे, {user?.username || "अधिकारी"} साहेब!
+      //       </Typography>
+      //       <Typography color="text.secondary">
+      //         ठाणे ग्रामीण पोलीस डिजिटल पोर्टल - आजचे अपडेट्स पहा
+      //       </Typography>
+      //     </Paper> */}
+      //   </Box>
+      // );
     }
 
     // USER MASTER
@@ -3260,48 +3260,16 @@ export default function Sidebar() {
   />
 </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-           
+        
 
-            {/* {isUser && (
-              <>
-                <IconButton onClick={(e) => setMoreMenuAnchor(e.currentTarget)} sx={{ color: '#FB404B', bgcolor: 'rgba(251,64,75,0.14)', borderRadius: '18px', p: 1.6 }}>
-                  <MoreVertIcon fontSize="large" />
-                </IconButton>
-                <Menu anchorEl={moreMenuAnchor} open={Boolean(moreMenuAnchor)} onClose={() => setMoreMenuAnchor(null)}
-                  PaperProps={{ sx: { mt: 2.5, borderRadius: '24px', boxShadow: 20, minWidth: 280 } }}>
-                  <MenuItem onClick={() => { navigate('/entryform'); setMoreMenuAnchor(null); }} sx={{ py: 3.2, fontWeight: 600, fontSize: 17, color: '#0040B9' }}>Entry Form</MenuItem>
-                  <MenuItem onClick={() => { navigate('/feedback'); setMoreMenuAnchor(null); }} sx={{ py: 3.2, fontWeight: 600, fontSize: 17, color: '#6C0204' }}>Feedback Form</MenuItem>
-                </Menu>
-              </>
-            )} */}
-
-
-            {isUser && (
-  <>
-    {/* Desktop वर डायरेक्ट बटन्स – मोबाईलवर हाइड होतात */}
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+  {/* Show these buttons only for Data Entry Operator (User) */}
+  {isUser && (
     <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2, alignItems: 'center' }}>
-      {/* <Button
-        variant="outlined"
-        size="medium"
-        onClick={() => navigate('/entryform')}
-        sx={{
-          bgcolor: '#0040B9',
-          color: 'white',
-          fontWeight: 'bold',
-          borderRadius: 3,
-          px: 3,
-          boxShadow: 6,
-          '&:hover': { bgcolor: '#002D80' }
-        }}
-      >
-        Entry Form
-      </Button> */}
-
       <Button
         variant="outlined"
         size="medium"
-          onClick={() => navigate('/entryform')}
+        onClick={() => navigate('/entryform')}
         sx={{
           borderColor: '#0040B9',
           color: '#0040B9',
@@ -3312,7 +3280,7 @@ export default function Sidebar() {
           '&:hover': { borderColor: '#002D80', bgcolor: 'rgba(0,64,185,0.08)' }
         }}
       >
-       Entry Form
+        Entry Form
       </Button>
 
       <Button
@@ -3331,58 +3299,55 @@ export default function Sidebar() {
       >
         Feedback Form
       </Button>
-
-
-       <Typography sx={{ color: '#FB404B', fontWeight: 'bold', fontSize: { xs: 19, sm: 19 }, textTransform: 'uppercase', letterSpacing: '1.8px' }}>
-              {user?.username || 'ADMIN'}
-            </Typography>
-            <Divider orientation="vertical" flexItem sx={{ bgcolor: '#FB404B', width: 3.5, height: 20 }} />
-            <IconButton onClick={handleLogout} sx={{ color: '#FB404B' }}>
-              <PowerSettingsNewIcon fontSize="medium" />
-            </IconButton>
     </Box>
+  )}
 
-    {/* 3-dots मेनू – सर्व डिव्हाइसेसवर दिसेल (मोबाईलवर मुख्य पर्याय) */}
-    {/* <>
-      <IconButton
-        onClick={(e) => setMoreMenuAnchor(e.currentTarget)}
-        sx={{
-          color: '#FB404B',
-          bgcolor: 'rgba(251,64,75,0.14)',
-          borderRadius: '18px',
-          p: 1.6
-        }}
-      >
-        <MoreVertIcon fontSize="large" />
-      </IconButton>
+  {/* Username + Logout → Show for ALL ROLES (Admin, Super Admin, User, etc.) */}
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    <Typography 
+      sx={{ 
+        color: '#FB404B', 
+        fontWeight: 'bold', 
+        fontSize: { xs: 18, sm: 20 }, 
+        textTransform: 'uppercase', 
+        letterSpacing: '1.5px',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {user?.username || 'ADMIN'}
+    </Typography>
 
-      <Menu
-        anchorEl={moreMenuAnchor}
-        open={Boolean(moreMenuAnchor)}
-        onClose={() => setMoreMenuAnchor(null)}
-        PaperProps={{
-          sx: { mt: 2.5, borderRadius: '24px', boxShadow: 20, minWidth: 280 }
-        }}
-      >
-        <MenuItem
-          onClick={() => { navigate('/entryform'); setMoreMenuAnchor(null); }}
-          sx={{ py: 3.2, fontWeight: 600, fontSize: 17, color: '#0040B9' }}
-        >
-          Entry Form
-        </MenuItem>
-        <MenuItem
-          onClick={() => { navigate('/feedback'); setMoreMenuAnchor(null); }}
-          sx={{ py: 3.2, fontWeight: 600, fontSize: 17, color: '#6C0204' }}
-        >
-          Feedback Form
-        </MenuItem>
-      </Menu>
-    </> */}
-  </>
-)}
-          </Box>
+    <Divider orientation="vertical" flexItem sx={{ bgcolor: '#FB404B', width: 3, height: 24 }} />
 
+    <IconButton 
+      onClick={handleLogout} 
+      sx={{ 
+        color: '#FB404B',
+        bgcolor: 'rgba(251,64,75,0.12)',
+        '&:hover': { bgcolor: 'rgba(251,64,75,0.2)' },
+        p: 1.2
+      }}
+    >
+      <PowerSettingsNewIcon fontSize="medium" />
+    </IconButton>
+  </Box>
 
+  {/* Optional: 3-dot menu for mobile (only for Data Entry users) */}
+  {isUser && (
+    <IconButton
+      onClick={(e) => setMoreMenuAnchor(e.currentTarget)}
+      sx={{
+        display: { sm: 'none' }, // Only show on mobile
+        color: '#FB404B',
+        bgcolor: 'rgba(251,64,75,0.14)',
+        borderRadius: '18px',
+        p: 1.6
+      }}
+    >
+      <MoreVertIcon fontSize="large" />
+    </IconButton>
+  )}
+</Box>
           
         </Toolbar>
       </AppBar>

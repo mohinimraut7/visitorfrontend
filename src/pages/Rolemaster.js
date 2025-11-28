@@ -265,6 +265,7 @@ const columns = (handleDeleteRole,handleEditRole)=>[
     align: 'left',
     sortable: true
   },
+  { field: 'ward', headerName: 'Office Name', width: 180 },
 ];
 
 const Rolemaster = () => {

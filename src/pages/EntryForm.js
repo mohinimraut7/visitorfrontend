@@ -1173,15 +1173,23 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { baseUrl } from '../config/config';
+import thanegramin from '../Images/thanegramin.jpeg'
 
-const talukas = ["Thane", "Ulhasnagar", "Kalyan", "Bhiwandi", "Ambarnath", "Murbad", "Shahapur"];
+// const talukas = ["Thane", "Ulhasnagar", "Kalyan", "Bhiwandi", "Ambarnath", "Murbad", "Shahapur"];
 
-const visitReasonsMr = ["तक्रार नोंद", "FIR", "चौकशी", "दस्तऐवज", "पास", "भेट", "इतर"];
+// const visitReasonsMr = ["तक्रार नोंद", "FIR", "चौकशी", "दस्तऐवज", "पास", "भेट", "इतर"];
+
+const visitReasonsMr = ["Complaint", "FIR", "Inquiry", "Documents", "Pass", "Meeting", "Other"];
 const visitReasonsEn = ["Complaint", "FIR", "Inquiry", "Documents", "Pass", "Meeting", "Other"];
 
 const policeStations = [
-  "भिवंडी तालुका", "गणेशपुरी", "कल्याण तालुका", "कसारा", "किन्हवली",
-  "कुलगाव", "मुरबाड", "पडघा", "शहापूर", "टोकावडे", "वसिंद"
+  "Bhiwandi Taluka", "Ganeshpuri", "Kalyan Taluka", "Kasara", "Kinhavali",
+  "Kulgaon", "Murbad", "Padagha", "Shahapur", "Tokavade", "Vasind"
+];
+
+const spofficebr = [
+  "Home Department", "Crime", "Local Crime Branch (LCB)", "Economic Offences Wing (EOW)", "District Special Branch (DSB)",
+  "Police Communication & Information Technology", "Passport", "Police Verification"
 ];
 
 const texts = {
@@ -1192,11 +1200,12 @@ const texts = {
     mobile: "मोबाईल नंबर *",
     address: "पूर्ण पत्ता *",
     pincode: "पिनकोड *",
-    taluka: "तालुका *",
+    // taluka: "तालुका *",
     district: "जिल्हा",
     policeStation: "पोलीस स्टेशन *",
     meetingPerson: "भेटीची व्यक्ती *",
     visitReason: "भेटीचे कारण *",
+    spOfficeBranch:"पोलीस अधीक्षक कार्यालय विभाग",
     photoTitle: "अभ्यागत फोटो",
     webcamBtn: "वेबकॅम",
     uploadBtn: "अपलोड",
@@ -1214,11 +1223,12 @@ const texts = {
     mobile: "Mobile Number *",
     address: "Full Address *",
     pincode: "Pincode *",
-    taluka: "Taluka *",
+    // taluka: "Taluka *",
     district: "District",
     policeStation: "Police Station *",
     meetingPerson: "Person to Meet *",
     visitReason: "Purpose of Visit *",
+    spOfficeBranch:"SP office branch",
     photoTitle: "Visitor Photo",
     webcamBtn: "Webcam",
     uploadBtn: "Upload",
@@ -1236,12 +1246,1142 @@ const validationSchema = Yup.object({
   mobile: Yup.string().matches(/^[6-9]\d{9}$/, 'अवैध मोबाईल').required('आवश्यक'),
   address: Yup.string().required('पत्ता आवश्यक आहे'),
   pincode: Yup.string().matches(/^\d{6}$/, '६ अंक').required('आवश्यक'),
-  taluka: Yup.string().required('तालुका निवडा'),
+  // taluka: Yup.string().required('तालुका निवडा'),
   policeStation: Yup.string().required('पोलीस स्टेशन निवडा'),
   meetingPerson: Yup.string().required('भेटीची व्यक्ती लिहा'),
   visitReason: Yup.string().required('कारण निवडा'),
   photo: Yup.string().required('फोटो आवश्यक आहे'),
 });
+
+
+// const printVisitorPass = (data, dateTime) => {
+//   const printWindow = window.open('', '_blank', 'width=600,height=800');
+
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html lang="mr">
+//     <head>
+//       <meta charset="utf-8">
+//       <title>Visitor</title>
+//       <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;700&display=swap');
+//         body { font-family: 'Mukta', Arial, sans-serif; margin: 0; padding: 15px; background: #f0f0f0; }
+//         .card {
+//           width: 340px; margin: 20px auto; background: white;
+//           border: 10px solid #0040B9; border-radius: 20px;
+//           overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+//         }
+//         .header {
+//           background: linear-gradient(135deg, #0040B9, #002D80);
+//           color: white; padding: 15px;text-align: center;
+//         }
+//         .logo { width: 80px; height: 80px; border-radius: 50%; border: 4px solid white; }
+//         .title { margin: 10px 0 5px; font-size: 20px; font-weight: bold; }
+//         .subtitle { font-size: 14px; opacity: 0.9; }
+//         .photo {
+//           width: 130px; height: 130px; border-radius: 50%;
+//           border: 6px solid #0040B9; margin: 15px auto; display: block;
+//           object-fit: cover;
+//         }
+//         .details { padding: 10px 20px 20px; text-align: center; }
+//         .row { margin: 10px 0; font-size: 15px; }
+//         .label { font-weight: bold; color: #0040B9; }
+//         .footer {
+//           background: #0040B9; color: white; padding: 12px; text-align: center;
+//           font-size: 14px; margin-top: 15px;
+//         }
+//         @media print {
+//           body { background: white; padding: 0; }
+//           .card { box-shadow: none; margin: 0; }
+//         }
+//       </style>
+//     </head>
+//     <body onload="window.print(); setTimeout(() => window.close(), 500)">
+//       <div class="card">
+//         <div class="header">
+//          <img src="${thanegramin}" class="logo" alt="ठाणे ग्रामीण पोलीस" 
+//           <div class="title">ठाणे ग्रामीण पोलीस</div>
+//           <div class="subtitle">Thane Rural Police</div>
+//           <div style="margin-top:8px; font-weight:bold;">अभ्यागत | Visitor </div>
+//         </div>
+
+//         <img src="${data.photo}" class="photo" alt="Visitor" />
+
+//         <div class="details">
+//           <div class="row"><span class="label">नाव :</span> ${data.name}</div>
+//           <div class="row"><span class="label">मोबाईल :</span> ${data.mobile}</div>
+//           <div class="row"><span class="label">पत्ता :</span> ${data.address}</div>
+//           <div class="row"><span class="label">तालुका :</span> ${data.taluka}</div>
+//           <div class="row"><span class="label">स्टेशन :</span> ${data.policeStation}</div>
+//           <div class="row"><span class="label">भेटीसाठी :</span> ${data.meetingPerson}</div>
+//           <div class="row"><span class="label">कारण :</span> ${data.visitReason}</div>
+//         </div>
+
+//         <div class="footer">
+//           <strong>एंट्री वेळ : ${dateTime}</strong><br/>
+         
+//         </div>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+// };
+
+// =============================================
+
+// const printVisitorPass = (data, dateTime) => {
+//   const printWindow = window.open('', '', 'width=620,height=920');
+
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <meta charset="utf-8">
+//       <title>Visitor Pass</title>
+//       <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@500;700&display=swap');
+//         body { margin:0; padding:20px; background:#f5f7fa; font-family:'Mukta',sans-serif; }
+//         .card {
+//           width:380px; margin:0 auto; background:white; border-radius:30px;
+//           overflow:hidden; border:13px solid #0040B9; box-shadow:0 15px 45px rgba(0,0,0,0.35);
+//         }
+//         .header {
+//           background: linear-gradient(135deg, #0040B9, #002D80);
+//           color: white; text-align: center; padding: 22px 15px 28px;
+//           border-radius: 17px 17px 0 0;
+//         }
+//         .logo {
+//           width:102px; height:102px; border-radius:50%; border:7px solid white;
+//           object-fit:contain; background:white; box-shadow:0 6px 20px rgba(0,0,0,0.5);
+//           margin-bottom:12px;
+//         }
+//         .title { font-size:26px; font-weight:700; margin:10px 0 6px; }
+//         .subtitle { font-size:18px; opacity:0.95; margin-bottom:12px; }
+//         .pass { font-size:21px; font-weight:bold; }
+
+//         .photo {
+//           width:142px; height:142px; border-radius:50%; object-fit:cover;
+//           border:9px solid #0040B9; box-shadow:0 12px 35px rgba(0,0,0,0.4);
+//           display:block; margin:-72px auto 18px; background:white;
+//         }
+//         .details {
+//           text-align:center; padding:0 30px 30px; line-height:2;
+//         }
+//         .row { font-size:17px; margin:11px 0; }
+//         .label { font-weight:bold; color:#0040B9; }
+
+//         .footer {
+//           background:#0040B9; color:white; padding:18px; text-align:center;
+//           font-size:16px; font-weight:bold; border-radius:0 0 17px 17px;
+//         }
+//         @media print {
+//           body { background:white; padding:0; }
+//           .card { box-shadow:none; border:11px solid #0040B9; }
+//         }
+//       </style>
+//     </head>
+//     <body onload="window.print(); setTimeout(()=>window.close(),1200)">
+//       <div class="card">
+//         <div class="header">
+//           <img src="${thanegramin}" class="logo" alt="ठाणे ग्रामीण पोलीस" />
+//           <div class="title">ठाणे ग्रामीण पोलीस</div>
+//           <div class="subtitle">Thane Rural Police</div>
+//           <div class="pass">अभ्यागत | Visitor</div>
+//         </div>
+
+//         <img src="${data.photo}" class="photo" alt="Visitor" />
+
+//         <div class="details">
+//           <div class="row"><span class="label">नाव :</span> ${data.name}</div>
+//           <div class="row"><span class="label">मोबाईल :</span> ${data.mobile}</div>
+//           <div class="row"><span class="label">पत्ता :</span> ${data.address}</div>
+//           <div class="row"><span class="label">तालुका :</span> ${data.taluka}</div>
+//           <div class="row"><span class="label">स्टेशन :</span> ${data.policeStation}</div>
+//         </div>
+
+//         <div class="footer">
+//           एंट्री वेळ : ${dateTime}<br>
+         
+//         </div>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+// };
+
+
+// const printVisitorPass = (data, dateTime) => {
+//   const printWindow = window.open('', '', 'width=620,height=1020');
+
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <meta charset="utf-8">
+//       <title>Visitor Pass</title>
+//       <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@500;700&display=swap');
+//         body { margin:0; padding:20px; background:#f5f7fa; font-family:'Mukta',sans-serif; }
+//         .card {
+//           width:380px; margin:0 auto; background:white; border-radius:30px;
+//           overflow:hidden; border:13px solid #0040B9; box-shadow:0 15px 45px rgba(0,0,0,0.35);
+//         }
+//         .header {
+//           background: linear-gradient(135deg, #0040B9, #002D80);
+//           color: white; text-align: center; padding: 22px 15px 28px;
+//           border-radius: 17px 17px 0 0;
+//         }
+//         .logo {
+//           width:102px; height:102px; border-radius:50%; border:7px solid white;
+//           object-fit:contain; background:white; box-shadow:0 6px 20px rgba(0,0,0,0.5);
+//           margin-bottom:12px;
+//         }
+//         .title { font-size:26px; font-weight:700; margin:10px 0 6px; }
+//         .subtitle { font-size:18px; opacity:0.95; margin-bottom:12px; }
+//         .pass { font-size:21px; font-weight:bold; }
+
+//         .photo {
+//           width:142px; height:142px; border-radius:50%; object-fit:cover;
+//           border:9px solid #0040B9; box-shadow:0 12px 35px rgba(0,0,0,0.4);
+//           display:block; margin:-46px auto 18px; background:white;
+//         }
+//         .details {
+//           text-align:center; padding:0 30px 30px; line-height:2;
+//         }
+//         .row { font-size:17px; margin:11px 0; }
+//         .label { font-weight:bold; color:#0040B9; }
+
+//         .footer {
+//           background:#0040B9; color:white; padding:18px; text-align:center;
+//           font-size:16px; font-weight:bold; border-radius:0 0 17px 17px;
+//         }
+
+//         .signatures {
+//           display: flex;
+//           justify-content: space-between;
+//           padding: 20px 25px 25px;
+//           border-top: 2px solid #e5e7eb;
+//         }
+//         .sign-box {
+//           flex: 1;
+//           text-align: center;
+//         }
+//         .sign-line {
+//           border-bottom: 2px solid #0040B9;
+//           height: 50px;
+//           margin-bottom: 8px;
+//         }
+//         .sign-label {
+//           font-size: 13px;
+//           color: #0040B9;
+//           font-weight: bold;
+//         }
+
+//         @media print {
+//           body { background:white; padding:0; }
+//           .card { box-shadow:none; border:11px solid #0040B9; }
+//         }
+//       </style>
+//     </head>
+//     <body onload="window.print(); setTimeout(()=>window.close(),1200)">
+//       <div class="card">
+//         <div class="header">
+//           <img src="${thanegramin}" class="logo" alt="ठाणे ग्रामीण पोलीस" />
+//           <div class="title">ठाणे ग्रामीण पोलीस</div>
+//           <div class="subtitle">Thane Rural Police</div>
+//           <div class="pass">अभ्यागत | Visitor</div>
+//         </div>
+
+//         <img src="${data.photo}" class="photo" alt="Visitor" />
+
+//         <div class="details">
+//           <div class="row"><span class="label">नाव :</span> ${data.name}</div>
+//           <div class="row"><span class="label">मोबाईल :</span> ${data.mobile}</div>
+//           <div class="row"><span class="label">पत्ता :</span> ${data.address}</div>
+//           <div class="row"><span class="label">स्टेशन :</span> ${data.policeStation}</div>
+//         </div>
+
+//         <div class="signatures">
+//           <div class="sign-box">
+//             <div class="sign-line"></div>
+//             <div class="sign-label">Visitor Sign</div>
+//           </div>
+//           <div class="sign-box">
+//             <div class="sign-line"></div>
+//             <div class="sign-label">Incharge Visits Sign</div>
+//           </div>
+//           <div class="sign-box">
+//             <div class="sign-line"></div>
+//             <div class="sign-label">Officer Sign</div>
+//           </div>
+//         </div>
+
+//         <div class="footer">
+//           एंट्री वेळ : ${dateTime}
+//         </div>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+// };
+
+
+// const printVisitorPass = (data) => {
+
+
+//   const now = new Date();
+//   const date = now.toLocaleDateString('en-IN'); // 28/11/2025
+//   const time = now.toLocaleTimeString('en-IN', { 
+//     hour: '2-digit', 
+//     minute: '2-digit',
+//     hour12: true 
+//   }); // 11:48 am
+//   const dateTime = `${date} | ${time}`;
+
+//   const printWindow = window.open('', '', 'width=620,height=1020');
+
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <meta charset="utf-8">
+//       <title>Visitor Pass</title>
+//       <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&display=swap');
+        
+//         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+//         body { 
+//           margin: 0; 
+//           padding: 0; 
+//           background: white; 
+//           font-family: 'Mukta', sans-serif;
+//         }
+        
+//         .page {
+//           width: 100%;
+//           height: 100vh;
+//           position: relative;
+//         }
+        
+//         .card {
+//           width: 100%;
+//           height: 50vh;
+//           background: white;
+//           border: 8px solid #1e3a8a;
+//           border-radius: 0;
+//         }
+        
+//         .header {
+//           background: linear-gradient(135deg, #1e3a8a, #1e40af);
+//           color: white;
+//           text-align: center;
+//           padding: 15px 20px;
+//           border-bottom: 4px solid #fbbf24;
+//         }
+        
+//         .header-top {
+//           display: flex;
+//           align-items: center;
+//           justify-content: center;
+//           gap: 20px;
+//           margin-bottom: 8px;
+//         }
+        
+//         .logo {
+//           width: 70px;
+//           height: 70px;
+//           border-radius: 50%;
+//           border: 4px solid white;
+//           object-fit: contain;
+//           background: white;
+//         }
+        
+//         .header-text {
+//           text-align: left;
+//         }
+        
+//         .title {
+//           font-size: 28px;
+//           font-weight: 700;
+//           margin-bottom: 2px;
+//           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+//         }
+        
+//         .subtitle {
+//           font-size: 16px;
+//           opacity: 0.95;
+//           font-weight: 500;
+//         }
+        
+//         .pass-type {
+//           background: #fbbf24;
+//           color: #1e3a8a;
+//           font-size: 22px;
+//           font-weight: 700;
+//           padding: 8px 20px;
+//           margin: 8px auto 0;
+//           display: inline-block;
+//           border-radius: 25px;
+//           text-transform: uppercase;
+//         }
+        
+//         .content {
+//           display: flex;
+//           padding: 20px 30px;
+//           gap: 25px;
+//           align-items: flex-start;
+//         }
+        
+//         .photo-section {
+//           flex-shrink: 0;
+//         }
+        
+//         .photo {
+//           width: 130px;
+//           height: 130px;
+//           border-radius: 12px;
+//           object-fit: cover;
+//           border: 5px solid #1e3a8a;
+//           box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+//           background: #f3f4f6;
+//         }
+        
+//         .details {
+//           flex: 1;
+//           padding-top: 5px;
+//         }
+        
+//         .row {
+//           display: flex;
+//           margin-bottom: 12px;
+//           font-size: 16px;
+//           line-height: 1.4;
+//         }
+        
+//         .label {
+//           font-weight: 700;
+//           color: #1e3a8a;
+//           min-width: 90px;
+//           flex-shrink: 0;
+//         }
+        
+//         .value {
+//           color: #1f2937;
+//           font-weight: 500;
+//         }
+        
+//         .footer {
+//           background: #1e3a8a;
+//           color: white;
+//           padding: 12px 30px;
+//           display: flex;
+//           justify-content: space-between;
+//           align-items: center;
+//           position: absolute;
+//           bottom: 0;
+//           width: 100%;
+//           border-top: 4px solid #fbbf24;
+//         }
+        
+//         .entry-time {
+//           font-size: 16px;
+//           font-weight: 600;
+//         }
+        
+//         .signatures {
+//           display: flex;
+//           gap: 25px;
+//           padding: 0 30px 15px;
+//           border-top: 2px dashed #cbd5e1;
+//           margin-top: 15px;
+//           padding-top: 15px;
+//         }
+        
+//         .sign-box {
+//           flex: 1;
+//           text-align: center;
+//         }
+        
+//         .sign-line {
+//           border-bottom: 2px solid #1e3a8a;
+//           height: 35px;
+//           margin-bottom: 5px;
+//         }
+        
+//         .sign-label {
+//           font-size: 12px;
+//           color: #1e3a8a;
+//           font-weight: 600;
+//         }
+        
+//         @media print {
+//           body { background: white; }
+//           .card { border: 6px solid #1e3a8a; }
+//           @page { margin: 0; size: portrait; }
+//         }
+//       </style>
+//     </head>
+//     <body onload="window.print(); setTimeout(()=>window.close(),1200)">
+//       <div class="page">
+//         <div class="card">
+//           <div class="header">
+//             <div class="header-top">
+//               <img src="${thanegramin}" class="logo" alt="Logo" />
+//               <div class="header-text">
+//                 <div class="title">ठाणे ग्रामीण पोलीस</div>
+//                 <div class="subtitle">Thane Rural Police</div>
+//               </div>
+//             </div>
+//             <div class="pass-type">अभ्यागत पावती</div>
+//           </div>
+          
+//           <div class="content">
+//             <div class="photo-section">
+//               <img src="${data.photo}" class="photo" alt="Visitor" />
+//             </div>
+            
+//             <div class="details">
+//               <div class="row">
+//                 <span class="label">नाव :</span>
+//                 <span class="value">${data.name}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">मोबाईल :</span>
+//                 <span class="value">${data.mobile}</span>
+//               </div>
+              
+              
+//                <div class="row">
+//                 <span class="label">पत्ता :</span>
+//                 <span class="value">${data.address}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">कोणास भेटायचे? :</span>
+//                 <span class="value">${data.meetingPerson}</span>
+//               </div>
+
+//              <div class="row">
+//                 <span class="label">भेटण्याचे कारण? :</span>
+//                 <span class="value">${data.visitReason}</span>
+//               </div>
+              
+//               <div class="row">
+//                 <span class="label">पोलीस स्टेशन हद्द :</span>
+//                 <span class="value">${data.policeStation}</span>
+//               </div>
+//             </div>
+//           </div>
+          
+//           <div class="signatures">
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">अभ्यागत स्वाक्षरी</div>
+//             </div>
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">स्वागतकर्ता स्वाक्षरी व शिक्का़</div>
+//             </div>
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">भेट देणारे अधिकाऱ्यांची स्वाक्षरी</div>
+//             </div>
+//           </div>
+          
+//           <div class="footer">
+//             <span class="entry-time">एंट्री वेळ : ${dateTime}</span>
+//             <span class="entry-time">Entry Time : ${dateTime}</span>
+//           </div>
+//         </div>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+// };
+
+
+
+
+const printVisitorPass = (data) => {
+  // Generate current date and time
+  const now = new Date();
+  const date = now.toLocaleDateString('en-IN'); // 28/11/2025
+  const time = now.toLocaleTimeString('en-IN', { 
+    hour: '2-digit', 
+    minute: '2-digit',
+    hour12: true 
+  }); // 11:48 am
+  const dateTime = `${date} | ${time}`;
+
+  const printWindow = window.open('', '', 'width=620,height=1020');
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Visitor Pass</title>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+          margin: 0; 
+          padding: 0; 
+          background: white; 
+          font-family: 'Mukta', sans-serif;
+        }
+        
+        .page {
+          width: 100%;
+          height: 100vh;
+          position: relative;
+        }
+        
+        .card {
+          width: 100%;
+          height: 50vh;
+          background: white;
+          border: 8px solid #1e3a8a;
+          border-radius: 0;
+        }
+        
+        .header {
+          background: linear-gradient(135deg, #1e3a8a, #1e40af);
+          color: white;
+          text-align: center;
+          padding: 15px 20px;
+          border-bottom: 4px solid #fbbf24;
+        }
+        
+        .header-top {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 20px;
+          margin-bottom: 8px;
+        }
+
+                .logo {
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          border: 4px solid white;
+          object-fit: contain;
+          background: white;
+        }
+        
+        
+        .header-text {
+          text-align: left;
+        }
+        
+        .title {
+          font-size: 28px;
+          font-weight: 700;
+          margin-bottom: 2px;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+          font-size: 16px;
+          opacity: 0.95;
+          font-weight: 500;
+        }
+        
+        .pass-type {
+          background: #fbbf24;
+          color: #1e3a8a;
+          font-size: 22px;
+          font-weight: 700;
+          padding: 8px 20px;
+          margin: 8px auto 0;
+          display: inline-block;
+          border-radius: 25px;
+          text-transform: uppercase;
+        }
+        
+        .content {
+          display: flex;
+          padding: 20px 30px;
+          gap: 25px;
+          align-items: flex-start;
+        }
+        
+        .photo-section {
+          flex-shrink: 0;
+        }
+        
+        .photo {
+          width: 130px;
+          height: 130px;
+          border-radius: 12px;
+          object-fit: cover;
+          border: 5px solid #1e3a8a;
+          box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+          background: #f3f4f6;
+        }
+        
+        .details {
+          flex: 1;
+          padding-top: 5px;
+        }
+        
+        .row {
+          display: flex;
+          margin-bottom: 12px;
+          font-size: 16px;
+          line-height: 1.4;
+        }
+        
+        .label {
+          font-weight: 700;
+          color: #1e3a8a;
+          min-width: 90px;
+          flex-shrink: 0;
+        }
+        
+        .value {
+          color: #1f2937;
+          font-weight: 500;
+        }
+        
+        .footer {
+          background: #1e3a8a;
+          color: white;
+          padding: 12px 30px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          border-top: 4px solid #fbbf24;
+        }
+        
+        .entry-time {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        
+        .signatures {
+          display: flex;
+          gap: 25px;
+          padding: 0 30px 15px;
+          border-top: 2px dashed #cbd5e1;
+          margin-top: 15px;
+          padding-top: 15px;
+        }
+        
+        .sign-box {
+          flex: 1;
+          text-align: center;
+        }
+        
+        .sign-line {
+          border-bottom: 2px solid #1e3a8a;
+          height: 35px;
+          margin-bottom: 5px;
+        }
+        
+        .sign-label {
+          font-size: 12px;
+          color: #1e3a8a;
+          font-weight: 600;
+        }
+        
+        @media print {
+          body { background: white; }
+          .card { border: 6px solid #1e3a8a; }
+          @page { margin: 0; size: portrait; }
+        }
+      </style>
+    </head>
+    <body onload="window.print(); setTimeout(()=>window.close(),1200)">
+      <div class="page">
+        <div class="card">
+          <div class="header">
+            <div class="header-top">
+             <img src="${thanegramin}" class="logo" alt="Logo" />
+              <div class="header-text">
+                <div class="title">ठाणे ग्रामीण पोलीस</div>
+                <div class="subtitle">Thane Rural Police</div>
+              </div>
+            </div>
+            <div class="pass-type">अभ्यागत पावती</div>
+          </div>
+          
+          <div class="content">
+            <div class="photo-section">
+              <img src="${data.photo}" class="photo" alt="Visitor" />
+            </div>
+            
+            <div class="details">
+              <div class="row">
+                <span class="label">नाव :</span>
+                <span class="value">${data.name}</span>
+              </div>
+              <div class="row">
+                <span class="label">मोबाईल :</span>
+                <span class="value">${data.mobile}</span>
+              </div>
+              <div class="row">
+                <span class="label">दिनांक - वेळ :</span>
+                <span class="value">${dateTime}</span>
+              </div>
+              <div class="row">
+                <span class="label">पत्ता :</span>
+                <span class="value">${data.address}</span>
+              </div>
+              <div class="row">
+                <span class="label">कोणास भेटायचे? :</span>
+                <span class="value">${data.meetingPerson}</span>
+              </div>
+              <div class="row">
+                <span class="label">भेटण्याचे कारण? :</span>
+                <span class="value">${data.visitReason}</span>
+              </div>
+              <div class="row">
+                <span class="label">पोलीस स्टेशन हद्द :</span>
+                <span class="value">${data.policeStation}</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="signatures">
+            <div class="sign-box">
+              <div class="sign-line"></div>
+              <div class="sign-label">अभ्यागत स्वाक्षरी</div>
+            </div>
+            <div class="sign-box">
+              <div class="sign-line"></div>
+              <div class="sign-label">स्वागतकर्ता स्वाक्षरी व शिक्का</div>
+            </div>
+            <div class="sign-box">
+              <div class="sign-line"></div>
+              <div class="sign-label">भेट देणारे अधिकारी ची स्वाक्षरी</div>
+            </div>
+          </div>
+          
+          <div class="footer">
+           
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+};
+
+
+
+
+
+
+
+
+
+// const printVisitorPass = (data) => {
+//   // Generate current date and time
+//   const now = new Date();
+//   const date = now.toLocaleDateString('en-IN'); // 28/11/2025
+//   const time = now.toLocaleTimeString('en-IN', { 
+//     hour: '2-digit', 
+//     minute: '2-digit',
+//     hour12: true 
+//   }); // 11:48 am
+//   const dateTime = `${date} | ${time}`;
+
+//   // Use logo from data or provide a fallback
+//   const logoSrc = data.logo && data.logo.trim() !== '' ? data.logo : 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDUiIGZpbGw9IiMxZTNhOGEiLz48dGV4dCB4PSI1MCIgeT0iNjAiIGZvbnQtc2l6ZT0iNDgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UDwvdGV4dD48L3N2Zz4=';
+
+//   const printWindow = window.open('', '', 'width=620,height=1020');
+
+//   printWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <meta charset="utf-8">
+//       <title>Visitor Pass</title>
+//       <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&display=swap');
+        
+//         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+//         body { 
+//           margin: 0; 
+//           padding: 0; 
+//           background: white; 
+//           font-family: 'Mukta', sans-serif;
+//         }
+        
+//         .page {
+//           width: 100%;
+//           height: 100vh;
+//           position: relative;
+//         }
+        
+//         .card {
+//           width: 100%;
+//           height: 50vh;
+//           background: white;
+//           border: 8px solid #1e3a8a;
+//           border-radius: 0;
+//         }
+        
+//         .header {
+//           background: linear-gradient(135deg, #1e3a8a, #1e40af);
+//           color: white;
+//           text-align: center;
+//           padding: 15px 20px;
+//           border-bottom: 4px solid #fbbf24;
+//         }
+        
+//         .header-top {
+//           display: flex;
+//           align-items: center;
+//           justify-content: center;
+//           gap: 20px;
+//           margin-bottom: 8px;
+//         }
+        
+//         .logo {
+//           width: 70px;
+//           height: 70px;
+//           border-radius: 50%;
+//           border: 4px solid white;
+//           object-fit: contain;
+//           background: white;
+//           flex-shrink: 0;
+//         }
+        
+//         .header-text {
+//           text-align: left;
+//         }
+        
+//         .title {
+//           font-size: 28px;
+//           font-weight: 700;
+//           margin-bottom: 2px;
+//           text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+//         }
+        
+//         .subtitle {
+//           font-size: 16px;
+//           opacity: 0.95;
+//           font-weight: 500;
+//         }
+        
+//         .pass-type {
+//           background: #fbbf24;
+//           color: #1e3a8a;
+//           font-size: 22px;
+//           font-weight: 700;
+//           padding: 8px 20px;
+//           margin: 8px auto 0;
+//           display: inline-block;
+//           border-radius: 25px;
+//           text-transform: uppercase;
+//         }
+        
+//         .content {
+//           display: flex;
+//           padding: 20px 30px;
+//           gap: 25px;
+//           align-items: flex-start;
+//         }
+        
+//         .photo-section {
+//           flex-shrink: 0;
+//         }
+        
+//         .photo {
+//           width: 130px;
+//           height: 130px;
+//           border-radius: 12px;
+//           object-fit: cover;
+//           border: 5px solid #1e3a8a;
+//           box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+//           background: #f3f4f6;
+//         }
+        
+//         .details {
+//           flex: 1;
+//           padding-top: 5px;
+//         }
+        
+//         .row {
+//           display: flex;
+//           margin-bottom: 12px;
+//           font-size: 16px;
+//           line-height: 1.4;
+//         }
+        
+//         .label {
+//           font-weight: 700;
+//           color: #1e3a8a;
+//           min-width: 90px;
+//           flex-shrink: 0;
+//         }
+        
+//         .value {
+//           color: #1f2937;
+//           font-weight: 500;
+//         }
+        
+//         .footer {
+//           background: #1e3a8a;
+//           color: white;
+//           padding: 12px 30px;
+//           display: flex;
+//           justify-content: space-between;
+//           align-items: center;
+//           position: absolute;
+//           bottom: 0;
+//           width: 100%;
+//           border-top: 4px solid #fbbf24;
+//         }
+        
+//         .entry-time {
+//           font-size: 16px;
+//           font-weight: 600;
+//         }
+        
+//         .signatures {
+//           display: flex;
+//           gap: 25px;
+//           padding: 0 30px 15px;
+//           border-top: 2px dashed #cbd5e1;
+//           margin-top: 15px;
+//           padding-top: 15px;
+//         }
+        
+//         .sign-box {
+//           flex: 1;
+//           text-align: center;
+//         }
+        
+//         .sign-line {
+//           border-bottom: 2px solid #1e3a8a;
+//           height: 35px;
+//           margin-bottom: 5px;
+//         }
+        
+//         .sign-label {
+//           font-size: 12px;
+//           color: #1e3a8a;
+//           font-weight: 600;
+//         }
+        
+//         @media print {
+//           body { background: white; }
+//           .card { border: 6px solid #1e3a8a; }
+//           @page { margin: 0; size: portrait; }
+//         }
+//       </style>
+//     </head>
+//     <body onload="window.print(); setTimeout(()=>window.close(),1200)">
+//       <div class="page">
+//         <div class="card">
+//           <div class="header">
+//             <div class="header-top">
+//               <img src="${logoSrc}" class="logo" alt="Logo" onerror="this.style.display='none'" />
+//               <div class="header-text">
+//                 <div class="title">ठाणे ग्रामीण पोलीस</div>
+//                 <div class="subtitle">Thane Rural Police</div>
+//               </div>
+//             </div>
+//             <div class="pass-type">अभ्यागत पावती</div>
+//           </div>
+          
+//           <div class="content">
+//             <div class="photo-section">
+//               <img src="${data.photo}" class="photo" alt="Visitor" />
+//             </div>
+            
+//             <div class="details">
+//               <div class="row">
+//                 <span class="label">नाव :</span>
+//                 <span class="value">${data.name}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">मोबाईल :</span>
+//                 <span class="value">${data.mobile}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">दिनांक - वेळ :</span>
+//                 <span class="value">${dateTime}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">पत्ता :</span>
+//                 <span class="value">${data.address}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">कोणास भेटायचे? :</span>
+//                 <span class="value">${data.meetingPerson}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">भेटण्याचे कारण? :</span>
+//                 <span class="value">${data.meetingReason}</span>
+//               </div>
+//               <div class="row">
+//                 <span class="label">पोलीस स्टेशन हद्द :</span>
+//                 <span class="value">${data.policeStation}</span>
+//               </div>
+//             </div>
+//           </div>
+          
+//           <div class="signatures">
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">अभ्यागत स्वाक्षरी</div>
+//             </div>
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">स्वागतकर्ता स्वाक्षरी व शिक्का</div>
+//             </div>
+//             <div class="sign-box">
+//               <div class="sign-line"></div>
+//               <div class="sign-label">भेट देणारे अधिकारी ची स्वाक्षरी</div>
+//             </div>
+//           </div>
+          
+//           <div class="footer">
+//             <span class="entry-time">एंट्री वेळ : ${dateTime}</span>
+//             <span class="entry-time">Entry Time : ${dateTime}</span>
+//           </div>
+//         </div>
+//       </div>
+//     </body>
+//     </html>
+//   `);
+
+//   printWindow.document.close();
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const EntryForm = () => {
   const [lang, setLang] = useState('mr'); // मराठी डिफॉल्ट
@@ -1254,6 +2394,7 @@ const EntryForm = () => {
   const webcamRef = useRef(null);
   const t = texts[lang];
   const reasons = lang === 'mr' ? visitReasonsMr : visitReasonsEn;
+// ++++
 
   const now = new Date();
   const dateTime = now.toLocaleString('en-IN', {
@@ -1284,8 +2425,8 @@ const EntryForm = () => {
 
   const formik = useFormik({
     initialValues: {
-      name: '', mobile: '', address: '', pincode: '', taluka: '',
-      policeStation: '', meetingPerson: '', visitReason: '', photo: ''
+      name: '', mobile: '', address: '', pincode: '', 
+      policeStation: '', meetingPerson: '', visitReason: '',spOfficeBranch:'', photo: ''
     },
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -1304,19 +2445,24 @@ const EntryForm = () => {
         formData.append('fullAddress', values.address);
         formData.append('pincode', values.pincode);
         formData.append('district', 'ठाणे');
-        formData.append('taluka', values.taluka);
+        // formData.append('taluka', values.taluka);
         formData.append('policeStation', values.policeStation);
         formData.append('contactPerson', values.meetingPerson);
         formData.append('reasonToVisit', values.visitReason);
         formData.append('visitorPhoto', file);
         formData.append('feedbackGiven', 'false');
 
-        await axios.post(`${baseUrl}/api/addVisitor`, formData);
+        await axios.post(`${baseUrl}/addVisitor`, formData);
 
         setSuccess(true);
         resetForm();
         setCapturedPhoto('');
         setTimeout(() => setSuccess(false), 6000);
+
+        printVisitorPass(values, dateTime);
+
+
+
 
       } catch (err) {
         const msg = err.response?.data?.message || 'काहीतरी चुकले!';
@@ -1368,31 +2514,126 @@ const EntryForm = () => {
                   <Grid item xs={12} sm={6}><TextField fullWidth label={t.pincode} name="pincode" value={formik.values.pincode} onChange={formik.handleChange} required /></Grid>
                   <Grid item xs={12} sm={6}><TextField fullWidth label={t.district} value="ठाणे / Thane" disabled /></Grid>
 
-                  <Grid item xs={12} sm={6}>
+                  {/* <Grid item xs={12} sm={6}>
                     <FormControl fullWidth>
                       <InputLabel>{t.taluka}</InputLabel>
                       <Select name="taluka" value={formik.values.taluka} onChange={formik.handleChange} required>
                         {talukas.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
                       </Select>
                     </FormControl>
-                  </Grid>
+                  </Grid> */}
 
-                  <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth>
-                      <InputLabel>{t.policeStation}</InputLabel>
-                      <Select name="policeStation" value={formik.values.policeStation} onChange={formik.handleChange} required>
-                        <MenuItem value="" disabled><em>— स्टेशन निवडा —</em></MenuItem>
-                        {policeStations.map(st => <MenuItem key={st} value={st}>{st}</MenuItem>)}
-                      </Select>
-                    </FormControl>
-                  </Grid>
+                  {/* तालुका - आता Pincode सारखंच दिसेल */}
+{/* <Grid item xs={12} sm={6}>
+  <TextField
+    select
+    fullWidth
+    label={t.taluka}
+    name="taluka"
+    value={formik.values.taluka}
+    onChange={formik.handleChange}
+    required
+    SelectProps={{ native: false }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <MenuItem value="" disabled>
+      <em>— तालुका निवडा —</em>
+    </MenuItem>
+    {talukas.map((taluka) => (
+      <MenuItem key={taluka} value={taluka}>
+        {taluka}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid> */}
 
-                  <Grid item xs={12} sm={6}><TextField fullWidth label={t.meetingPerson} name="meetingPerson" value={formik.values.meetingPerson} onChange={formik.handleChange} required /></Grid>
+{/* पोलीस स्टेशन - आता Pincode सारखंच दिसेल */}
+<Grid item xs={12} sm={6}>
+  <TextField
+    select
+    fullWidth
+    label={t.policeStation}
+    name="policeStation"
+    value={formik.values.policeStation}
+    onChange={formik.handleChange}
+    required
+    SelectProps={{ native: false }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <MenuItem value="" disabled>
+      <em>— स्टेशन निवडा —</em>
+    </MenuItem>
+    {policeStations.map((station) => (
+      <MenuItem key={station} value={station}>
+        {station}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
+
+                  {/* <Grid item xs={12} sm={6}><TextField fullWidth label={t.meetingPerson} name="meetingPerson" value={formik.values.meetingPerson} onChange={formik.handleChange} required /></Grid> */}
 
 
-                  <Grid item xs={12} sm={6}><TextField fullWidth label={t.visitReason} name="visitReason" value={formik.values.visitReason} onChange={formik.handleChange} required /></Grid>
+<Grid item xs={12} sm={6}>
+  <TextField
+    select
+    fullWidth
+    label="कोणास भेटायचे"
+    name="meetingPerson"
+    value={formik.values.meetingPerson}
+    onChange={formik.handleChange}
+    required
+    SelectProps={{
+      native: false,
+      // Optional: Add MenuProps for better styling if needed
+      MenuProps: {
+        PaperProps: {
+          style: {
+            maxHeight: 300,
+          },
+        },
+      },
+    }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <MenuItem value="" disabled>
+      <em>—Select Officer—</em>
+    </MenuItem>
+    
+    <MenuItem value="Superintendent of Police">Superintendent of Police</MenuItem>
+    <MenuItem value="Additional Superintendent of Police">Additional Superintendent of Police</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Ganeshpuri">Sub-Divisional Officer, Ganeshpuri</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Shahapur">Sub-Divisional Officer, Shahapur</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Murbad">Sub-Divisional Officer, Murbad</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Home Department">Sub-Divisional Officer, Home Department</MenuItem>
+    <MenuItem value="In-Charge Officer">In-Charge Officer</MenuItem>
+    <MenuItem value="पोलीस निरीक्षक">Police Inspector (PI)</MenuItem>
+  </TextField>
+</Grid>
 
 
+
+
+                  {/* <Grid item xs={12} sm={6}><TextField fullWidth label={t.visitReason} name="visitReason" value={formik.values.visitReason} onChange={formik.handleChange} required /></Grid> */}
+
+
+                                    {/* <Grid item xs={12} sm={6}><TextField fullWidth label={t.meetingPerson} name="meetingPerson" value={formik.values.meetingPerson} onChange={formik.handleChange} /></Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth><InputLabel>{t.visitReason}</InputLabel>
+                    <Select name="visitReason" value={formik.values.visitReason} onChange={formik.handleChange}>
+                      {reasons.map((r, i) => <MenuItem key={i} value={r}>{r}</MenuItem>)}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <Button fullWidth variant="contained" type="submit" size="large"
+                    sx={{ py: 2.2, fontSize: '1.25rem', fontWeight: 'bold', bgcolor: '#0040B9' }}>
+                    {t.submitBtn}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Paper>
+          </Grid> */}
 
                   {/* <Grid item xs={12} sm={6}>
                     <FormControl fullWidth>
@@ -1402,6 +2643,85 @@ const EntryForm = () => {
                       </Select>
                     </FormControl>
                   </Grid> */}
+
+
+
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    select
+    fullWidth
+    label={t.visitReason}
+    name="visitReason"
+    value={formik.values.visitReason}
+    onChange={formik.handleChange}
+    required
+    SelectProps={{
+      native: false,
+      // Optional: Add MenuProps for better styling if needed
+      MenuProps: {
+        PaperProps: {
+          style: {
+            maxHeight: 300,
+          },
+        },
+      },
+    }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <MenuItem value="" disabled>
+      <em>—Select Visit Reason—</em>
+    </MenuItem>
+    <MenuItem value="Complaint">Complaint</MenuItem>
+    <MenuItem value="FIR">FIR</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Ganeshpuri">Inquiry</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Shahapur">Documents</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Murbad">Pass</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Home Department">Meeting</MenuItem>
+    <MenuItem value="In-Charge Officer">Other</MenuItem>
+  </TextField>
+</Grid>
+
+
+<Grid item xs={12} sm={6}>
+  <TextField
+    select
+    fullWidth
+    label="SP office branch"
+    name="spOfficeBranch"
+    value={formik.values.spOfficeBranch}
+    onChange={formik.handleChange}
+    required
+    SelectProps={{
+      native: false,
+      // Optional: Add MenuProps for better styling if needed
+      MenuProps: {
+        PaperProps: {
+          style: {
+            maxHeight: 300,
+          },
+        },
+      },
+    }}
+    InputLabelProps={{ shrink: true }}
+  >
+    <MenuItem value="" disabled>
+      <em>—Select SP office branch—</em>
+    </MenuItem>
+
+
+    <MenuItem value="Home Department">Home Department</MenuItem>
+    <MenuItem value="Crime">Crime</MenuItem>
+    <MenuItem value="Local Crime Branch (LCB)">Local Crime Branch (LCB)</MenuItem>
+    <MenuItem value="Economic Offences Wing (EOW)">Economic Offences Wing (EOW)</MenuItem>
+    <MenuItem value="District Special Branch (DSB)">District Special Branch (DSB)</MenuItem>
+    <MenuItem value="Police Communication & Information Technology">Police Communication & Information Technology</MenuItem>
+    <MenuItem value="Passport">Passport</MenuItem>
+     <MenuItem value="Passport">Police Verification</MenuItem>
+  </TextField>
+</Grid>
+
+
 
                   <Grid item xs={12}>
                     <Button
@@ -1462,10 +2782,11 @@ const EntryForm = () => {
                       <Typography fontWeight="bold" color="#0040B9">{t.livePreview}</Typography>
                       <Typography><strong>नाव :</strong> {formik.values.name}</Typography>
                       <Typography><strong>मोबाईल :</strong> {formik.values.mobile}</Typography>
-                      <Typography><strong>तालुका :</strong> {formik.values.taluka || '-'}</Typography>
+                      {/* <Typography><strong>तालुका :</strong> {formik.values.taluka || '-'}</Typography> */}
                       <Typography><strong>पोलीस स्टेशन :</strong> {formik.values.policeStation || '-'}</Typography>
                       <Typography><strong>भेट :</strong> {formik.values.meetingPerson || '-'}</Typography>
                       <Typography><strong>कारण :</strong> {formik.values.visitReason || '-'}</Typography>
+                       <Typography><strong>पोलीस अधीक्षक कार्यालय विभाग :</strong> {formik.values.spOfficeBranch || '-'}</Typography>
                       <Typography><strong>{t.timeLabel}</strong> {dateTime}</Typography>
                     </Paper>
                   )}
