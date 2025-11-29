@@ -1246,7 +1246,7 @@ const FeedbackForm = () => {
                       </Typography>
                       <Typography sx={{ mt: 1 }}><strong>मोबाईल:</strong> {visitor.mobileNumber}</Typography>
                       <Typography><strong>पोलीस स्टेशन:</strong> {visitor.policeStation}</Typography>
-                      <Typography><strong>कारण:</strong> {visitor.reasonToVisit}</Typography>
+                      <Typography><strong>कोणास भेटायचे:</strong> {visitor.contactPerson}</Typography>
                       <Typography><strong>वेळ:</strong> {new Date(visitor.entryAt).toLocaleString('en-IN')}</Typography>
                       {visitor.visitorPhoto && (
                         <img

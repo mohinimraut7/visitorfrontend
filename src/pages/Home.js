@@ -305,7 +305,7 @@ const Home = () => {
       transition: 'all 0.3s ease'
     }}>
       <Container maxWidth={false}>
-        <Typography variant="h3" fontWeight={900} color="#0d2136" mb={2}>
+        <Typography variant="h3" fontWeight={900} color="#0d2136" mb={2} mt={5}>
           Thane Rural Police
         </Typography>
         <Typography variant="h6" color="primary" mb={4}>

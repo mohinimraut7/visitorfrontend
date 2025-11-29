@@ -1178,14 +1178,18 @@ import thanegramin from '../Images/thanegramin.jpeg'
 // const talukas = ["Thane", "Ulhasnagar", "Kalyan", "Bhiwandi", "Ambarnath", "Murbad", "Shahapur"];
 
 // const visitReasonsMr = ["तक्रार नोंद", "FIR", "चौकशी", "दस्तऐवज", "पास", "भेट", "इतर"];
+// const visitReasonsEn = ["Complaint", "FIR", "Inquiry", "Documents", "Pass", "Meeting", "Other"];
 
-const visitReasonsMr = ["Complaint", "FIR", "Inquiry", "Documents", "Pass", "Meeting", "Other"];
-const visitReasonsEn = ["Complaint", "FIR", "Inquiry", "Documents", "Pass", "Meeting", "Other"];
+
+const visitReasonsEn = ["तक्रार नोंद", "पहिली तक्रार", "चौकशी", "दस्तऐवज", "पास", "भेट", "इतर"];
+const visitReasonsMr = ["तक्रार नोंद", "पहिली तक्रार", "चौकशी", "दस्तऐवज", "पास", "भेट", "इतर"];
 
 const policeStations = [
-  "Bhiwandi Taluka", "Ganeshpuri", "Kalyan Taluka", "Kasara", "Kinhavali",
-  "Kulgaon", "Murbad", "Padagha", "Shahapur", "Tokavade", "Vasind"
+  "भिवंडी तालुका", "गणेशपुरी", "कल्याण तालुका", "कसारा", "किन्हवली",
+  "कुलगाव", "मुरबाड", "पडघा", "शहापूर", "टोकावडे", "वासिंद"
 ];
+
+
 
 const spofficebr = [
   "Home Department", "Crime", "Local Crime Branch (LCB)", "Economic Offences Wing (EOW)", "District Special Branch (DSB)",
@@ -2561,7 +2565,7 @@ const EntryForm = () => {
     InputLabelProps={{ shrink: true }}
   >
     <MenuItem value="" disabled>
-      <em>— स्टेशन निवडा —</em>
+      <em>—पोलीस स्टेशन निवडा —</em>
     </MenuItem>
     {policeStations.map((station) => (
       <MenuItem key={station} value={station}>
@@ -2597,17 +2601,17 @@ const EntryForm = () => {
     InputLabelProps={{ shrink: true }}
   >
     <MenuItem value="" disabled>
-      <em>—Select Officer—</em>
+      <em>—अधिकारी निवडा—</em>
     </MenuItem>
     
-    <MenuItem value="Superintendent of Police">Superintendent of Police</MenuItem>
-    <MenuItem value="Additional Superintendent of Police">Additional Superintendent of Police</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Ganeshpuri">Sub-Divisional Officer, Ganeshpuri</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Shahapur">Sub-Divisional Officer, Shahapur</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Murbad">Sub-Divisional Officer, Murbad</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Home Department">Sub-Divisional Officer, Home Department</MenuItem>
-    <MenuItem value="In-Charge Officer">In-Charge Officer</MenuItem>
-    <MenuItem value="पोलीस निरीक्षक">Police Inspector (PI)</MenuItem>
+    <MenuItem value="Superintendent of Police">पोलीस अधीक्षक</MenuItem>
+    <MenuItem value="Additional Superintendent of Police">अपर पोलीस अधीक्षक </MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Ganeshpuri">उप विभागीय अधिकारी गणेशपुरी</MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Shahapur">उप विभागीय अधिकारी शहापूर </MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Murbad">उप विभागीय अधिकारी मुरबाड </MenuItem>
+    <MenuItem value="Sub-Divisional Officer, Home Department">उप विभागीय अधिकारी गृह </MenuItem>
+    <MenuItem value="In-Charge Officer">प्रभारी अधिकारी</MenuItem>
+    <MenuItem value="पोलीस निरीक्षक">पोलीस निरीक्षक</MenuItem>
   </TextField>
 </Grid>
 
@@ -2670,15 +2674,15 @@ const EntryForm = () => {
     InputLabelProps={{ shrink: true }}
   >
     <MenuItem value="" disabled>
-      <em>—Select Visit Reason—</em>
+      <em>—भेटीचे कारण निवडा—</em>
     </MenuItem>
-    <MenuItem value="Complaint">Complaint</MenuItem>
-    <MenuItem value="FIR">FIR</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Ganeshpuri">Inquiry</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Shahapur">Documents</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Murbad">Pass</MenuItem>
-    <MenuItem value="Sub-Divisional Officer, Home Department">Meeting</MenuItem>
-    <MenuItem value="In-Charge Officer">Other</MenuItem>
+    <MenuItem value="Complaint">तक्रार नोंद</MenuItem>
+    <MenuItem value="FIR">पहिली तक्रार</MenuItem>
+    <MenuItem value="Inquiry">चौकशी</MenuItem>
+    <MenuItem value="Documents">दस्तऐवज</MenuItem>
+    <MenuItem value="Pass">पास</MenuItem>
+    <MenuItem value="Meeting">भेट</MenuItem>
+    <MenuItem value="Other">इतर</MenuItem>
   </TextField>
 </Grid>
 
@@ -2687,7 +2691,7 @@ const EntryForm = () => {
   <TextField
     select
     fullWidth
-    label="SP office branch"
+    label="पोलीस अधीक्षक कार्यालय शाखा"
     name="spOfficeBranch"
     value={formik.values.spOfficeBranch}
     onChange={formik.handleChange}
@@ -2706,18 +2710,18 @@ const EntryForm = () => {
     InputLabelProps={{ shrink: true }}
   >
     <MenuItem value="" disabled>
-      <em>—Select SP office branch—</em>
+      <em>—पोलीस अधीक्षक कार्यालय शाखा निवडा—</em>
     </MenuItem>
 
 
-    <MenuItem value="Home Department">Home Department</MenuItem>
-    <MenuItem value="Crime">Crime</MenuItem>
-    <MenuItem value="Local Crime Branch (LCB)">Local Crime Branch (LCB)</MenuItem>
-    <MenuItem value="Economic Offences Wing (EOW)">Economic Offences Wing (EOW)</MenuItem>
-    <MenuItem value="District Special Branch (DSB)">District Special Branch (DSB)</MenuItem>
-    <MenuItem value="Police Communication & Information Technology">Police Communication & Information Technology</MenuItem>
-    <MenuItem value="Passport">Passport</MenuItem>
-     <MenuItem value="Passport">Police Verification</MenuItem>
+    <MenuItem value="Home Department">गृह विभाग</MenuItem>
+    <MenuItem value="Crime">गुन्हे</MenuItem>
+    <MenuItem value="Local Crime Branch (LCB)">स्थानिक गुन्हे शाखा</MenuItem>
+    <MenuItem value="Economic Offences Wing (EOW)">आर्थिक गुन्हे शाखा </MenuItem>
+    <MenuItem value="District Special Branch (DSB)">जिल्हा विशेष शाखा </MenuItem>
+    <MenuItem value="Police Communication & Information Technology">पोलीस दळणवळण व माहिती तंत्रज्ञान </MenuItem>
+    <MenuItem value="Passport">पासपोर्ट </MenuItem>
+     <MenuItem value="Passport">पोलीस तपासणी</MenuItem>
   </TextField>
 </Grid>
 
