@@ -1304,7 +1304,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/actions/loginActions';
 import { useNavigate } from 'react-router-dom';
 import vvcmclogo from '../../Images/thanegramin.jpeg';
-import { baseUrl } from '../../config/config';
+import { baseUrl, baseUrlEmail } from '../../config/config';
 import LoaderLottie from '../../components/LoaderLottie';
 import './Auth.css';
 
@@ -1355,7 +1355,7 @@ const Login = () => {
     const handleResendVerification = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${baseUrl}/resend-verification`, {
+            const res = await fetch(`${baseUrlEmail}/resend-verification`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: userEmail }),
