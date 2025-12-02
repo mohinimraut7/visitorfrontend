@@ -996,11 +996,653 @@
 
 // =======================================
 
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Box, Paper, Typography, TextField, Button, Grid, Card, CardContent,
+//   FormControl, InputLabel, Select, MenuItem, Alert, ToggleButton, ToggleButtonGroup,
+//   Avatar, Container, CircularProgress
+// } from '@mui/material';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import dayjs from 'dayjs';
+// import axios from 'axios';
+// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+// import { baseUrl } from '../config/config';
+
+// const texts = {
+//   mr: {
+//     title: "अभिप्राय फॉर्म",
+//     mobileLabel: "मोबाईल नंबर टाका (10 अंक)",
+//     searching: "शोधत आहोत...",
+//     found: "सापडले!",
+//     notFound: "या नंबरवरून आजची एंट्री सापडली नाही",
+//     feedbackLabel: "अभिप्राय द्या *",
+//     nextDateLabel: "पुढील भेटीची तारीख *",
+//     submit: "अभिप्राय सादर करा",
+//     thankYou: "धन्यवाद! तुमचा अभिप्राय यशस्वी झाला",
+//   },
+//   en: {
+//     title: "Feedback Form",
+//     mobileLabel: "Enter Mobile Number (10 digits)",
+//     searching: "Searching...",
+//     found: "Found!",
+//     notFound: "No entry found for today",
+//     feedbackLabel: "Give Your Feedback *",
+//     nextDateLabel: "Next Appointment Date *",
+//     submit: "Submit Feedback",
+//     thankYou: "Thank you! Feedback submitted successfully",
+//   }
+// };
+
+// const feedbackOptions = [
+//   { value: "Satisfied", mr: "समाधानी", en: "Satisfied" },
+//   { value: "Not Satisfied", mr: "असमाधानी", en: "Not Satisfied" },
+//   { value: "Next Appointment", mr: "पुढील भेटीची तारीख", en: "Next Appointment" },
+//   { value: "Officer Not Available", mr: "अधिकारी उपलब्ध नव्हते", en: "Officer Not Available" },
+//   { value: "Officer Busy In Meeting", mr: "अधिकारी व्यस्त होते", en: "Officer Busy In Meeting" },
+// ];
+
+// const FeedbackForm = () => {
+//   const [lang, setLang] = useState('mr');
+//   const [mobile, setMobile] = useState('');
+//   const [visitor, setVisitor] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [submitting, setSubmitting] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState(false);
+//   const [feedback, setFeedback] = useState('');
+//   const [nextAppointment, setNextAppointment] = useState(null);
+
+//   const t = texts[lang];
+
+//   // Auto search when 10 digits entered
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       if (mobile.length === 10) {
+//         fetchVisitor();
+//       } else {
+//         setVisitor(null);
+//         setError('');
+//         setFeedback('');
+//         setNextAppointment(null);
+//       }
+//     }, 600);
+//     return () => clearTimeout(timer);
+//   }, [mobile]);
+
+//   const fetchVisitor = async () => {
+//     setLoading(true);
+//     setError('');
+//     try {
+//       const res = await axios.get(
+//         `${baseUrl}/getVisitorByMobileNumber?mobileNumber=${mobile}`
+//       );
+//       if (res.data.success) {
+//         setVisitor(res.data.visitor);
+//       } else {
+//         setError(t.notFound);
+//         setVisitor(null);
+//       }
+//     } catch (err) {
+//       setError(t.notFound);
+//       setVisitor(null);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!visitor || !feedback) return;
+
+//     if (feedback === "Next Appointment" && !nextAppointment) {
+//       alert(lang === 'mr' ? "कृपया तारीख निवडा" : "Please select a date");
+//       return;
+//     }
+
+//     setSubmitting(true);
+//     try {
+//       const payload = {
+//         feedback,
+//         feedbackGiven: true,
+//         nextAppointmentDate: feedback === "Next Appointment" 
+//           ? nextAppointment.format('YYYY-MM-DD') 
+//           : null
+//       };
+
+//       // तुम्हारा वाला PUT API – बिल्कुल वैसा ही!
+ 
+//       await axios.put(`${baseUrl}/visitor/${mobile}/feedback`, payload);
+
+//       setSuccess(true);
+//       setFeedback('');
+//       setNextAppointment(null);
+//       setTimeout(() => {
+//         setSuccess(false);
+//         setMobile('');
+//         setVisitor(null);
+//       }, 4000);
+//     } catch (err) {
+//       alert("Error submitting feedback");
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
+
+//   return (
+//     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//       <Box sx={{ bgcolor: '#f0f4f8', mt: 15 }}>
+//         {/* Header */}
+//         <Box sx={{ bgcolor: '#0040B9', color: 'white', py: 3, textAlign: 'center', position: 'relative' }}>
+//           <Typography variant="h4" fontWeight="bold">{t.title}</Typography>
+
+//           <ToggleButtonGroup
+//             value={lang}
+//             exclusive
+//             onChange={(_, v) => v && setLang(v)}
+//             sx={{ position: 'absolute', top: 16, right: 16, bgcolor: 'white', borderRadius: 3 }}
+//           >
+//             <ToggleButton value="mr" sx={{ fontWeight: 'bold' }}>मराठी</ToggleButton>
+//             <ToggleButton value="en" sx={{ fontWeight: 'bold' }}>English</ToggleButton>
+//           </ToggleButtonGroup>
+//         </Box>
+
+//         <Container maxWidth="lg" sx={{ mt: 6, pb: 8 }}>
+//           <Grid container spacing={6} justifyContent="center">
+
+//             {/* Left Side - Feedback Input */}
+//             <Grid item xs={12} md={6}>
+//               <Paper elevation={20} sx={{ p: 5, borderRadius: 4, border: '5px solid #0040B9' }}>
+//                 <Typography variant="h5" color="#0040B9" fontWeight="bold" mb={4}>
+//                   {lang === 'mr' ? 'अभिप्राय भरा' : 'Submit Feedback'}
+//                 </Typography>
+
+//                 <TextField
+//                   fullWidth
+//                   label={t.mobileLabel}
+//                   value={mobile}
+//                   onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+//                   placeholder="9876543210"
+//                   inputProps={{ maxLength: 10 }}
+//                   sx={{ mb: 3 }}
+//                 />
+
+//                 {loading && (
+//                   <Alert icon={<CircularProgress size={20} />} severity="info" sx={{ mb: 3 }}>
+//                     {t.searching}
+//                   </Alert>
+//                 )}
+
+//                 {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+//                 {visitor && (
+//                   <>
+//                     <FormControl fullWidth sx={{ mb: 4 }}>
+//                       <InputLabel>{t.feedbackLabel}</InputLabel>
+//                       <Select
+//                         value={feedback}
+//                         label={t.feedbackLabel}
+//                         onChange={(e) => setFeedback(e.target.value)}
+//                         required
+//                       >
+//                         {feedbackOptions.map(opt => (
+//                           <MenuItem key={opt.value} value={opt.value}>
+//                             {lang === 'mr' ? opt.mr : opt.en}
+//                           </MenuItem>
+//                         ))}
+//                       </Select>
+//                     </FormControl>
+
+//                     {/* तुम्हारी रिक्वायरमेंट – Next Appointment पर Date Picker */}
+//                     {feedback === "Next Appointment" && (
+//                       <DatePicker
+//                         label={t.nextDateLabel}
+//                         value={nextAppointment}
+//                         onChange={setNextAppointment}
+//                         minDate={dayjs().add(1, 'day')}
+//                         slotProps={{ textField: { fullWidth: true, sx: { mb: 4 } } }}
+//                       />
+//                     )}
+
+//                     <Button
+//                       fullWidth
+//                       variant="contained"
+//                       size="large"
+//                       onClick={handleSubmit}
+//                       disabled={!visitor || !feedback || submitting || (feedback === "Next Appointment" && !nextAppointment)}
+//                       sx={{
+//                         py: 2.5,
+//                         fontSize: '1.4rem',
+//                         fontWeight: 'bold',
+//                         bgcolor: '#0040B9',
+//                         '&:hover': { bgcolor: '#002D80' }
+//                       }}
+//                     >
+//                       {submitting ? <CircularProgress size={28} color="inherit" /> : t.submit}
+//                     </Button>
+//                   </>
+//                 )}
+
+//                 {success && (
+//                   <Alert severity="success" icon={<CheckCircleOutlineIcon />} sx={{ mt: 3 }}>
+//                     {t.thankYou}
+//                   </Alert>
+//                 )}
+//               </Paper>
+//             </Grid>
+
+//             {/* Right Side - Visitor Details (तुम्हारा डिजाइन बिल्कुल वैसा ही) */}
+//             <Grid item xs={12} md={6}>
+//               <Card elevation={20} sx={{ height: '100%', borderRadius: 4, border: '5px solid #0040B9', bgcolor: '#f8fbff' }}>
+//                 <CardContent sx={{ textAlign: 'center', pt: 8 }}>
+//                   {visitor ? (
+//                     <>
+//                       <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem', mb: 2 }}>
+//                         {visitor.fullName.charAt(0)}
+//                       </Avatar>
+//                       <Typography variant="h5" fontWeight="bold" color="#0040B9">
+//                         {visitor.fullName}
+//                       </Typography>
+//                       <Typography sx={{ mt: 1 }}><strong>मोबाईल:</strong> {visitor.mobileNumber}</Typography>
+//                       <Typography><strong>पोलीस स्टेशन:</strong> {visitor.policeStation}</Typography>
+//                       <Typography><strong>कोणास भेटायचे:</strong> {visitor.contactPerson}</Typography>
+//                       <Typography><strong>वेळ:</strong> {new Date(visitor.entryAt).toLocaleString('en-IN')}</Typography>
+//                       {visitor.visitorPhoto && (
+//                         <img
+//                           src={visitor.visitorPhoto}
+//                           alt="Visitor"
+//                           style={{ width: 200, height: 200, objectFit: 'cover', borderRadius: '50%', marginTop: 16, border: '5px solid #0040B9' }}
+//                         />
+//                       )}
+//                     </>
+//                   ) : (
+//                     <>
+//                       <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem' }}>
+//                         ?
+//                       </Avatar>
+//                       <Typography variant="h5" fontWeight="bold" color="#0040B9" sx={{ mt: 3 }}>
+//                         ठाणे ग्रामीण पोलीस
+//                       </Typography>
+//                       <Typography variant="h6" color="#0040B9" sx={{ mt: 2 }}>
+//                         नागरिक अभिप्राय प्रणाली
+//                       </Typography>
+//                       <Typography color="text.secondary" sx={{ mt: 4 }}>
+//                         {lang === 'mr' ? 'वर मोबाईल नंबर टाका → माहिती दिसेल' : 'Enter mobile number → Details will appear'}
+//                       </Typography>
+//                     </>
+//                   )}
+//                 </CardContent>
+//               </Card>
+//             </Grid>
+//           </Grid>
+//         </Container>
+//       </Box>
+//     </LocalizationProvider>
+//   );
+// };
+
+// export default FeedbackForm;
+
+
+// ================================================
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Box, Paper, Typography, TextField, Button, Grid, Card, CardContent,
+//   FormControl, InputLabel, Select, MenuItem, Alert, ToggleButton, ToggleButtonGroup,
+//   Avatar, Container, CircularProgress
+// } from '@mui/material';
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+// import dayjs from 'dayjs';
+// import axios from 'axios';
+// import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+// import { baseUrl } from '../config/config';
+
+// const texts = {
+//   mr: {
+//     title: "अभिप्राय फॉर्म",
+//     mobileLabel: "मोबाईल नंबर टाका (10 अंक)",
+//     searching: "शोधत आहोत...",
+//     found: "सापडले!",
+//     notFound: "या नंबरवरून आजची एंट्री सापडली नाही",
+//     feedbackLabel: "अभिप्राय द्या *",
+//     nextDateLabel: "पुढील भेटीची तारीख *",
+//     submit: "अभिप्राय सादर करा",
+//     thankYou: "धन्यवाद! तुमचा अभिप्राय यशस्वी झाला",
+//   },
+//   en: {
+//     title: "Feedback Form",
+//     mobileLabel: "Enter Mobile Number (10 digits)",
+//     searching: "Searching...",
+//     found: "Found!",
+//     notFound: "No entry found for today",
+//     feedbackLabel: "Give Your Feedback *",
+//     nextDateLabel: "Next Appointment Date *",
+//     submit: "Submit Feedback",
+//     thankYou: "Thank you! Feedback submitted successfully",
+//   }
+// };
+
+// const meetingPersonMarathi = {
+//   "Superintendent of Police": "पोलीस अधीक्षक",
+//   "Additional Superintendent of Police": "अपर पोलीस अधीक्षक",
+//   "Sub-Divisional Officer, Ganeshpuri": "उप विभागीय अधिकारी गणेशपुरी",
+//   "Sub-Divisional Officer, Shahapur": "उप विभागीय अधिकारी शहापूर",
+//   "Sub-Divisional Officer, Murbad": "उप विभागीय अधिकारी मुरबाड",
+//   "Sub-Divisional Officer, Home Department": "उप विभागीय अधिकारी गृह",
+//   "In-Charge Officer": "प्रभारी अधिकारी",
+//   "पोलीस निरीक्षक": "पोलीस निरीक्षक"
+// };
+
+// const feedbackOptions = [
+//   { value: "Satisfied", mr: "समाधानी", en: "Satisfied" },
+//   { value: "Not Satisfied", mr: "असमाधानी", en: "Not Satisfied" },
+//   { value: "Next Appointment", mr: "पुढील भेटीची तारीख", en: "Next Appointment" },
+//   { value: "Officer Not Available", mr: "अधिकारी उपलब्ध नव्हते", en: "Officer Not Available" },
+//   { value: "Officer Busy In Meeting", mr: "अधिकारी व्यस्त होते", en: "Officer Busy In Meeting" },
+// ];
+
+// const FeedbackForm = () => {
+//   const [lang, setLang] = useState('mr');
+//   const [mobile, setMobile] = useState('');
+//   const [visitor, setVisitor] = useState(null);
+//   const [latestVisit, setLatestVisit] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const [submitting, setSubmitting] = useState(false);
+//   const [error, setError] = useState('');
+//   const [success, setSuccess] = useState(false);
+//   const [feedback, setFeedback] = useState('');
+//   const [nextAppointment, setNextAppointment] = useState(null);
+
+//   const t = texts[lang];
+
+//   useEffect(() => {
+//     const timer = setTimeout(() => {
+//       if (mobile.length === 10) {
+//         fetchVisitor();
+//       } else {
+//         setVisitor(null);
+//         setLatestVisit(null);
+//         setError('');
+//         setFeedback('');
+//         setNextAppointment(null);
+//       }
+//     }, 600);
+//     return () => clearTimeout(timer);
+//   }, [mobile]);
+
+//   const fetchVisitor = async () => {
+//     setLoading(true);
+//     setError('');
+//     try {
+//       const res = await axios.get(
+//         `${baseUrl}/getVisitorByMobileNumber?mobileNumber=${mobile}`
+//       );
+//       if (res.data.success && res.data.visitor) {
+//         const visitorData = res.data.visitor;
+
+//         if (!visitorData.visits || visitorData.visits.length === 0) {
+//           setError(t.notFound);
+//           setVisitor(null);
+//           setLatestVisit(null);
+//           return;
+//         }
+
+//         const latest = visitorData.visits[visitorData.visits.length - 1];
+
+//         setVisitor(visitorData);
+//         setLatestVisit(latest);
+//       } else {
+//         setError(t.notFound);
+//         setVisitor(null);
+//         setLatestVisit(null);
+//       }
+//     } catch (err) {
+//       setError(t.notFound);
+//       setVisitor(null);
+//       setLatestVisit(null);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!visitor || !latestVisit || !feedback) return;
+
+//     if (feedback === "Next Appointment" && !nextAppointment) {
+//       alert(lang === 'mr' ? "कृपया तारीख निवडा" : "Please select a date");
+//       return;
+//     }
+
+//     setSubmitting(true);
+//     try {
+//       const payload = {
+//         feedback,
+//         nextAppointmentDate: feedback === "Next Appointment"
+//           ? nextAppointment.format('YYYY-MM-DD')
+//           : null
+//       };
+
+//       await axios.put(`${baseUrl}/visitor/${mobile}/feedback`, payload);
+
+//       setSuccess(true);
+//       setFeedback('');
+//       setNextAppointment(null);
+//       setTimeout(() => {
+//         setSuccess(false);
+//         setMobile('');
+//         setVisitor(null);
+//         setLatestVisit(null);
+//       }, 4000);
+//     } catch (err) {
+//       alert(lang === 'mr' ? "अभिप्राय सबमिट करताना त्रुटी" : "Error submitting feedback");
+//     } finally {
+//       setSubmitting(false);
+//     }
+//   };
+
+//   const marathiMeetingPerson = latestVisit?.contactPerson
+//     ? (meetingPersonMarathi[latestVisit.contactPerson] || latestVisit.contactPerson)
+//     : '-';
+
+
+//   return (
+//     <LocalizationProvider dateAdapter={AdapterDayjs}>
+//       <Box sx={{ bgcolor: '#f0f4f8', mt: 15 }}>
+//         <Box sx={{ bgcolor: '#0040B9', color: 'white', py: 3, textAlign: 'center', position: 'relative' }}>
+//           <Typography variant="h4" fontWeight="bold">{t.title}</Typography>
+
+//           <ToggleButtonGroup
+//             value={lang}
+//             exclusive
+//             onChange={(_, v) => v && setLang(v)}
+//             sx={{ position: 'absolute', top: 16, right: 16, bgcolor: 'white', borderRadius: 3 }}
+//           >
+//             <ToggleButton value="mr" sx={{ fontWeight: 'bold' }}>मराठी</ToggleButton>
+//             <ToggleButton value="en" sx={{ fontWeight: 'bold' }}>English</ToggleButton>
+//           </ToggleButtonGroup>
+//         </Box>
+
+//         <Container maxWidth="lg" sx={{ mt: 6, pb: 8 }}>
+//           <Grid container spacing={6} justifyContent="center">
+
+//             <Grid item xs={12} md={6}>
+//               <Paper elevation={20} sx={{ p: 5, borderRadius: 4, border: '5px solid #0040B9' }}>
+//                 <Typography variant="h5" color="#0040B9" fontWeight="bold" mb={4}>
+//                   {lang === 'mr' ? 'अभिप्राय भरा' : 'Submit Feedback'}
+//                 </Typography>
+
+//                 <TextField
+//                   fullWidth
+//                   label={t.mobileLabel}
+//                   value={mobile}
+//                   onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))}
+//                   placeholder="9876543210"
+//                   inputProps={{ maxLength: 10 }}
+//                   sx={{ mb: 3 }}
+//                 />
+
+//                 {loading && (
+//                   <Alert icon={<CircularProgress size={20} />} severity="info" sx={{ mb: 3 }}>
+//                     {t.searching}
+//                   </Alert>
+//                 )}
+
+//                 {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+
+//                 {visitor && latestVisit && (
+//                   <>
+//                     <FormControl fullWidth sx={{ mb: 4 }}>
+//                       <InputLabel>{t.feedbackLabel}</InputLabel>
+//                       <Select
+//                         value={feedback}
+//                         label={t.feedbackLabel}
+//                         onChange={(e) => setFeedback(e.target.value)}
+//                         required
+//                       >
+//                         {feedbackOptions.map(opt => (
+//                           <MenuItem key={opt.value} value={opt.value}>
+//                             {lang === 'mr' ? opt.mr : opt.en}
+//                           </MenuItem>
+//                         ))}
+//                       </Select>
+//                     </FormControl>
+
+//                     {feedback === "Next Appointment" && (
+//                       <DatePicker
+//                         label={t.nextDateLabel}
+//                         value={nextAppointment}
+//                         onChange={setNextAppointment}
+//                         minDate={dayjs().add(1, 'day')}
+//                         slotProps={{ textField: { fullWidth: true, sx: { mb: 4 } } }}
+//                       />
+//                     )}
+
+//                     <Button
+//                       fullWidth
+//                       variant="contained"
+//                       size="large"
+//                       onClick={handleSubmit}
+//                       disabled={!visitor || !latestVisit || !feedback || submitting || (feedback === "Next Appointment" && !nextAppointment)}
+//                       sx={{
+//                         py: 2.5,
+//                         fontSize: '1.4rem',
+//                         fontWeight: 'bold',
+//                         bgcolor: '#0040B9',
+//                         '&:hover': { bgcolor: '#002D80' }
+//                       }}
+//                     >
+//                       {submitting ? <CircularProgress size={28} color="inherit" /> : t.submit}
+//                     </Button>
+//                   </>
+//                 )}
+
+//                 {success && (
+//                   <Alert severity="success" icon={<CheckCircleOutlineIcon />} sx={{ mt: 3 }}>
+//                     {t.thankYou}
+//                   </Alert>
+//                 )}
+//               </Paper>
+//             </Grid>
+
+//             <Grid item xs={12} md={6}>
+//               <Card elevation={20} sx={{ height: '100%', borderRadius: 4, border: '5px solid #0040B9', bgcolor: '#f8fbff' }}>
+//                 <CardContent sx={{ textAlign: 'center', pt: 8 }}>
+//                   {visitor && latestVisit ? (
+//                     <>
+//                       {latestVisit.visitorPhoto ? (
+//                         <img
+//                           src={latestVisit.visitorPhoto}
+//                           alt="Visitor"
+//                           style={{
+//                             width: 200,
+//                             height: 200,
+//                             objectFit: 'cover',
+//                             borderRadius: '50%',
+//                             marginBottom: 16,
+//                             border: '5px solid #0040B9'
+//                           }}
+//                         />
+//                       ) : (
+//                         <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem', mb: 2 }}>
+//                           {visitor.fullName.charAt(0)}
+//                         </Avatar>
+//                       )}
+
+//                       <Typography variant="h5" fontWeight="bold" color="#0040B9">
+//                         {visitor.fullName}
+//                       </Typography>
+
+//                       <Typography sx={{ mt: 1 }}>
+//                         <strong>अर्ज क्रमांक:</strong> {latestVisit.applicationId || 'N/A'}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>भेट क्रमांक:</strong> {latestVisit.visitNumber}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>मोबाईल:</strong> {visitor.mobileNumber}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>पोलीस स्टेशन:</strong> {visitor.policeStation || '-'}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>कोणास भेटायचे:</strong> {marathiMeetingPerson || '-'}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>भेटीचे कारण:</strong> {latestVisit.reasonToVisit || '-'}
+//                       </Typography>
+//                       <Typography>
+//                         <strong>वेळ:</strong> {new Date(latestVisit.entryAt).toLocaleString('en-IN')}
+//                       </Typography>
+
+//                       {latestVisit.feedbackGiven && (
+//                         <Alert severity="success" sx={{ mt: 3 }}>
+//                           <strong>अभिप्राय दिला:</strong> {latestVisit.feedback || '-'}
+//                           <br />
+//                           <strong>वेळ:</strong> {latestVisit.feedbackSubmittedAt ? new Date(latestVisit.feedbackSubmittedAt).toLocaleString('en-IN') : '-'}
+//                         </Alert>
+//                       )}
+//                     </>
+//                   ) : (
+//                     <>
+//                       <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem' }}>
+//                         ?
+//                       </Avatar>
+//                       <Typography variant="h5" fontWeight="bold" color="#0040B9" sx={{ mt: 3 }}>
+//                         ठाणे ग्रामीण पोलीस
+//                       </Typography>
+//                       <Typography variant="h6" color="#0040B9" sx={{ mt: 2 }}>
+//                         नागरिक अभिप्राय प्रणाली
+//                       </Typography>
+//                       <Typography color="text.secondary" sx={{ mt: 4 }}>
+//                         {lang === 'mr' ? 'वर मोबाईल नंबर टाका → माहिती दिसेल' : 'Enter mobile number → Details will appear'}
+//                       </Typography>
+//                     </>
+//                   )}
+//                 </CardContent>
+//               </Card>
+//             </Grid>
+//           </Grid>
+//         </Container>
+//       </Box>
+//     </LocalizationProvider>
+//   );
+// };
+
+// export default FeedbackForm;
+
+
+// ===========================================================
+
+
 import React, { useState, useEffect } from 'react';
 import {
   Box, Paper, Typography, TextField, Button, Grid, Card, CardContent,
   FormControl, InputLabel, Select, MenuItem, Alert, ToggleButton, ToggleButtonGroup,
-  Avatar, Container, CircularProgress
+  Avatar, Container, CircularProgress, Divider, Chip
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -1008,6 +1650,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import PersonIcon from '@mui/icons-material/Person';
+import PhoneIcon from '@mui/icons-material/Phone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import EventIcon from '@mui/icons-material/Event';
+import DescriptionIcon from '@mui/icons-material/Description';
 import { baseUrl } from '../config/config';
 
 const texts = {
@@ -1035,6 +1682,17 @@ const texts = {
   }
 };
 
+const meetingPersonMarathi = {
+  "Superintendent of Police": "पोलीस अधीक्षक",
+  "Additional Superintendent of Police": "अपर पोलीस अधीक्षक",
+  "Sub-Divisional Officer, Ganeshpuri": "उप विभागीय अधिकारी गणेशपुरी",
+  "Sub-Divisional Officer, Shahapur": "उप विभागीय अधिकारी शहापूर",
+  "Sub-Divisional Officer, Murbad": "उप विभागीय अधिकारी मुरबाड",
+  "Sub-Divisional Officer, Home Department": "उप विभागीय अधिकारी गृह",
+  "In-Charge Officer": "प्रभारी अधिकारी",
+  "पोलीस निरीक्षक": "पोलीस निरीक्षक"
+};
+
 const feedbackOptions = [
   { value: "Satisfied", mr: "समाधानी", en: "Satisfied" },
   { value: "Not Satisfied", mr: "असमाधानी", en: "Not Satisfied" },
@@ -1047,6 +1705,7 @@ const FeedbackForm = () => {
   const [lang, setLang] = useState('mr');
   const [mobile, setMobile] = useState('');
   const [visitor, setVisitor] = useState(null);
+  const [latestVisit, setLatestVisit] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -1056,13 +1715,13 @@ const FeedbackForm = () => {
 
   const t = texts[lang];
 
-  // Auto search when 10 digits entered
   useEffect(() => {
     const timer = setTimeout(() => {
       if (mobile.length === 10) {
         fetchVisitor();
       } else {
         setVisitor(null);
+        setLatestVisit(null);
         setError('');
         setFeedback('');
         setNextAppointment(null);
@@ -1078,15 +1737,29 @@ const FeedbackForm = () => {
       const res = await axios.get(
         `${baseUrl}/getVisitorByMobileNumber?mobileNumber=${mobile}`
       );
-      if (res.data.success) {
-        setVisitor(res.data.visitor);
+      if (res.data.success && res.data.visitor) {
+        const visitorData = res.data.visitor;
+
+        if (!visitorData.visits || visitorData.visits.length === 0) {
+          setError(t.notFound);
+          setVisitor(null);
+          setLatestVisit(null);
+          return;
+        }
+
+        const latest = visitorData.visits[visitorData.visits.length - 1];
+
+        setVisitor(visitorData);
+        setLatestVisit(latest);
       } else {
         setError(t.notFound);
         setVisitor(null);
+        setLatestVisit(null);
       }
     } catch (err) {
       setError(t.notFound);
       setVisitor(null);
+      setLatestVisit(null);
     } finally {
       setLoading(false);
     }
@@ -1094,7 +1767,7 @@ const FeedbackForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!visitor || !feedback) return;
+    if (!visitor || !latestVisit || !feedback) return;
 
     if (feedback === "Next Appointment" && !nextAppointment) {
       alert(lang === 'mr' ? "कृपया तारीख निवडा" : "Please select a date");
@@ -1105,14 +1778,11 @@ const FeedbackForm = () => {
     try {
       const payload = {
         feedback,
-        feedbackGiven: true,
-        nextAppointmentDate: feedback === "Next Appointment" 
-          ? nextAppointment.format('YYYY-MM-DD') 
+        nextAppointmentDate: feedback === "Next Appointment"
+          ? nextAppointment.format('YYYY-MM-DD')
           : null
       };
 
-      // तुम्हारा वाला PUT API – बिल्कुल वैसा ही!
- 
       await axios.put(`${baseUrl}/visitor/${mobile}/feedback`, payload);
 
       setSuccess(true);
@@ -1122,18 +1792,47 @@ const FeedbackForm = () => {
         setSuccess(false);
         setMobile('');
         setVisitor(null);
+        setLatestVisit(null);
       }, 4000);
     } catch (err) {
-      alert("Error submitting feedback");
+      alert(lang === 'mr' ? "अभिप्राय सबमिट करताना त्रुटी" : "Error submitting feedback");
     } finally {
       setSubmitting(false);
     }
   };
 
+  const marathiMeetingPerson = latestVisit?.contactPerson
+    ? (meetingPersonMarathi[latestVisit.contactPerson] || latestVisit.contactPerson)
+    : '-';
+
+  const InfoRow = ({ icon, label, value }) => (
+    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 2.5, gap: 2 }}>
+      <Box sx={{ 
+        bgcolor: '#E3F2FD', 
+        borderRadius: '50%', 
+        width: 42, 
+        height: 42, 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        flexShrink: 0
+      }}>
+        {icon}
+      </Box>
+      <Box sx={{ flex: 1 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, fontSize: '0.75rem' }}>
+          {label}
+        </Typography>
+        <Typography variant="body1" sx={{ fontWeight: 500, color: '#1a1a1a', mt: 0.5, wordBreak: 'break-word' }}>
+          {value}
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ bgcolor: '#f0f4f8', mt: 15 }}>
-        {/* Header */}
         <Box sx={{ bgcolor: '#0040B9', color: 'white', py: 3, textAlign: 'center', position: 'relative' }}>
           <Typography variant="h4" fontWeight="bold">{t.title}</Typography>
 
@@ -1151,7 +1850,6 @@ const FeedbackForm = () => {
         <Container maxWidth="lg" sx={{ mt: 6, pb: 8 }}>
           <Grid container spacing={6} justifyContent="center">
 
-            {/* Left Side - Feedback Input */}
             <Grid item xs={12} md={6}>
               <Paper elevation={20} sx={{ p: 5, borderRadius: 4, border: '5px solid #0040B9' }}>
                 <Typography variant="h5" color="#0040B9" fontWeight="bold" mb={4}>
@@ -1176,7 +1874,7 @@ const FeedbackForm = () => {
 
                 {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
-                {visitor && (
+                {visitor && latestVisit && (
                   <>
                     <FormControl fullWidth sx={{ mb: 4 }}>
                       <InputLabel>{t.feedbackLabel}</InputLabel>
@@ -1194,7 +1892,6 @@ const FeedbackForm = () => {
                       </Select>
                     </FormControl>
 
-                    {/* तुम्हारी रिक्वायरमेंट – Next Appointment पर Date Picker */}
                     {feedback === "Next Appointment" && (
                       <DatePicker
                         label={t.nextDateLabel}
@@ -1210,7 +1907,7 @@ const FeedbackForm = () => {
                       variant="contained"
                       size="large"
                       onClick={handleSubmit}
-                      disabled={!visitor || !feedback || submitting || (feedback === "Next Appointment" && !nextAppointment)}
+                      disabled={!visitor || !latestVisit || !feedback || submitting || (feedback === "Next Appointment" && !nextAppointment)}
                       sx={{
                         py: 2.5,
                         fontSize: '1.4rem',
@@ -1232,45 +1929,183 @@ const FeedbackForm = () => {
               </Paper>
             </Grid>
 
-            {/* Right Side - Visitor Details (तुम्हारा डिजाइन बिल्कुल वैसा ही) */}
             <Grid item xs={12} md={6}>
-              <Card elevation={20} sx={{ height: '100%', borderRadius: 4, border: '5px solid #0040B9', bgcolor: '#f8fbff' }}>
-                <CardContent sx={{ textAlign: 'center', pt: 8 }}>
-                  {visitor ? (
-                    <>
-                      <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem', mb: 2 }}>
-                        {visitor.fullName.charAt(0)}
+              <Card 
+                elevation={20} 
+                sx={{ 
+                  minHeight: '600px',
+                  borderRadius: 4, 
+                  border: '5px solid #0040B9',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #f8fbff 100%)',
+                  overflow: 'hidden'
+                }}
+              >
+                <Box sx={{ 
+                  background: 'linear-gradient(135deg, #0040B9 0%, #0056D6 100%)',
+                  height: '180px',
+                  position: 'relative'
+                }}>
+                  <Box sx={{
+                    position: 'absolute',
+                    bottom: -60,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}>
+                    {visitor && latestVisit ? (
+                      latestVisit.visitorPhoto ? (
+                        <img
+                          src={latestVisit.visitorPhoto}
+                          alt="Visitor"
+                          style={{
+                            width: 140,
+                            height: 140,
+                            objectFit: 'cover',
+                            borderRadius: '50%',
+                            border: '6px solid white',
+                            boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
+                          }}
+                        />
+                      ) : (
+                        <Avatar sx={{ 
+                          width: 140, 
+                          height: 140, 
+                          bgcolor: '#0040B9', 
+                          fontSize: '3.5rem',
+                          border: '6px solid white',
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
+                        }}>
+                          {visitor.fullName.charAt(0)}
+                        </Avatar>
+                      )
+                    ) : (
+                      <Avatar sx={{ 
+                        width: 140, 
+                        height: 140, 
+                        bgcolor: '#0040B9', 
+                        fontSize: '3.5rem',
+                        border: '6px solid white',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
+                      }}>
+                        ?
                       </Avatar>
-                      <Typography variant="h5" fontWeight="bold" color="#0040B9">
+                    )}
+                  </Box>
+                </Box>
+
+                <CardContent sx={{ pt: 9, px: 4, pb: 4 }}>
+                  {visitor && latestVisit ? (
+                    <>
+                      <Typography 
+                        variant="h4" 
+                        fontWeight="bold" 
+                        color="#0040B9" 
+                        textAlign="center"
+                        sx={{ mb: 1 }}
+                      >
                         {visitor.fullName}
                       </Typography>
-                      <Typography sx={{ mt: 1 }}><strong>मोबाईल:</strong> {visitor.mobileNumber}</Typography>
-                      <Typography><strong>पोलीस स्टेशन:</strong> {visitor.policeStation}</Typography>
-                      <Typography><strong>कोणास भेटायचे:</strong> {visitor.contactPerson}</Typography>
-                      <Typography><strong>वेळ:</strong> {new Date(visitor.entryAt).toLocaleString('en-IN')}</Typography>
-                      {visitor.visitorPhoto && (
-                        <img
-                          src={visitor.visitorPhoto}
-                          alt="Visitor"
-                          style={{ width: 200, height: 200, objectFit: 'cover', borderRadius: '50%', marginTop: 16, border: '5px solid #0040B9' }}
+
+                      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 3 }}>
+                        <Chip 
+                          label={`भेट #${latestVisit.visitNumber}`} 
+                          size="small" 
+                          sx={{ bgcolor: '#E3F2FD', color: '#0040B9', fontWeight: 600 }}
                         />
+                        {latestVisit.applicationId && (
+                          <Chip 
+                            label={`अर्ज: ${latestVisit.applicationId}`} 
+                            size="small" 
+                            sx={{ bgcolor: '#E8F5E9', color: '#2E7D32', fontWeight: 600 }}
+                          />
+                        )}
+                      </Box>
+
+                      <Divider sx={{ my: 3 }} />
+
+                      <InfoRow 
+                        icon={<PhoneIcon sx={{ color: '#0040B9' }} />}
+                        label="मोबाईल"
+                        value={visitor.mobileNumber}
+                      />
+
+                      <InfoRow 
+                        icon={<LocationOnIcon sx={{ color: '#0040B9' }} />}
+                        label="पोलीस स्टेशन"
+                        value={visitor.policeStation || '-'}
+                      />
+
+                      <InfoRow 
+                        icon={<PersonIcon sx={{ color: '#0040B9' }} />}
+                        label="कोणास भेटायचे"
+                        value={marathiMeetingPerson}
+                      />
+
+                      <InfoRow 
+                        icon={<DescriptionIcon sx={{ color: '#0040B9' }} />}
+                        label="भेटीचे कारण"
+                        value={latestVisit.reasonToVisit || '-'}
+                      />
+
+                      <InfoRow 
+                        icon={<EventIcon sx={{ color: '#0040B9' }} />}
+                        label="वेळ"
+                        value={new Date(latestVisit.entryAt).toLocaleString('en-IN')}
+                      />
+
+                      {latestVisit.feedbackGiven && (
+                        <Alert 
+                          severity="success" 
+                          sx={{ 
+                            mt: 3,
+                            borderRadius: 2,
+                            '& .MuiAlert-message': { width: '100%' }
+                          }}
+                        >
+                          <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                            अभिप्राय दिला: {latestVisit.feedback || '-'}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            वेळ: {latestVisit.feedbackSubmittedAt ? new Date(latestVisit.feedbackSubmittedAt).toLocaleString('en-IN') : '-'}
+                          </Typography>
+                        </Alert>
                       )}
                     </>
                   ) : (
-                    <>
-                      <Avatar sx={{ width: 130, height: 130, mx: 'auto', bgcolor: '#0040B9', fontSize: '4rem' }}>
-                        ?
-                      </Avatar>
-                      <Typography variant="h5" fontWeight="bold" color="#0040B9" sx={{ mt: 3 }}>
+                    <Box sx={{ textAlign: 'center', py: 4 }}>
+                      <Typography 
+                        variant="h5" 
+                        fontWeight="bold" 
+                        color="#0040B9" 
+                        sx={{ mb: 1 }}
+                      >
                         ठाणे ग्रामीण पोलीस
                       </Typography>
-                      <Typography variant="h6" color="#0040B9" sx={{ mt: 2 }}>
+                      <Typography 
+                        variant="h6" 
+                        color="#0040B9" 
+                        sx={{ mb: 3 }}
+                      >
                         नागरिक अभिप्राय प्रणाली
                       </Typography>
-                      <Typography color="text.secondary" sx={{ mt: 4 }}>
-                        {lang === 'mr' ? 'वर मोबाईल नंबर टाका → माहिती दिसेल' : 'Enter mobile number → Details will appear'}
-                      </Typography>
-                    </>
+                      
+                      <Divider sx={{ my: 3 }} />
+                      
+                      <Box sx={{ 
+                        bgcolor: '#E3F2FD', 
+                        borderRadius: 3, 
+                        p: 3, 
+                        mt: 4 
+                      }}>
+                        <Typography 
+                          color="text.secondary" 
+                          sx={{ fontSize: '1rem', lineHeight: 1.8 }}
+                        >
+                          {lang === 'mr' 
+                            ? '👈 डावीकडे मोबाईल नंबर टाका आणि तुमची माहिती येथे दिसेल' 
+                            : '👈 Enter mobile number on the left and your details will appear here'}
+                        </Typography>
+                      </Box>
+                    </Box>
                   )}
                 </CardContent>
               </Card>
@@ -1283,3 +2118,4 @@ const FeedbackForm = () => {
 };
 
 export default FeedbackForm;
+

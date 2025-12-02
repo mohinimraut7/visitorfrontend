@@ -19,7 +19,10 @@ import TenderComponent from './pages/TenderComponents';
 import ConsumerComponent from './pages/ConsumerComponents';
 import EntryForm from './pages/EntryForm';
 import FeedbackForm from './pages/FeedbackForm';
-import VisitorMaster from './pages/VisitorMaster';
+import VisitorsMaster from './pages/VisitorsMaster';
+
+import VisitorMaster from './pages/VisitorsMaster';
+import VisitorHistory from './pages/VisitorHistory';
 
 
 
@@ -71,7 +74,9 @@ const App = () => {
             <Route path="/rolemaster" element={<Rolemaster />} />
             <Route path="/tendercomponent" element={<TenderComponent />} />
             <Route path="/consumercomponent" element={<ConsumerComponent />} />
-             <Route path="/visitormaster" element={<VisitorMaster />} />
+             <Route path="/visitorsmaster" element={<VisitorsMaster />} />
+
+             <Route path="/visitorhistory/:id" element={<VisitorHistory />} />
             <Route path="/profile" element={<Profile />} />
              <Route path="/entryform" element={<EntryForm />} />
               <Route path="/feedback" element={<FeedbackForm />} />

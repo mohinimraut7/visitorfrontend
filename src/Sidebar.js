@@ -3383,10 +3383,10 @@ export default function Sidebar() {
                     </ListItemButton>
                   </ListItem>
 
-                    <ListItem disablePadding onClick={() => navigate('/visitormaster')}>
+                    <ListItem disablePadding onClick={() => navigate('/visitorsmaster')}>
                     <ListItemButton sx={{ borderRadius: 4, py: 2, mb: 1, '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' } }}>
                       <ListItemIcon sx={{ color: '#fff', minWidth: 50 }}><GroupIcon /></ListItemIcon>
-                      <ListItemText primary="Visitor Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold' }} />
+                      <ListItemText primary="Visitors Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold' }} />
                     </ListItemButton>
                   </ListItem>
 
