@@ -234,7 +234,7 @@ const AddRole = ({ open, handleClose, handleAddRole, currentRole, editRole }) =>
         const fetchOfficeTypes = async () => {
             setLoadingOffices(true);
             try {
-                const res = await fetch('http://localhost:5000/api/getOffices');
+                const res = await fetch(`${baseUrl}/getOffices`);
                 const data = await res.json();
                 if (data.offices) {
                     setOfficeTypes(data.offices);
