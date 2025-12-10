@@ -5911,7 +5911,11 @@ const Home = () => {
             </Typography>
           </motion.div>
         ) : (
-          <Typography variant="h3" fontWeight={900} color="#0d2136" mb={4}>
+          <Typography  sx={{ 
+    textAlign: 'center', 
+    fontWeight: 700,
+    letterSpacing: '0.5px'
+  }} variant="h3" fontWeight={900} color="#0d2136" mb={4}>
             Thane Rural Police
           </Typography>
         )}
