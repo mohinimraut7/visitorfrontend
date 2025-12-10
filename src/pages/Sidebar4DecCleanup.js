@@ -1,0 +1,317 @@
+import React, { useState } from 'react';
+import {
+  Box, IconButton, Typography, Menu, MenuItem, AppBar as MuiAppBar, Toolbar,
+  CssBaseline, Drawer as MuiDrawer, List, ListItem, ListItemButton, ListItemIcon,
+  ListItemText, Divider, Button, Paper, Grid, Card, CardContent, Avatar,
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Chip, LinearProgress
+} from '@mui/material';
+import { styled, useTheme } from '@mui/material/styles';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import GroupIcon from '@mui/icons-material/Group';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import PeopleIcon from '@mui/icons-material/People';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import PendingActionsIcon from '@mui/icons-material/PendingActions';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleSidebar } from './store/actions/toggleSidebar';
+
+// Images
+import drawerbg from './Images/sidebarimg.jpg';
+import logo from './Images/thanegramin.jpeg';
+import logobrand from './Images/thanegraminpolicebrand.jpeg';
+
+const drawerWidth = 240;
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open' && prop !== 'isUser',
+})(({ theme, open, isUser }) => ({
+  backgroundColor: '#ffffff',
+  backdropFilter: 'blur(15px)',
+  boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+  color: '#000',
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && !isUser && { marginLeft: drawerWidth, width: `calc(100% - ${drawerWidth}px)` }),
+  ...(!open && !isUser && { marginLeft: 72, width: `calc(100% - 72px)` }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    '& .MuiDrawer-paper': {
+      borderTopRightRadius: '28px',
+      borderBottomRightRadius: '28px',
+      overflow: 'hidden',
+      backgroundImage: `url(${drawerbg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      width: open ? drawerWidth : 72,
+      transition: theme.transitions.create('width', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    },
+  })
+);
+
+// Dummy Data
+const usersData = [
+  { id: 1, name: "राजेश पवार", role: "Super Admin", email: "rajesh@thanepolice.gov.in", status: "Active", joinDate: "2024-01-15" },
+  { id: 2, name: "सुनीता जाधव", role: "Admin", email: "sunita@thanepolice.gov.in", status: "Active", joinDate: "2024-03-20" },
+  { id: 3, name: "अमोल शिंदे", role: "Data Entry Operator", email: "amol@police.in", status: "Active", joinDate: "2025-01-10" },
+  { id: 4, name: "प्रकाश माने", role: "Junior Engineer", email: "prakash@police.in", status: "Inactive", joinDate: "2024-06-05" },
+];
+
+const rolesData = [
+  { id: 1, roleName: "Super Admin", permissions: "Full Access", users: 2 },
+  { id: 2, roleName: "Admin", permissions: "All except User Delete", users: 8 },
+  { id: 3, roleName: "Data Entry Operator", permissions: "Entry + View", users: 45 },
+  { id: 4, roleName: "Visitor", permissions: "View Only", users: 12 },
+];
+
+export default function Sidebar() {
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user || { username: "Admin", role: "Super Admin", username: "Administrative Officer", });
+  const sidebarOpen = useSelector((state) => state.sidebar?.isOpen || false);
+  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+  const isAdministrative=user?.role==='Administratoive Officer'
+  const isUser = user?.role === 'Data Entry Operatr';
+  const isAdminRole = ['Super Admin', 'Admin'].includes(user?.role);
+
+  const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem('resdata');
+    dispatch({ type: 'LOGOUT' });
+    navigate('/login');
+  };
+
+  if (isAuthPage) return null;
+
+  const renderContent = () => {
+    const path = location.pathname;
+
+    // DASHBOARD
+    if (path === '/' || path === '/dashboard') {
+     
+    }
+
+    // USER MASTER
+    if (path === '/users') {
+      
+    }
+
+   
+  };
+
+  return (
+    <>
+      <CssBaseline />
+
+      <AppBar position="fixed" open={sidebarOpen} isUser={isUser}  isAdministrative={isAdministrative}>
+        <Toolbar sx={{ minHeight: { xs: 80, sm: 90 }, justifyContent: 'space-between', px: { xs: 2, sm: 4 } }}>
+         
+
+
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+  {/* Admin साठी साइडबार टॉगल बटन – फक्त Admin ला दिसेल */}
+  {isAdminRole && (
+    <IconButton onClick={() => dispatch(toggleSidebar())}>
+      <MenuIcon sx={{ color: '#32B5AD', fontSize: 36 }} />
+    </IconButton>
+  )}
+
+  {/* लोगो – Role नुसार height बदलते */}
+  <img
+    src={logobrand}
+    alt="ठाणे ग्रामीण पोलीस"
+    style={{
+      height: isAdminRole ? 90 : 130,   // Admin → 90px, Data Entry Operator → 130px
+      width: 'auto',
+      maxWidth: 'none',
+      objectFit: 'contain',
+    }}
+  />
+</Box>
+
+        
+
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+  {/* Show these buttons only for Data Entry Operator (User) */}
+  {isUser || isAdministrative && (
+    <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: 2, alignItems: 'center' }}>
+      <Button
+        variant="outlined"
+        size="medium"
+        onClick={() => navigate('/entryform')}
+        sx={{
+          borderColor: '#0040B9',
+          color: '#0040B9',
+          fontWeight: 'bold',
+          borderRadius: 3,
+          px: 3,
+          borderWidth: 2,
+          '&:hover': { borderColor: '#002D80', bgcolor: 'rgba(0,64,185,0.08)' }
+        }}
+      >
+        Entry Form
+      </Button>
+
+      <Button
+        variant="outlined"
+        size="medium"
+        onClick={() => navigate('/feedback')}
+        sx={{
+          borderColor: '#0040B9',
+          color: '#0040B9',
+          fontWeight: 'bold',
+          borderRadius: 3,
+          px: 3,
+          borderWidth: 2,
+          '&:hover': { borderColor: '#002D80', bgcolor: 'rgba(0,64,185,0.08)' }
+        }}
+      >
+        Feedback Form
+      </Button>
+    </Box>
+  )}
+
+  {/* Username + Logout → Show for ALL ROLES (Admin, Super Admin, User, etc.) */}
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+    <Typography 
+      sx={{ 
+        color: '#FB404B', 
+        fontWeight: 'bold', 
+        fontSize: { xs: 18, sm: 20 }, 
+        textTransform: 'uppercase', 
+        letterSpacing: '1.5px',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {user?.username || 'ADMIN'}
+    </Typography>
+
+    <Divider orientation="vertical" flexItem sx={{ bgcolor: '#FB404B', width: 3, height: 24 }} />
+
+    <IconButton 
+      onClick={handleLogout} 
+      sx={{ 
+        color: '#FB404B',
+        bgcolor: 'rgba(251,64,75,0.12)',
+        '&:hover': { bgcolor: 'rgba(251,64,75,0.2)' },
+        p: 1.2
+      }}
+    >
+      <PowerSettingsNewIcon fontSize="medium" />
+    </IconButton>
+  </Box>
+
+  {/* Optional: 3-dot menu for mobile (only for Data Entry users) */}
+  {isUser || isAdministrative && (
+    <IconButton
+      onClick={(e) => setMoreMenuAnchor(e.currentTarget)}
+      sx={{
+        display: { sm: 'none' }, // Only show on mobile
+        color: '#FB404B',
+        bgcolor: 'rgba(251,64,75,0.14)',
+        borderRadius: '18px',
+        p: 1.6
+      }}
+    >
+      <MoreVertIcon fontSize="large" />
+    </IconButton>
+  )}
+</Box>
+          
+        </Toolbar>
+      </AppBar>
+
+      {isAdminRole && (
+        <Drawer variant="permanent" open={sidebarOpen}>
+          <Box sx={{ position: 'relative', height: '100%' }}>
+            <div style={{ position: 'absolute', inset: 0, backgroundColor: '#20B2AA', opacity: 0.96 }} />
+
+            {sidebarOpen && (
+              <Box sx={{ height: 190, display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', zIndex: 2 }}>
+                <img src={logo} alt="Logo" style={{ height: '70%', width: '65%', objectFit: 'contain', borderRadius: '24px', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }} />
+                <IconButton onClick={() => dispatch(toggleSidebar())} sx={{ position: 'absolute', right: 14, top: 14, bgcolor: '#20B2AA' }}>
+                  <ChevronLeftIcon sx={{ color: '#fff', fontSize: 32 }} />
+                </IconButton>
+              </Box>
+            )}
+
+            <List sx={{ mt: sidebarOpen ? 5 : 12, px: 2, zIndex: 2 }}>
+              <ListItem disablePadding onClick={() => navigate('/')}>
+                <ListItemButton sx={{ borderRadius: 4, py: 2, mb: 1, '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' } }}>
+                  <ListItemIcon sx={{ color: '#fff', minWidth: 50 }}><DashboardIcon /></ListItemIcon>
+                  <ListItemText primary="Dashboard" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textTransform: 'uppercase' }} />
+                </ListItemButton>
+              </ListItem>
+
+              {(user?.role === 'Super Admin' || user?.role === 'Admin') && (
+                <>
+                  <ListItem disablePadding onClick={() => navigate('/users')}>
+                    <ListItemButton sx={{ borderRadius: 4, py: 2, mb: 1, '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' } }}>
+                      <ListItemIcon sx={{ color: '#fff', minWidth: 50 }}><GroupIcon /></ListItemIcon>
+                      <ListItemText primary="User Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold' }} />
+                    </ListItemButton>
+                  </ListItem>
+
+                    <ListItem disablePadding onClick={() => navigate('/visitorsmaster')}>
+                    <ListItemButton sx={{ borderRadius: 4, py: 2, mb: 1, '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' } }}>
+                      <ListItemIcon sx={{ color: '#fff', minWidth: 50 }}><GroupIcon /></ListItemIcon>
+                      <ListItemText primary="Visitors Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold' }} />
+                    </ListItemButton>
+                  </ListItem>
+
+
+                  <ListItem disablePadding onClick={() => navigate('/rolemaster')}>
+                    <ListItemButton sx={{ borderRadius: 4, py: 2, mb: 1, '&:hover': { bgcolor: 'rgba(255,255,255,0.18)' } }}>
+                      <ListItemIcon sx={{ color: '#fff', minWidth: 50 }}><VpnKeyIcon /></ListItemIcon>
+                      <ListItemText primary="Role Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold' }} />
+                    </ListItemButton>
+                  </ListItem>
+                </>
+              )}
+            </List>
+          </Box>
+        </Drawer>
+      )}
+
+     
+            <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          // पूर्ण pt काढला! आता फक्त role नुसार थोडासा margin
+          // mt: user?.role === 'User' ? 1.5 : 3,   // User साठी फक्त 12px, Admin साठी 24px
+          pl: user?.role === 'Visitor' ? 0 : (sidebarOpen ? `${drawerWidth}px` : '72px'),
+          transition: 'all 0.3s ease-in-out',
+          // minHeight: '100vh',
+          backgroundColor: '#f5f7fa',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        {renderContent()}
+      </Box>
+    </>
+  );
+}

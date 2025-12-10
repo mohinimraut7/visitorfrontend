@@ -23,6 +23,10 @@ import VisitorsMaster from './pages/VisitorsMaster';
 
 import VisitorMaster from './pages/VisitorsMaster';
 import VisitorHistory from './pages/VisitorHistory';
+import HeadOfficeComponent from './pages/HeadOfficeComponent';
+import SubOfficeComponent from './pages/SubOfficeComponent';
+import OfficeMaster from './pages/OfficeMaster';
+
 
 
 
@@ -70,9 +74,18 @@ const App = () => {
         {isAuthenticated ? (
           <>
            <Route path="/" element={<Home />} />
+            <Route path="/subofficedashboard/:officeid" element={<Home />} />
             <Route path="/users" element={<User />} />
             <Route path="/rolemaster" element={<Rolemaster />} />
             <Route path="/tendercomponent" element={<TenderComponent />} />
+
+            <Route path="/officecomponent" element={<OfficeMaster/>} />
+
+            <Route path="/headofficecomponent" element={<HeadOfficeComponent/>} />
+
+      <Route path="/subofficecomponent" element={<SubOfficeComponent/>} />
+      
+            
             <Route path="/consumercomponent" element={<ConsumerComponent />} />
              <Route path="/visitorsmaster" element={<VisitorsMaster />} />
 

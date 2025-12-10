@@ -20,8 +20,7 @@ const validationSchema = Yup.object().shape({
         .matches(/[0-9]/, 'Password must contain at least one number')
         .matches(/[@$!%*?&#]/, 'Password must contain at least one special character')
         .notRequired(),
-    contactNumber: Yup.string().required('Contact Number is required')
-    .matches(/^\d{10}$/, 'Contact Number must be exactly 10 digits'),
+    contactNumber: Yup.string().required('Contact Number is required'),
     address: Yup.string().required('Address is required'),
   });
   const rolesToDisplayField = [
@@ -274,7 +273,6 @@ const AddUser = ({ open, handleClose, handleAddUser,currentUser,editUser }) => {
                         margin="normal"
                         variant="outlined"
                         className='A-U-Input'
-                        inputProps={{ maxLength: 10 }} 
                     />
                      <Typography  className='Auth-Label' variant="subtitle1" gutterBottom>
                  ADDRESS

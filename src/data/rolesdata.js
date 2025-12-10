@@ -2,6 +2,7 @@ const rolesdata = [
     { "rolename": 'Super Admin'},
     { "rolename": 'Admin'},
     { "rolename": 'Data Entry Operator'},
+     { "rolename": 'Administrative Officer'},
     {"rolename":"Visitor"},
     // { "rolename": 'Junior Engineer','ward':'Ward-A'},
     // {"rolename":"Executive Engineer"},

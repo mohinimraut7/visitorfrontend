@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import axios from 'axios';
+import { baseUrl } from '../config/config';
 
 const SignaturePad = () => {
   const [signature, setSignature] = useState(null);
@@ -19,7 +20,7 @@ const SignaturePad = () => {
   const handleSubmit = async () => {
     if (signature) {
       try {
-        const response = await axios.post('http://localhost:2000/api/saveSignature', {
+        const response = await axios.post(`${baseUrl}/saveSignature`, {
           signature,
         });
         console.log('Signature saved successfully:', response.data);

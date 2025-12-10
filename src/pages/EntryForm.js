@@ -3543,6 +3543,22 @@ const texts = {
   }
 };
 
+// Marathi mapping for police stations
+const marathiPoliceStationMap = {
+  "Shahapur Police Station": "शहापूर",
+  "Bhiwandi Police Station": "भिवंडी तालुका",
+  "Ganeshpuri Police Station": "गणेशपुरी",
+  "Kalyan Taluka Police Station": "कल्याण तालुका",
+  "Kasara Police Station": "कसारा",
+  "Kinhavali Police Station": "किन्हवली",
+  "Kulgaon Police Station": "कुलगाव",
+  "Murbad Police Station": "मुरबाड",
+  "Padgha Police Station": "पडघा",
+  "Tokavade Police Station": "टोकावडे",
+  "Vasind Police Station": "वासिंद"
+};
+
+
 const validationSchema = Yup.object({
   name: Yup.string().required('नाव आवश्यक आहे'),
   mobile: Yup.string().matches(/^[6-9]\d{9}$/, 'अवैध मोबाईल').required('आवश्यक'),
@@ -3681,6 +3697,94 @@ const EntryForm = () => {
   const [error, setError] = useState('');
   const webcamRef = useRef(null);
 
+
+
+
+   
+  const [policeStations, setPoliceStations] = useState([]); // Dynamic from API
+  const [loadingStations, setLoadingStations] = useState(true);
+
+
+   // ---------- NEW: LOGGED-IN USER INFO ----------
+  const getLoggedInUser = () => {
+    const resdata = localStorage.getItem('resdata');
+    if (resdata) {
+      try {
+        const parsed = JSON.parse(resdata);
+        return parsed.user || null;
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const loggedInUser = getLoggedInUser();   // <-- येथे user object मिळतो (तुमच्या screenshot प्रमाणे)
+
+
+
+  // Fetch Sub Offices from API
+  // useEffect(() => {
+  //   const fetchSubOffices = async () => {
+  //     setLoadingStations(true);
+  //     try {
+  //       const res = await axios.get(`${baseUrl}/getAllSuboffices`);
+  //       if (res.data.success && res.data.suboffices) {
+  //         const offices = res.data.suboffices.map(office => ({
+  //           id: office._id,
+  //           englishName: office.subofficeName,
+  //           marathiName: marathiPoliceStationMap[office.subofficeName] || office.subofficeName
+  //         }));
+  //         setPoliceStations(offices);
+  //       }
+  //     } catch (err) {
+  //       console.error("Failed to load police stations", err);
+  //       toast.error("पोलीस स्टेशन लोड करण्यात त्रुटी");
+  //     } finally {
+  //       setLoadingStations(false);
+  //     }
+  //   };
+  //   fetchSubOffices();
+  // }, []);
+
+
+useEffect(() => {
+  const fetchSubOffices = async () => {
+    setLoadingStations(true);
+    try {
+      const res = await axios.get(`${baseUrl}/getAllSuboffices`);
+
+      let offices = [
+        {
+          id: "static-sp-office",
+          englishName: "Superintendent of Police Office",
+          marathiName: "पोलीस अधीक्षक कार्यालय"
+        }
+      ];
+
+      if (res.data.success && res.data.suboffices) {
+        const apiOffices = res.data.suboffices.map(office => ({
+          id: office._id,
+          englishName: office.subofficeName,
+          marathiName: marathiPoliceStationMap[office.subofficeName] || office.subofficeName
+        }));
+
+        offices = [...offices, ...apiOffices];
+      }
+
+      setPoliceStations(offices);
+
+    } catch (err) {
+      console.error("Failed to load police stations", err);
+      toast.error("पोलीस स्टेशन लोड करण्यात त्रुटी");
+    } finally {
+      setLoadingStations(false);
+    }
+  };
+
+  fetchSubOffices();
+}, []);
+
   const formik = useFormik({
     initialValues: {
       name: '', mobile: '', address: '', pincode: '', policeStation: '',
@@ -3715,6 +3819,16 @@ const EntryForm = () => {
         formData.append('numberOfVisitors', values.numberOfVisitors);
         formData.append('visitorPhoto', photoFile);
         if (docFile) formData.append('uploadDocument', docFile);
+
+         // ---------- MAIN CHANGE: ADD LOGGED-IN USER DATA ----------
+        if (loggedInUser) {
+          formData.append('addedByUserId', loggedInUser._id || '');
+          formData.append('addedByRole', loggedInUser.role || '');
+          formData.append('officeName', loggedInUser.officeName || '');
+          formData.append('officeType', loggedInUser.officeType || '');
+          formData.append('addedByEmail', loggedInUser.email || '');
+        }
+
 
         const res = await axios.post(`${baseUrl}/addVisitor`, formData);
         const applicationId = res.data.applicationId || res.data.newVisit?.applicationId || 'N/A';
@@ -3866,7 +3980,7 @@ const EntryForm = () => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    {/* <Grid item xs={12} sm={6}>
                       <TextField
                         select
                         fullWidth
@@ -3878,6 +3992,30 @@ const EntryForm = () => {
                       >
                         <MenuItem value="" disabled>— स्टेशन निवडा —</MenuItem>
                         {policeStations.map(s => <MenuItem key={s} value={s}>{s}</MenuItem>)}
+                      </TextField>
+                    </Grid> */}
+
+
+                     {/* Dynamic Police Station Dropdown */}
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        select
+                        fullWidth
+                        label="पोलीस स्टेशन *"
+                        name="policeStation"
+                        value={formik.values.policeStation}
+                        onChange={formik.handleChange}
+                        required
+                        disabled={loadingStations}
+                      >
+                        <MenuItem value="" disabled>
+                          {loadingStations ? "लोड होत आहे..." : "— स्टेशन निवडा —"}
+                        </MenuItem>
+                        {policeStations.map((station) => (
+                          <MenuItem key={station.id} value={station.marathiName}>
+                            {station.marathiName}
+                          </MenuItem>
+                        ))}
                       </TextField>
                     </Grid>
 

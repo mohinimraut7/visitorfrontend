@@ -1311,6 +1311,8 @@ const VisitorHistory = () => {
       try {
         setLoading(true);
         const res = await axios.get(`${baseUrl}/visitor/${id}`);
+
+
         if (res.data.success) {
           setVisitor(res.data.data);
         }
@@ -1324,6 +1326,7 @@ const VisitorHistory = () => {
   }, [id]);
 
   const visits = visitor?.visits || [];
+  
 
   const meetingPersonMarathi = {
     "Superintendent of Police": "पोलीस अधीक्षक",
@@ -1437,10 +1440,15 @@ const VisitorHistory = () => {
   const handleDownloadExcel = () => {
     const data = visits.map(visit => ({
       'भेट क्रमांक': visit.visitNumber || '-',
+       'पूर्ण नाव': visitor.fullName || '-',
+       'मोबाईल': visitor.mobileNumber || '-',
+       'पोलीस स्टेशन': visitor.policeStation || '-',
+      'पिनकोड': visitor.pincode || '-',
+      'जिल्हा': visitor.district || '-',
       'अर्ज क्रमांक': visit.applicationId || '-',
-      'कारण': visit.reasonToVisit || '-',
-      'अधिकारी': meetingPersonMarathi[visit.contactPerson] || visit.contactPerson || '-',
-      'सहप्रवासी': visit.numberOfVisitors || '-',
+      'भेटीचे कारण': visit.reasonToVisit || '-',
+      'कोणास भेटायचे': meetingPersonMarathi[visit.contactPerson] || visit.contactPerson || '-',
+      'भेट देणाऱ्यांची संख्या': visit.numberOfVisitors || '-',
       'एंट्री वेळ': dayjs(visit.entryAt).format('DD/MM/YYYY hh:mm A'),
       'फीडबॅक': visit.feedbackGiven ? 'होय' : 'नाही',
       'अभिप्राय': visit.feedback || '-',
@@ -1460,7 +1468,7 @@ const VisitorHistory = () => {
     html2pdf()
       .set({
         margin: [10, 15, 10, 15],
-        filename: `${visitor.fullName}_भेट_इतिहास_${dayjs().format('DD-MMM-YYYY')}.pdf`,
+        filename: `${visitor.fullName}_Visitor_History_${dayjs().format('DD-MMM-YYYY')}.pdf`,
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       })
@@ -1519,9 +1527,16 @@ const VisitorHistory = () => {
                   <strong>भेट {visit.visitNumber}</strong> | फीडबॅक: {visit.feedbackGiven ? 'दिला' : 'बाकी'}
                 </div>
                 <table style={{ width: '100%', fontSize: '13px' }}>
-                  <tr><td><strong>कारण:</strong> {visit.reasonToVisit || '-'}</td></tr>
-                  <tr><td><strong>अधिकारी:</strong> {marathiPerson}</td></tr>
-                  <tr><td><strong>सहप्रवासी:</strong> {visit.numberOfVisitors} व्यक्ती</td></tr>
+       
+     
+        <tr><td><strong>पूर्ण नाव:</strong> {visitor.fullName || '-'}</td></tr>
+          <tr><td><strong>मोबाईल:</strong> {visitor.mobileNumber || '-'}</td></tr>
+            <tr><td><strong>पोलीस स्टेशन:</strong> {visitor.policeStation || '-'}</td></tr>
+              <tr><td><strong>पिनकोड:</strong> {visitor.pincode  || '-'}</td></tr>
+                <tr><td><strong>जिल्हा:</strong> {visitor.district || '-'}</td></tr>
+                  <tr><td><strong>भेटीचे कारण:</strong> {visit.reasonToVisit || '-'}</td></tr>
+                  <tr><td><strong>कोणास भेटायचे:</strong> {marathiPerson}</td></tr>
+                  <tr><td><strong>भेट देणाऱ्यांची संख्या:</strong> {visit.numberOfVisitors} व्यक्ती</td></tr>
                   <tr><td><strong>एंट्री वेळ:</strong> {dayjs(visit.entryAt).format('DD/MM/YYYY hh:mm A')}</td></tr>
                   {visit.feedbackGiven && <tr><td><strong>अभिप्राय:</strong> {visit.feedback}</td></tr>}
                   <tr><td><strong>फीडबॅक वेळ:</strong> {dayjs(visit.feedbackSubmittedAt).format('DD/MM/YYYY hh:mm A')}</td></tr>
@@ -1640,7 +1655,7 @@ const VisitorHistory = () => {
                       <Box sx={{ pt: 8, px: 4, pb: 4 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, mb: 3, flexWrap: 'wrap' }}>
                           <Chip label={`भेट ${visit.visitNumber}`} sx={{ bgcolor: '#E3F2FD', color: '#0040B9', fontWeight: 600 }} />
-                          {visit.applicationId && <Chip label={`Application Id - ${visit.visitNumber}`} sx={{ bgcolor: '#E8F5E9', color: '#2E7D32', fontWeight: 600 }} />}
+                          {visit.applicationId && <Chip label={`Application Id - ${visit.applicationId}`} sx={{ bgcolor: '#E8F5E9', color: '#2E7D32', fontWeight: 600 }} />}
                           <Chip icon={visit.feedbackGiven ? <CheckCircleIcon /> : <PendingIcon />}
                             label={visit.feedbackGiven ? "फीडबॅक दिला" : "फीडबॅक बाकी"}
                             color={visit.feedbackGiven ? "success" : "warning"} />
@@ -1658,9 +1673,9 @@ const VisitorHistory = () => {
 
                         <Grid container spacing={3}>
                           <Grid item xs={12} md={visit.uploadDocument?.length > 0 ? 8 : 12}>
-                            <InfoRow icon={<DescriptionIcon sx={{ color: '#0040B9' }} />} label="कारण" value={visit.reasonToVisit || '-'} />
-                            <InfoRow icon={<PersonIcon sx={{ color: '#0040B9' }} />} label="अधिकारी" value={marathiMeetingPerson} />
-                            <InfoRow icon={<LocationOnIcon sx={{ color: '#0040B9' }} />} label="सहप्रवासी" value={`${visit.numberOfVisitors} व्यक्ती`} />
+                            <InfoRow icon={<DescriptionIcon sx={{ color: '#0040B9' }} />} label="भेटीचे कारण" value={visit.reasonToVisit || '-'} />
+                            <InfoRow icon={<PersonIcon sx={{ color: '#0040B9' }} />} label="कोणास भेटायचे" value={marathiMeetingPerson} />
+                            <InfoRow icon={<LocationOnIcon sx={{ color: '#0040B9' }} />} label="भेट देणाऱ्यांची संख्या" value={`${visit.numberOfVisitors} व्यक्ती`} />
                             <InfoRow icon={<EventIcon sx={{ color: '#0040B9' }} />} label="एंट्री वेळ"
                               value={new Date(visit.entryAt).toLocaleString('mr-IN', {
                                 day: '2-digit', month: '2-digit', year: 'numeric',
@@ -1714,4 +1729,6 @@ const VisitorHistory = () => {
 };
 
 export default VisitorHistory;
+
+// ===========================================
 

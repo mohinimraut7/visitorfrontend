@@ -1292,6 +1292,267 @@
 
 
 // ===============================================
+// This code have email verification link code
+
+// import React, { useEffect, useState } from 'react';
+// import { Box, Typography, TextField, Button, Container, Divider, InputAdornment, IconButton, Paper, Fade } from '@mui/material';
+// import { Visibility, VisibilityOff } from '@mui/icons-material';
+// import { Link } from 'react-router-dom';
+// import { toast } from "react-toastify";
+// import { useFormik } from 'formik';
+// import * as Yup from 'yup';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { login } from '../../store/actions/loginActions';
+// import { useNavigate } from 'react-router-dom';
+// import vvcmclogo from '../../Images/thanegramin.jpeg';
+// import { baseUrl, baseUrlEmail } from '../../config/config';
+// import LoaderLottie from '../../components/LoaderLottie';
+// import './Auth.css';
+
+// const validationSchema = Yup.object({
+//     email: Yup.string().email('Invalid email').required('Email is required'),
+//     password: Yup.string().required('Password is required'),
+// });
+
+// const Login = () => {
+//     const [showResend, setShowResend] = useState(false);
+//     const [userEmail, setUserEmail] = useState("");
+//     const [loading, setLoading] = useState(false);
+//     const [showPassword, setShowPassword] = useState(false);
+//     const dispatch = useDispatch();
+//     const navigate = useNavigate();
+//     const authError = useSelector((state) => state.auth.error);
+
+//     useEffect(() => {
+//         document.body.classList.add('auth-body');
+//         return () => {
+//             document.body.classList.remove('auth-body');
+//             document.body.style.background = '';
+//         };
+//     }, []);
+
+//     useEffect(() => {
+//         authError === "Email is not verified. Please verify your email to login." 
+//             ? setShowResend(true) 
+//             : setShowResend(false);
+//     }, [authError]);
+
+//     const formik = useFormik({
+//         initialValues: { email: '', password: '' },
+//         validationSchema,
+//         onSubmit: async (values, { resetForm }) => {
+//             setUserEmail(values.email);
+//             setLoading(true);
+
+//             try {
+//                 await dispatch(login(values, navigate));
+//                 resetForm();
+//             } finally {
+//                 setLoading(false);
+//             }
+//         },
+//     });
+
+//     const handleResendVerification = async () => {
+//         setLoading(true);
+//         try {
+//             const res = await fetch(`${baseUrlEmail}/resend-verification`, {
+//                 method: "POST",
+//                 headers: { "Content-Type": "application/json" },
+//                 body: JSON.stringify({ email: userEmail }),
+//             });
+//             const data = await res.json();
+//             toast.success(data.message || "Verification link sent!", { position: "top-center" });
+//         } catch (err) {
+//             toast.error("Failed to resend. Try again.", { position: "top-center" });
+//         } finally {
+//             setLoading(false);
+//         }
+//     };
+
+//     return (
+//         <Box sx={{
+//             minHeight: '100vh',
+//             display: 'flex',
+//             alignItems: 'center',
+//             justifyContent: 'center',
+//             background: 'linear-gradient(135deg, #e6e8eb 0%, #f2e6e7 50%, #e6e9f5 100%)',
+//         }}>
+//             <Container maxWidth="xs">   {/* sm → xs केलं = 20% पेक्षा जास्त कमी width */}
+//                 <Fade in timeout={800}>
+//                     <Paper elevation={20}
+//                         sx={{
+//                             p: { xs: 2.5, sm: 3.5 },        // padding कमी केलं
+//                             borderRadius: 3,
+//                             background: 'rgba(255, 255, 255, 0.98)',
+//                             backdropFilter: 'blur(12px)',
+//                             border: '2px solid #0040B9',
+//                             boxShadow: '0 15px 40px rgba(0,64,185,0.2)',
+//                             maxWidth: 420,                   // फॉर्मची maximum width कमी केली
+//                             mx: 'auto',
+//                         }}
+//                         component="form"
+//                         onSubmit={formik.handleSubmit}
+//                     >
+//                         {/* Logo - थोडं कमी केलं */}
+//                         <Box textAlign="center" mb={2}>
+//                             <Box sx={{
+//                                 width: { xs: 90, sm: 110 },
+//                                 height: { xs: 90, sm: 110 },
+//                                 mx: 'auto',
+//                                 borderRadius: '50%',
+//                                 overflow: 'hidden',
+//                                 border: '4px solid #0040B9',
+//                                 boxShadow: '0 6px 20px rgba(0,64,185,0.3)',
+//                             }}>
+//                                 <img src={vvcmclogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+//                             </Box>
+//                         </Box>
+
+//                         {/* Title */}
+//                         <Typography variant="h5" align="center" sx={{
+//                             fontWeight: 700,
+//                             mb: 3,
+//                             background: 'linear-gradient(90deg, #0040B9, #6C0204)',
+//                             backgroundClip: 'text',
+//                             WebkitBackgroundClip: 'text',
+//                             WebkitTextFillColor: 'transparent',
+//                             fontSize: { xs: '1.6rem', sm: '1.9rem' }
+//                         }}>
+//                             Sign In
+//                         </Typography>
+
+//                         {/* Form Fields - आता compact */}
+//                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+//                             <TextField
+//                                 fullWidth
+//                                 size="small"
+//                                 margin="normal"
+//                                 label="Email Address"
+//                                 name="email"
+//                                 value={formik.values.email}
+//                                 onChange={formik.handleChange}
+//                                 error={formik.touched.email && Boolean(formik.errors.email)}
+//                                 helperText={formik.touched.email && formik.errors.email}
+//                                 sx={{
+//                                     width: '90%',
+//                                     mb: 1.5,
+//                                     '& .MuiOutlinedInput-root': {
+//                                         borderRadius: 2,
+//                                         backgroundColor: '#f8f9fa',
+//                                         '&.Mui-focused fieldset': { borderColor: '#0040B9', borderWidth: 2 },
+//                                         '&:hover fieldset': { borderColor: '#0040B9' }
+//                                     },
+//                                     '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' }
+//                                 }}
+//                             />
+
+//                             <TextField
+//                                 fullWidth
+//                                 size="small"
+//                                 margin="normal"
+//                                 label="Password"
+//                                 name="password"
+//                                 type={showPassword ? 'text' : 'password'}
+//                                 value={formik.values.password}
+//                                 onChange={formik.handleChange}
+//                                 error={formik.touched.password && Boolean(formik.errors.password)}
+//                                 helperText={formik.touched.password && formik.errors.password}
+//                                 InputProps={{
+//                                     endAdornment: (
+//                                         <InputAdornment position="end">
+//                                             <IconButton onClick={() => setShowPassword(!showPassword)} sx={{ color: '#0040B9' }}>
+//                                                 {showPassword ? <VisibilityOff /> : <Visibility />}
+//                                             </IconButton>
+//                                         </InputAdornment>
+//                                     )
+//                                 }}
+//                                 sx={{
+//                                     width: '90%',
+//                                     mb: 2,
+//                                     '& .MuiOutlinedInput-root': {
+//                                         borderRadius: 2,
+//                                         backgroundColor: '#f8f9fa',
+//                                         '&.Mui-focused fieldset': { borderColor: '#0040B9', borderWidth: 2 },
+//                                         '&:hover fieldset': { borderColor: '#0040B9' }
+//                                     },
+//                                     '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' }
+//                                 }}
+//                             />
+
+//                             {/* Error */}
+//                             {authError && (
+//                                 <Paper sx={{ p: 1.5, backgroundColor: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 2, mb: 2 }}>
+//                                     <Typography color="error" align="center" fontSize="0.9rem">
+//                                         {authError}
+//                                     </Typography>
+//                                 </Paper>
+//                             )}
+
+//                             {/* Resend Link */}
+//                             {showResend && (
+//                                 <Button onClick={handleResendVerification} variant="text" sx={{ color: '#6C0204', fontSize: '0.9rem', mb: 2 }}>
+//                                     Resend Verification Link
+//                                 </Button>
+//                             )}
+
+//                             {/* Loader */}
+//                             {loading && <Box my={2}><LoaderLottie /></Box>}
+
+//                             {/* Login Button */}
+//                             <Button
+//                                 type="submit"
+//                                 fullWidth
+//                                 variant="contained"
+//                                 sx={{
+//                                     width: '90%',
+//                                     py: 1.4,
+//                                     borderRadius: 2,
+//                                     fontWeight: 'bold',
+//                                     fontSize: '1rem',
+//                                     background: 'linear-gradient(90deg, #0040B9, #6C0204)',
+//                                     boxShadow: '0 6px 20px rgba(108,2,4,0.3)',
+//                                     '&:hover': { background: '#002D80', transform: 'translateY(-2px)' }
+//                                 }}
+//                             >
+//                                 LOGIN
+//                             </Button>
+//                         </Box>
+
+//                         <Divider sx={{ my: 3, color: '#626973' }}>OR</Divider>
+
+//                         {/* Register Button */}
+//                         <Box textAlign="center">
+//                             <Button
+//                                 component={Link}
+//                                 to="/register"
+//                                 variant="outlined"
+//                                 sx={{
+//                                     width: '90%',
+//                                     py: 1.3,
+//                                     borderRadius: 2,
+//                                     border: '2px solid #6C0204',
+//                                     color: '#6C0204',
+//                                     fontWeight: 'bold',
+//                                     '&:hover': {
+//                                         backgroundColor: '#6C0204',
+//                                         color: '#fff',
+//                                     }
+//                                 }}
+//                             >
+//                                 CREATE NEW ACCOUNT
+//                             </Button>
+//                         </Box>
+//                     </Paper>
+//                 </Fade>
+//             </Container>
+//         </Box>
+//     );
+// };
+
+// export default Login;
+
+// ====================================================
 
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, TextField, Button, Container, Divider, InputAdornment, IconButton, Paper, Fade } from '@mui/material';
@@ -1304,9 +1565,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/actions/loginActions';
 import { useNavigate } from 'react-router-dom';
 import vvcmclogo from '../../Images/thanegramin.jpeg';
-import { baseUrl, baseUrlEmail } from '../../config/config';
 import LoaderLottie from '../../components/LoaderLottie';
 import './Auth.css';
+// import { baseUrlEmail } from '../../config/config'; // ❌ future use साठी commented
 
 const validationSchema = Yup.object({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -1314,12 +1575,19 @@ const validationSchema = Yup.object({
 });
 
 const Login = () => {
-    const [showResend, setShowResend] = useState(false);
-    const [userEmail, setUserEmail] = useState("");
+
+    // ❌ showResend future use साठी commented
+    // const [showResend, setShowResend] = useState(false);
+
+    // ❌ userEmail future use साठी commented
+    // const [userEmail, setUserEmail] = useState("");
+
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
     const authError = useSelector((state) => state.auth.error);
 
     useEffect(() => {
@@ -1330,19 +1598,24 @@ const Login = () => {
         };
     }, []);
 
+    // ❌ Email Verification Error Tracking commented
+    /*
     useEffect(() => {
-        authError === "Email is not verified. Please verify your email to login." 
-            ? setShowResend(true) 
+        authError === "Email is not verified. Please verify your email to login."
+            ? setShowResend(true)
             : setShowResend(false);
     }, [authError]);
+    */
 
     const formik = useFormik({
         initialValues: { email: '', password: '' },
         validationSchema,
         onSubmit: async (values, { resetForm }) => {
-            setUserEmail(values.email);
-            setLoading(true);
 
+            // ❌ future use साठी commented
+            // setUserEmail(values.email);
+
+            setLoading(true);
             try {
                 await dispatch(login(values, navigate));
                 resetForm();
@@ -1352,6 +1625,8 @@ const Login = () => {
         },
     });
 
+    // ❌ Resend Email API future use साठी commented
+    /*
     const handleResendVerification = async () => {
         setLoading(true);
         try {
@@ -1360,6 +1635,7 @@ const Login = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email: userEmail }),
             });
+
             const data = await res.json();
             toast.success(data.message || "Verification link sent!", { position: "top-center" });
         } catch (err) {
@@ -1368,60 +1644,70 @@ const Login = () => {
             setLoading(false);
         }
     };
+    */
 
     return (
-        <Box sx={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #e6e8eb 0%, #f2e6e7 50%, #e6e9f5 100%)',
-        }}>
-            <Container maxWidth="xs">   {/* sm → xs केलं = 20% पेक्षा जास्त कमी width */}
+        <Box
+            sx={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #e6e8eb 0%, #f2e6e7 50%, #e6e9f5 100%)',
+            }}
+        >
+            <Container maxWidth="xs">
                 <Fade in timeout={800}>
-                    <Paper elevation={20}
+                    <Paper
+                        elevation={20}
                         sx={{
-                            p: { xs: 2.5, sm: 3.5 },        // padding कमी केलं
+                            p: { xs: 2.5, sm: 3.5 },
                             borderRadius: 3,
                             background: 'rgba(255, 255, 255, 0.98)',
                             backdropFilter: 'blur(12px)',
                             border: '2px solid #0040B9',
                             boxShadow: '0 15px 40px rgba(0,64,185,0.2)',
-                            maxWidth: 420,                   // फॉर्मची maximum width कमी केली
+                            maxWidth: 420,
                             mx: 'auto',
                         }}
                         component="form"
                         onSubmit={formik.handleSubmit}
                     >
-                        {/* Logo - थोडं कमी केलं */}
+                        {/* Logo */}
                         <Box textAlign="center" mb={2}>
-                            <Box sx={{
-                                width: { xs: 90, sm: 110 },
-                                height: { xs: 90, sm: 110 },
-                                mx: 'auto',
-                                borderRadius: '50%',
-                                overflow: 'hidden',
-                                border: '4px solid #0040B9',
-                                boxShadow: '0 6px 20px rgba(0,64,185,0.3)',
-                            }}>
+                            <Box
+                                sx={{
+                                    width: { xs: 90, sm: 110 },
+                                    height: { xs: 90, sm: 110 },
+                                    mx: 'auto',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    border: '4px solid #0040B9',
+                                    boxShadow: '0 6px 20px rgba(0,64,185,0.3)',
+                                }}
+                            >
                                 <img src={vvcmclogo} alt="Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             </Box>
                         </Box>
 
                         {/* Title */}
-                        <Typography variant="h5" align="center" sx={{
-                            fontWeight: 700,
-                            mb: 3,
-                            background: 'linear-gradient(90deg, #0040B9, #6C0204)',
-                            backgroundClip: 'text',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            fontSize: { xs: '1.6rem', sm: '1.9rem' }
-                        }}>
+                        <Typography
+                            variant="h5"
+                            align="center"
+                            sx={{
+                                fontWeight: 700,
+                                mb: 3,
+                                background: 'linear-gradient(90deg, #0040B9, #6C0204)',
+                                backgroundClip: 'text',
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                fontSize: { xs: '1.6rem', sm: '1.9rem' },
+                            }}
+                        >
                             Sign In
                         </Typography>
 
-                        {/* Form Fields - आता compact */}
+                        {/* FORM */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                             <TextField
                                 fullWidth
@@ -1440,9 +1726,9 @@ const Login = () => {
                                         borderRadius: 2,
                                         backgroundColor: '#f8f9fa',
                                         '&.Mui-focused fieldset': { borderColor: '#0040B9', borderWidth: 2 },
-                                        '&:hover fieldset': { borderColor: '#0040B9' }
+                                        '&:hover fieldset': { borderColor: '#0040B9' },
                                     },
-                                    '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' }
+                                    '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' },
                                 }}
                             />
 
@@ -1464,7 +1750,7 @@ const Login = () => {
                                                 {showPassword ? <VisibilityOff /> : <Visibility />}
                                             </IconButton>
                                         </InputAdornment>
-                                    )
+                                    ),
                                 }}
                                 sx={{
                                     width: '90%',
@@ -1473,30 +1759,38 @@ const Login = () => {
                                         borderRadius: 2,
                                         backgroundColor: '#f8f9fa',
                                         '&.Mui-focused fieldset': { borderColor: '#0040B9', borderWidth: 2 },
-                                        '&:hover fieldset': { borderColor: '#0040B9' }
+                                        '&:hover fieldset': { borderColor: '#0040B9' },
                                     },
-                                    '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' }
+                                    '& .MuiInputLabel-root.Mui-focused': { color: '#0040B9' },
                                 }}
                             />
 
-                            {/* Error */}
-                            {authError && (
+                            {/* ❌ Email Verification Error Box - FUTURE USE COMMENTED */}
+                            {/*
+                            {authError === "Email is not verified. Please verify your email to login." && (
                                 <Paper sx={{ p: 1.5, backgroundColor: '#ffebee', border: '1px solid #ffcdd2', borderRadius: 2, mb: 2 }}>
                                     <Typography color="error" align="center" fontSize="0.9rem">
                                         {authError}
                                     </Typography>
                                 </Paper>
                             )}
+                            */}
 
-                            {/* Resend Link */}
+                            {/* ❌ Resend Link - FUTURE USE COMMENTED */}
+                            {/*
                             {showResend && (
                                 <Button onClick={handleResendVerification} variant="text" sx={{ color: '#6C0204', fontSize: '0.9rem', mb: 2 }}>
                                     Resend Verification Link
                                 </Button>
                             )}
+                            */}
 
                             {/* Loader */}
-                            {loading && <Box my={2}><LoaderLottie /></Box>}
+                            {loading && (
+                                <Box my={2}>
+                                    <LoaderLottie />
+                                </Box>
+                            )}
 
                             {/* Login Button */}
                             <Button
@@ -1511,7 +1805,7 @@ const Login = () => {
                                     fontSize: '1rem',
                                     background: 'linear-gradient(90deg, #0040B9, #6C0204)',
                                     boxShadow: '0 6px 20px rgba(108,2,4,0.3)',
-                                    '&:hover': { background: '#002D80', transform: 'translateY(-2px)' }
+                                    '&:hover': { background: '#002D80', transform: 'translateY(-2px)' },
                                 }}
                             >
                                 LOGIN
@@ -1536,7 +1830,7 @@ const Login = () => {
                                     '&:hover': {
                                         backgroundColor: '#6C0204',
                                         color: '#fff',
-                                    }
+                                    },
                                 }}
                             >
                                 CREATE NEW ACCOUNT

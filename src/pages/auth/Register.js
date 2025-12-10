@@ -368,7 +368,7 @@ const validationSchema = Yup.object({
     .matches(/[@$!%*?&#]/, 'Must contain one special character')
     .required('Password is required'),
   contactNumber: Yup.string()
-    .matches(/^\d{10}$/, 'Contact number must be 10 digits')
+    // .matches(/^\d{10}$/, 'Contact number must be 10 digits')
     .required('Contact number is required'),
   address: Yup.string().required('Address is required'),
 });

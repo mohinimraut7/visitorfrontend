@@ -355,14 +355,14 @@ const Rolemaster = () => {
   const getResponsiveMargin = () => {
     if (isMobile) return '0';
     if (isTablet) return isSidebarOpen ? '15%' : '5%';
-    return isSidebarOpen ? '18%' : '8%';
+    return isSidebarOpen ? '14%' : '4%';
   };
 
   const gridStyle = {
     minHeight: 'calc(100vh - 40px)',
     width: getResponsiveWidth(),
     marginLeft: getResponsiveMargin(),
-    marginTop: '20px',
+    marginTop: '100px',
     marginBottom: '20px',
     transition: 'all 0.3s ease-in-out',
     display: 'flex',
@@ -457,7 +457,7 @@ const Rolemaster = () => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 3,
+            // mb: 3,
             flexDirection: isMobile ? 'column' : 'row',
             gap: isMobile ? 2 : 0
           }}>
