@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/static/css/main.c24d8f3a.css",
+    "main.js": "/static/js/main.f65c5324.js",
+    "static/js/213.e4d8e5b5.chunk.js": "/static/js/213.e4d8e5b5.chunk.js",
+    "static/js/455.6902d249.chunk.js": "/static/js/455.6902d249.chunk.js",
+    "static/media/thanegramin.jpeg": "/static/media/thanegramin.064f001354ba0089f842.jpeg",
+    "static/media/sidebarimg.jpg": "/static/media/sidebarimg.9aca257bcadedf58aeff.jpg",
+    "static/media/thanegraminpolicebrand.jpeg": "/static/media/thanegraminpolicebrand.ed14764b9fc4e35454d4.jpeg",
+    "index.html": "/index.html",
+    "main.c24d8f3a.css.map": "/static/css/main.c24d8f3a.css.map",
+    "main.f65c5324.js.map": "/static/js/main.f65c5324.js.map",
+    "213.e4d8e5b5.chunk.js.map": "/static/js/213.e4d8e5b5.chunk.js.map",
+    "455.6902d249.chunk.js.map": "/static/js/455.6902d249.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c24d8f3a.css",
+    "static/js/main.f65c5324.js"
+  ]
+}
