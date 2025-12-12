@@ -85,7 +85,7 @@ const OfficeMaster = () => {
     }
   };
 
-  const getResponsiveMargin = () => isMobile ? '0' : isSidebarOpen ? '14%' : '4%';
+  const getResponsiveMargin = () => isMobile ? '0' : isSidebarOpen ? '17%' : '4%';
   const getResponsiveWidth = () => isMobile ? '100%' : isSidebarOpen ? '82%' : '92%';
 
   if (loading) {

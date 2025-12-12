@@ -3540,64 +3540,261 @@ const VisitorsMaster = () => {
 
   const columns = [
     { field: 'id', headerName: 'अ.क्र.', width: 80, headerAlign: 'center', align: 'center' },
-    {
-      field: 'photo',
-      headerName: 'फोटो',
-      width: 110,
-      headerAlign: 'center',
-      align: 'center',
-      sortable: false,
-      renderCell: (params) => {
-        const photoUrl = params.row.visitorPhoto ||
-                         (params.row.visits?.length > 0 ? params.row.visits[params.row.visits.length - 1].visitorPhoto : null);
+    // {
+    //   field: 'photo',
+    //   headerName: 'फोटो',
+    //   width: 110,
+    //   headerAlign: 'center',
+    //   align: 'center',
+    //   sortable: false,
+    //   renderCell: (params) => {
+    //     const photoUrl = params.row.visitorPhoto ||
+    //                      (params.row.visits?.length > 0 ? params.row.visits[params.row.visits.length - 1].visitorPhoto : null);
 
-        return (
-          <Avatar
-            src={photoUrl}
-            alt={params.row.fullName}
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePhotoClick(params.row);
-            }}
-            sx={{
-              width: 56,
-              height: 56,
-              boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-              fontSize: '1.4rem',
-              fontWeight: 'bold',
-              bgcolor: '#e3f2fd',
-              cursor: 'pointer',
-              transition: 'transform 0.2s',
-              '&:hover': {
+    //     return (
+    //       <Avatar
+    //         src={photoUrl}
+    //         alt={params.row.fullName}
+    //         onClick={(e) => {
+    //           e.stopPropagation();
+    //           handlePhotoClick(params.row);
+    //         }}
+    //         sx={{
+    //           width: 56,
+    //           height: 56,
+    //           boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+    //           fontSize: '1.4rem',
+    //           fontWeight: 'bold',
+    //           bgcolor: '#e3f2fd',
+    //           cursor: 'pointer',
+    //           transition: 'transform 0.2s',
+    //           '&:hover': {
+    //             transform: 'scale(1.1)',
+    //             boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
+    //           }
+    //         }}
+    //       >
+    //         {params.row.fullName?.charAt(0).toUpperCase()}
+    //       </Avatar>
+    //     );
+    //   },
+    // },
+    // {
+    //   field: 'fullName',
+    //   headerName: 'पूर्ण नाव',
+    //   width: 220,
+    //   flex: 1,
+    //   renderCell: (params) => (
+    //     <Typography
+    //       onClick={() => navigate(`/visitorhistory/${params.row._id}`)}
+    //       sx={{
+    //         color: '#1976d2',
+    //         fontWeight: 600,
+    //         cursor: 'pointer',
+    //         '&:hover': { textDecoration: 'underline', color: '#0d47a1' },
+    //       }}
+    //     >
+    //       {params.row.fullName}
+    //     </Typography>
+    //   ),
+    // },
+
+// {
+//   field: 'photo',
+//   headerName: 'फोटो',
+//   width: 90,                    // tight but perfect fit
+//   headerAlign: 'center',
+//   align: 'center',
+//   sortable: false,
+//   filterable: false,
+//   disableColumnMenu: true,
+//   renderCell: (params) => {
+//     const photoUrl =
+//       params.row.visitorPhoto ||
+//       (params.row.visits?.length > 0
+//         ? params.row.visits[params.row.visits.length - 1].visitorPhoto
+//         : null);
+
+//     return (
+//       <Avatar
+//         src={photoUrl || undefined}
+//         alt={params.row.fullName}
+//         sx={{
+//           width: 50,
+//           height: 50,
+//           border: '3px solid #fff',
+//           boxShadow: '0 4px 12px rgba(0,0,0,0.18)',
+//           fontSize: '1.5rem',
+//           fontWeight: 'bold',
+//           bgcolor: '#e3f2fd',
+//           color: '#1976d2',
+//           cursor: photoUrl ? 'pointer' : 'default',
+//           transition: 'all 0.2s',
+//           '&:hover': photoUrl
+//             ? { transform: 'scale(1.12)', boxShadow: '0 8px 20px rgba(0,0,0,0.25)' }
+//             : {},
+//         }}
+//         onClick={(e) => {
+//           if (photoUrl) {
+//             e.stopPropagation();
+//             handlePhotoClick(params.row);
+//           }
+//         }}
+//       >
+//         {params.row.fullName?.charAt(0).toUpperCase() || '?'}
+//       </Avatar>
+//     );
+//   },
+// },
+
+// {
+//   field: 'photo',
+//   headerName: 'फोटो',
+//   width: 90,
+//   headerAlign: 'center',
+//   align: 'center',
+//   sortable: false,
+//   filterable: false,
+//   disableColumnMenu: true,
+//   renderCell: (params) => {
+//     const photoUrl =
+//       params.row.visitorPhoto ||
+//       (params.row.visits?.length > 0
+//         ? params.row.visits[params.row.visits.length - 1].visitorPhoto
+//         : null);
+
+//     return (
+//       <Avatar
+//         src={photoUrl || undefined}
+//         alt={params.row.fullName}
+//         variant="square"                     // This makes it SQUARE
+//         onClick={(e) => {
+//           if (photoUrl) {
+//             e.stopPropagation();
+//             handlePhotoClick(params.row);
+//           }
+//         }}
+//         sx={{
+//           width: 56,
+//           height: 56,
+//           borderRadius: 2,                   // 0 = sharp square, 2 = slightly rounded corners (looks premium)
+//           border: '3px solid #fff',
+//           boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+//           fontSize: '1.6rem',
+//           fontWeight: 'bold',
+//           bgcolor: '#e3f2fd',
+//           color: '#1976d2',
+//           cursor: photoUrl ? 'pointer' : 'default',
+//           transition: 'all 0.25s ease',
+//           '&:hover': photoUrl
+//             ? {
+//                 transform: 'scale(1.1)',
+//                 boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+//               }
+//             : {},
+//         }}
+//       >
+//         {params.row.fullName?.charAt(0).toUpperCase() || '?'}
+//       </Avatar>
+//     );
+//   },
+// },
+
+
+
+{
+  field: 'photo',
+  headerName: 'फोटो',
+  width: 90,
+  headerAlign: 'center',
+  align: 'center',
+  sortable: false,
+  filterable: false,
+  disableColumnMenu: true,
+  renderCell: (params) => {
+    const photoUrl =
+      params.row.visitorPhoto ||
+      (params.row.visits?.length > 0
+        ? params.row.visits[params.row.visits.length - 1].visitorPhoto
+        : null);
+
+    return (
+      <Avatar
+        src={photoUrl || undefined}
+        alt={params.row.fullName}
+        variant="square"
+        onClick={(e) => {
+          if (photoUrl) {
+            e.stopPropagation();
+            handlePhotoClick(params.row);
+          }
+        }}
+        sx={{
+          width: 56,
+          height: 56,
+          borderRadius: 2,
+          border: '3px solid #fff',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+          fontSize: '1.6rem',
+          fontWeight: 'bold',
+          bgcolor: '#e3f2fd',
+          color: '#1976d2',
+          cursor: photoUrl ? 'pointer' : 'default',
+          transition: 'all 0.25s ease',
+          p: 0, // remove default padding from Avatar
+          '& > img': {
+            objectFit: 'cover',
+            width: 'calc(100% - 3px)',   // 1.5px left + 1.5px right
+            height: 'calc(100% - 3px)',   // 1.5px top + 1.5px bottom
+            margin: '1.5px',              // this creates exact 1.5px padding all around
+          },
+          '&:hover': photoUrl
+            ? {
                 transform: 'scale(1.1)',
-                boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
+                boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
               }
-            }}
-          >
-            {params.row.fullName?.charAt(0).toUpperCase()}
-          </Avatar>
-        );
-      },
-    },
-    {
-      field: 'fullName',
-      headerName: 'पूर्ण नाव',
-      width: 220,
-      flex: 1,
-      renderCell: (params) => (
-        <Typography
-          onClick={() => navigate(`/visitorhistory/${params.row._id}`)}
-          sx={{
-            color: '#1976d2',
-            fontWeight: 600,
-            cursor: 'pointer',
-            '&:hover': { textDecoration: 'underline', color: '#0d47a1' },
-          }}
-        >
-          {params.row.fullName}
-        </Typography>
-      ),
-    },
+            : {},
+        }}
+      >
+        {params.row.fullName?.charAt(0).toUpperCase() || '?'}
+      </Avatar>
+    );
+  },
+},
+
+{
+  field: 'fullName',
+  headerName: 'पूर्ण नाव',
+  minWidth: 180,
+  flex: 1,
+  headerAlign: 'left',
+  align: 'left',
+  renderCell: (params) => (
+    <Box
+      onClick={() => navigate(`/visitorhistory/${params.row._id}`)}
+      sx={{
+        cursor: 'pointer',
+        py: 1, // gives perfect vertical alignment with the avatar
+      }}
+    >
+      <Typography
+        variant="body2"
+        sx={{
+          fontWeight: 600,
+          color: '#1565c0',
+          '&:hover': {
+            color: '#0d47a1',
+            textDecoration: 'underline',
+          },
+        }}
+      >
+        {params.row.fullName || '-'}
+      </Typography>
+    </Box>
+  ),
+},
+
+
     { field: 'mobileNumber', headerName: 'मोबाईल', width: 140 },
     { field: 'policeStation', headerName: 'पोलीस स्टेशन', width: 200 },
     { field: 'fullAddress', headerName: 'पत्ता', width: 250, flex: 1 },
@@ -3673,7 +3870,7 @@ const VisitorsMaster = () => {
 
         const formatted = visitorsData.map((v, i) => ({
           'अ.क्र.': i + 1,
-          'पूर्ण नाव': v.fullName || '-',
+          'नाव': v.fullName || '-',
           'मोबाईल': v.mobileNumber || '-',
           'पोलीस स्टेशन': v.policeStation || '-',
           'पत्ता': v.fullAddress || '-',
@@ -3812,7 +4009,7 @@ const VisitorsMaster = () => {
   };
 
   const getResponsiveWidth = () => (isMobile ? '100%' : isTablet ? '90%' : '80%');
-  const getResponsiveMargin = () => (isMobile ? '0' : isTablet ? (isSidebarOpen ? '15%' : '5%') : (isSidebarOpen ? '14%' : '4%'));
+  const getResponsiveMargin = () => (isMobile ? '0' : isTablet ? (isSidebarOpen ? '15%' : '5%') : (isSidebarOpen ? '17%' : '4%'));
 
   const gridStyle = {
     minHeight: 'calc(100vh - 40px)',

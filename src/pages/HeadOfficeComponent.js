@@ -317,7 +317,7 @@ const HeadOfficeMaster = () => {
     }
   };
 
-  const getMargin = () => isMobile ? 0 : isSidebarOpen ? '14%' : '4%';
+  const getMargin = () => isMobile ? 0 : isSidebarOpen ? '17%' : '4%';
   const getWidth = () => isMobile ? '100%' : isSidebarOpen ? '82%' : '92%';
 
   if (loading) {

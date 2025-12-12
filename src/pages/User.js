@@ -408,7 +408,7 @@ const User = () => {
   const getResponsiveMargin = () => {
     if (isMobile) return '0';
     if (isTablet) return isSidebarOpen ? '15%' : '5%';
-    return isSidebarOpen ? '14%' : '4%';
+    return isSidebarOpen ? '17%' : '4%';
   };
 
   const gridStyle = {

@@ -7507,12 +7507,1712 @@
 
 // ===============================================================
 
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Box, IconButton, Typography, Menu, MenuItem, AppBar as MuiAppBar, Toolbar,
+//   CssBaseline, Drawer as MuiDrawer, List, ListItem, ListItemButton, ListItemIcon,
+//   ListItemText, Divider, Button, Collapse, InputBase, Avatar
+// } from '@mui/material';
+// import { styled, useTheme } from '@mui/material/styles';
+// import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+// import DashboardIcon from '@mui/icons-material/Dashboard';
+// import GroupIcon from '@mui/icons-material/Group';
+// import VpnKeyIcon from '@mui/icons-material/VpnKey';
+// import ExpandLess from '@mui/icons-material/ExpandLess';
+// import ExpandMore from '@mui/icons-material/ExpandMore';
+// import BusinessIcon from '@mui/icons-material/Business';
+// import LocationOnIcon from '@mui/icons-material/LocationOn';
+// import SearchIcon from '@mui/icons-material/Search';
+
+// import { useNavigate, useLocation } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { toggleSidebar } from './store/actions/toggleSidebar';
+
+// import logo from './Images/thanegramin.jpeg';
+// import logobrand from './Images/thanegraminpolicebrand.jpeg';
+// import { baseUrl } from './config/config';
+
+// const drawerWidth = 280;
+
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'hasSidebar',
+// })(({ theme, open, hasSidebar }) => ({
+//   backgroundColor: '#ffffff',
+//   backdropFilter: 'blur(20px)',
+//   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+//   borderBottom: '1px solid rgba(50,181,173,0.2)',
+//   color: '#000',
+//   zIndex: theme.zIndex.drawer + 1,
+//   transition: theme.transitions.create(['margin', 'width'], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   ...(open && hasSidebar && { marginLeft: drawerWidth, width: `calc(100% - ${drawerWidth}px)` }),
+//   ...(!open && hasSidebar && { marginLeft: 72, width: `calc(100% - 72px)` }),
+// }));
+
+// const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+//   ({ theme, open }) => ({
+//     width: drawerWidth,
+//     flexShrink: 0,
+//     '& .MuiDrawer-paper': {
+//       width: open ? drawerWidth : 72,
+//       background: 'linear-gradient(180deg, #0A1C2B 0%, #112A3F 100%)',
+//       color: '#E2E8F0',
+//       borderRight: 'none',
+//       overflowX: 'hidden',
+//       transition: theme.transitions.create('width', {
+//         easing: theme.transitions.easing.easeInOut,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       boxShadow: '8px 0 30px rgba(0,0,0,0.4)',
+//     },
+//   })
+// );
+
+// export default function Sidebar() {
+//   const theme = useTheme();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const dispatch = useDispatch();
+
+//   const user = useSelector((state) => state.auth.user || { username: "Admin", role: "Super Admin" });
+//   const sidebarOpen = useSelector((state) => state.sidebar?.isOpen || false);
+//   const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+//   const isSuperAdminOrAdmin = ['Super Admin', 'Admin'].includes(user?.role);
+//   const isAdministrativeOfficer = user?.role === 'Administrative Officer';
+//   const isDataEntryOperator = user?.role === 'Data Entry Operator';
+
+//   const hasSidebar = isSuperAdminOrAdmin || isAdministrativeOfficer;
+//   const showEntryFeedbackButtons = isDataEntryOperator || isAdministrativeOfficer;
+
+//   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+//   const [headOffices, setHeadOffices] = useState([]);
+//   const [headOfficeOpenStates, setHeadOfficeOpenStates] = useState({});
+//   const [subOfficesMap, setSubOfficesMap] = useState({});
+//   const [loadingStates, setLoadingStates] = useState({});
+
+//   useEffect(() => {
+//     fetchHeadOffices();
+//   }, []);
+
+//   const fetchHeadOffices = async () => {
+//     try {
+//       const response = await fetch(`${baseUrl}/getAllHeadoffice`);
+//       const result = await response.json();
+//       if (result.success && result.data) {
+//         setHeadOffices(result.data);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching head offices:', error);
+//     }
+//   };
+
+//   const handleHeadOfficeClick = (headOfficeId) => {
+//     const isCurrentlyOpen = headOfficeOpenStates[headOfficeId];
+    
+//     setHeadOfficeOpenStates(prev => ({
+//       ...prev,
+//       [headOfficeId]: !isCurrentlyOpen
+//     }));
+    
+//     if (!isCurrentlyOpen && !subOfficesMap[headOfficeId]) {
+//       fetchSubOffices(headOfficeId);
+//     }
+//   };
+
+//   const fetchSubOffices = async (headOfficeId) => {
+//     setLoadingStates(prev => ({ ...prev, [headOfficeId]: true }));
+//     try {
+//       const response = await fetch(`${baseUrl}/getSubOfficesByHeadOfficeId/${headOfficeId}`);
+//       const data = await response.json();
+//       if (data.success && data.suboffices) {
+//         setSubOfficesMap(prev => ({
+//           ...prev,
+//           [headOfficeId]: data.suboffices
+//         }));
+//       }
+//     } catch (error) {
+//       console.error('Error fetching sub offices:', error);
+//     } finally {
+//       setLoadingStates(prev => ({ ...prev, [headOfficeId]: false }));
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem('resdata');
+//     dispatch({ type: 'LOGOUT' });
+//     navigate('/login');
+//   };
+
+//   if (isAuthPage) return null;
+
+//   return (
+//     <>
+//       {hasSidebar && (
+//         <IconButton
+//           onClick={() => dispatch(toggleSidebar())}
+//           sx={{
+//             position: 'fixed',
+//             top: 16,
+//             left: sidebarOpen ? 250 : 16,
+//             zIndex: 1400,
+//             bgcolor: '#26B4AB',
+//             color: 'white',
+//             width: 48,
+//             height: 48,
+//             borderRadius: '50%',
+//             boxShadow: '0 6px 20px rgba(38,180,171,0.4)',
+//             transition: 'all 0.3s ease',
+//             '&:hover': {
+//               bgcolor: '#1E9D95',
+//               transform: 'scale(1.1)',
+//             },
+//           }}
+//         >
+//           {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+//         </IconButton>
+//       )}
+
+//       <AppBar position="fixed" open={sidebarOpen} hasSidebar={hasSidebar}>
+//         <Toolbar sx={{ minHeight: { xs: 76, sm: 90 }, justifyContent: 'space-between' }}>
+//           <Box>
+//             <img
+//               src={logobrand}
+//               alt="ठाणे ग्रामीण पोलीस"
+//               style={{
+//                 width: '260px',
+//                 objectFit: 'contain',
+//                 transition: 'all 0.4s ease',
+//               }}
+//             />
+//           </Box>
+
+//           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, alignItems: 'center' }}>
+//             {showEntryFeedbackButtons && (
+//               <>
+//                 <Button variant="contained" onClick={() => navigate('/entryform')} sx={{ bgcolor: '#0040B9', '&:hover': { bgcolor: '#002D80' } }}>
+//                   Entry Form
+//                 </Button>
+//                 <Button variant="contained" onClick={() => navigate('/feedback')} sx={{ bgcolor: '#26B4AB', '&:hover': { bgcolor: '#1E9D95' } }}>
+//                   Feedback Form
+//                 </Button>
+//               </>
+//             )}
+//             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, bgcolor: 'rgba(251,64,75,0.12)', borderRadius: 4, p: 2 }}>
+//               <Box textAlign="left">
+//                 <Typography fontWeight="bold" color="#B00020">{user?.username?.toUpperCase() || 'ADMIN'}</Typography>
+//                 <Typography fontSize="0.875rem" color="#C62828">{user?.role || 'Officer'}</Typography>
+//               </Box>
+//               <IconButton onClick={handleLogout} sx={{ bgcolor: '#FB404B', color: 'white', '&:hover': { bgcolor: '#D32F2F' } }}>
+//                 <PowerSettingsNewIcon />
+//               </IconButton>
+//             </Box>
+//           </Box>
+//         </Toolbar>
+//       </AppBar>
+
+//       {hasSidebar && (
+//         <Drawer variant="permanent" open={sidebarOpen}>
+//           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+           
+//             <Box sx={{ p: 3 }}>
+//               {sidebarOpen && (
+//                 <>
+//                   <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+//                     <img src={logo} alt="Logo" style={{ height: 80, borderRadius: '50%', border: '3px solid rgba(38,180,171,0.4)' }} />
+//                   </Box>
+//                   {/* <Box sx={{ position: 'relative', bgcolor: 'rgba(255,255,255,0.1)', borderRadius: 3, px: 2, py: 1.5 }}>
+//                     <SearchIcon sx={{ color: '#94A3B8', position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)' }} />
+//                     <InputBase
+//                       placeholder="Search..."
+//                       sx={{ color: '#E2E8F0', pl: 5, width: '100%' }}
+//                     />
+//                   </Box> */}
+//                 </>
+//               )}
+//             </Box>
+
+//             {/* Menu Items */}
+//             <List sx={{ flexGrow: 1, px: 2 }}>
+
+
+             
+
+
+
+//               {/* Head Offices with Collapse */}
+//               {headOffices.map((headOffice) => (
+//                 <React.Fragment key={headOffice._id}>
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => handleHeadOfficeClick(headOffice._id)}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: headOfficeOpenStates[headOffice._id] ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: headOfficeOpenStates[headOffice._id] ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && (
+//                         <>
+//                           <ListItemText primary={headOffice.headOfficeName} sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />
+//                           {headOfficeOpenStates[headOffice._id] ? <ExpandLess /> : <ExpandMore />}
+//                         </>
+//                       )}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <Collapse in={headOfficeOpenStates[headOffice._id]} timeout="auto" unmountOnExit>
+//                     <List component="div" disablePadding>
+//                       {subOfficesMap[headOffice._id]?.filter((office) => {
+//                         if (user?.officeType === "Sub Office") {
+//                           return user?.officeName === office.subofficeName;
+//                         }
+//                         return true;
+//                       }).map((office) => (
+//                         <ListItemButton
+//                           key={office._id}
+//                           onClick={() => navigate(`/subofficedashboard/${office._id}`)}
+//                           selected={location.pathname.includes(office._id)}
+//                           sx={{
+//                             pl: sidebarOpen ? 8 : 2,
+//                             py: 1.5,
+//                             borderRadius: 3,
+//                             color: location.pathname.includes(office._id) ? '#26B4AB' : '#CBD5E1',
+//                             '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                           }}
+//                         >
+//                           <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+//                             <LocationOnIcon fontSize="small" />
+//                           </ListItemIcon>
+//                           {sidebarOpen && <ListItemText primary={office.subofficeName} />}
+//                         </ListItemButton>
+//                       ))}
+//                     </List>
+//                   </Collapse>
+//                 </React.Fragment>
+//               ))}
+
+//  {/* S.P. Office */}
+//               {(user?.role === "Super Admin" || (user?.role === "Administrative Officer" && user?.officeType === "Head Office")) && (
+//                 <ListItem disablePadding sx={{ mb: 1 }}>
+//                   <ListItemButton
+//                     onClick={() => navigate('/')}
+//                     selected={location.pathname === '/'}
+//                     sx={{
+//                       borderRadius: 3,
+//                       py: 1.8,
+//                       bgcolor: location.pathname === '/' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                       color: location.pathname === '/' ? '#26B4AB' : '#94A3B8',
+//                       '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       '&.Mui-selected': { bgcolor: 'rgba(38,180,171,0.3)', color: '#26B4AB' },
+//                     }}
+//                   >
+//                     <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                       <DashboardIcon />
+//                     </ListItemIcon>
+//                     {sidebarOpen && <ListItemText primary="S.P. Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                   </ListItemButton>
+//                 </ListItem>
+//               )}
+
+
+//               {/* Master Menus */}
+//               {user.role === "Super Admin" && (
+//                 <>
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/users')}
+//                       selected={location.pathname === '/users'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/users' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/users' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <GroupIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="User Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/visitorsmaster')}
+//                       selected={location.pathname === '/visitorsmaster'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/visitorsmaster' ? '#26B4AB' : '#3264B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <GroupIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Visitors Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/officecomponent')}
+//                       selected={location.pathname === '/officecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/officecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/officecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Office Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/headofficecomponent')}
+//                       selected={location.pathname === '/headofficecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/headofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/headofficecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Headoffice Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/subofficecomponent')}
+//                       selected={location.pathname === '/subofficecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/subofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/subofficecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <LocationOnIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Sub Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/rolemaster')}
+//                       selected={location.pathname === '/rolemaster'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/rolemaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/rolemaster' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <VpnKeyIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Role Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+//                 </>
+//               )}
+//             </List>
+
+//             {/* User Profile at Bottom */}
+//             {sidebarOpen && (
+//               <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+//                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+//                   <Avatar sx={{ bgcolor: '#26B4AB', width: 48, height: 48 }}>
+//                     {user?.username?.[0]?.toUpperCase() || 'A'}
+//                   </Avatar>
+//                   <Box>
+//                     <Typography fontWeight="bold" color="#E2E8F0">
+//                       {user?.username || 'Admin'}
+//                     </Typography>
+//                     <Typography fontSize="0.8rem" color="#94A3B8">
+//                       {user?.role || 'Super Admin'}
+//                     </Typography>
+//                   </Box>
+//                 </Box>
+//               </Box>
+//             )}
+//           </Box>
+//         </Drawer>
+//       )}
+//     </>
+//   );
+// }
+
+// ===================================
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Box, IconButton, Typography, Menu, MenuItem, AppBar as MuiAppBar, Toolbar,
+//   CssBaseline, Drawer as MuiDrawer, List, ListItem, ListItemButton, ListItemIcon,
+//   ListItemText, Divider, Button, Collapse
+// } from '@mui/material';
+// import { styled, useTheme } from '@mui/material/styles';
+// import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+// import DashboardIcon from '@mui/icons-material/Dashboard';
+// import GroupIcon from '@mui/icons-material/Group';
+// import VpnKeyIcon from '@mui/icons-material/VpnKey';
+// import ExpandLess from '@mui/icons-material/ExpandLess';
+// import ExpandMore from '@mui/icons-material/ExpandMore';
+// import BusinessIcon from '@mui/icons-material/Business';
+// import LocationOnIcon from '@mui/icons-material/LocationOn';
+
+// import { useNavigate, useLocation } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { toggleSidebar } from './store/actions/toggleSidebar';
+
+// import drawerbg from './Images/sidebarimg.jpg';
+// import logo from './Images/thanegramin.jpeg';
+// import logobrand from './Images/thanegraminpolicebrand.jpeg';
+// import { baseUrl } from './config/config';
+
+// const drawerWidth = 240;
+
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'hasSidebar',
+// })(({ theme, open, hasSidebar }) => ({
+//   backgroundColor: '#ffffff',
+//   backdropFilter: 'blur(20px)',
+//   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+//   borderBottom: '1px solid rgba(50,181,173,0.2)',
+//   color: '#000',
+//   zIndex: theme.zIndex.drawer + 1,
+//   transition: theme.transitions.create(['margin', 'width'], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   ...(open && hasSidebar && { marginLeft: drawerWidth, width: `calc(100% - ${drawerWidth}px)` }),
+//   ...(!open && hasSidebar && { marginLeft: 72, width: `calc(100% - 72px)` }),
+// }));
+
+// const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+//   ({ theme, open }) => ({
+//     width: drawerWidth,
+//     flexShrink: 0,
+//     '& .MuiDrawer-paper': {
+//       borderTopRightRadius: '32px',
+//       borderBottomRightRadius: '32px',
+//       overflow: 'hidden',
+//       backgroundImage: `url(${drawerbg})`,
+//       backgroundSize: 'cover',
+//       backgroundPosition: 'center',
+//       width: open ? drawerWidth : 72,
+//       transition: theme.transitions.create('width', {
+//         easing: theme.transitions.easing.easeInOut,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       boxShadow: '8px 0 40px rgba(0,0,0,0.3)',
+//       '&::-webkit-scrollbar': {
+//         width: '8px',
+//       },
+//       '&::-webkit-scrollbar-track': {
+//         background: 'rgba(38, 180, 171, 0.3)',
+//       },
+//       '&::-webkit-scrollbar-thumb': {
+//         background: 'rgba(0, 64, 139, 0.6)',
+//         borderRadius: '10px',
+//       },
+//       '&::-webkit-scrollbar-thumb:hover': {
+//         background: 'rgba(0, 64, 139, 0.8)',
+//       },
+//       scrollbarWidth: 'thin',
+//       scrollbarColor: 'rgba(0, 64, 139, 0.6) rgba(38, 180, 171, 0.3)',
+//     },
+//   })
+// );
+
+// export default function Sidebar() {
+//   const theme = useTheme();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const dispatch = useDispatch();
+
+//   const user = useSelector((state) => state.auth.user || { username: "Admin", role: "Super Admin" });
+//   const sidebarOpen = useSelector((state) => state.sidebar?.isOpen || false);
+//   const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+//   const isSuperAdminOrAdmin = ['Super Admin', 'Admin'].includes(user?.role);
+//   const isAdministrativeOfficer = user?.role === 'Administrative Officer';
+//   const isDataEntryOperator = user?.role === 'Data Entry Operator';
+
+//   const hasSidebar = isSuperAdminOrAdmin || isAdministrativeOfficer;
+//   const showEntryFeedbackButtons = isDataEntryOperator || isAdministrativeOfficer;
+
+//   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+//   const [headOffices, setHeadOffices] = useState([]);
+//   const [headOfficeOpenStates, setHeadOfficeOpenStates] = useState({});
+//   const [subOfficesMap, setSubOfficesMap] = useState({});
+//   const [loadingStates, setLoadingStates] = useState({});
+
+//   useEffect(() => {
+//     fetchHeadOffices();
+//   }, []);
+
+//   const fetchHeadOffices = async () => {
+//     try {
+//       const response = await fetch(`${baseUrl}/getAllHeadoffice`);
+//       const result = await response.json();
+//       if (result.success && result.data) {
+//         setHeadOffices(result.data);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching head offices:', error);
+//     }
+//   };
+
+//   const handleHeadOfficeClick = (headOfficeId) => {
+//     const isCurrentlyOpen = headOfficeOpenStates[headOfficeId];
+    
+//     setHeadOfficeOpenStates(prev => ({
+//       ...prev,
+//       [headOfficeId]: !isCurrentlyOpen
+//     }));
+    
+//     if (!isCurrentlyOpen && !subOfficesMap[headOfficeId]) {
+//       fetchSubOffices(headOfficeId);
+//     }
+//   };
+
+//   const fetchSubOffices = async (headOfficeId) => {
+//     setLoadingStates(prev => ({ ...prev, [headOfficeId]: true }));
+//     try {
+//       const response = await fetch(`${baseUrl}/getSubOfficesByHeadOfficeId/${headOfficeId}`);
+//       const data = await response.json();
+//       if (data.success && data.suboffices) {
+//         setSubOfficesMap(prev => ({
+//           ...prev,
+//           [headOfficeId]: data.suboffices
+//         }));
+//       }
+//     } catch (error) {
+//       console.error('Error fetching sub offices:', error);
+//     } finally {
+//       setLoadingStates(prev => ({ ...prev, [headOfficeId]: false }));
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem('resdata');
+//     dispatch({ type: 'LOGOUT' });
+//     navigate('/login');
+//   };
+
+//   if (isAuthPage) return null;
+
+//   return (
+//     <>
+//       {/* <CssBaseline /> */}
+//         {hasSidebar && (
+//               <IconButton
+//                 onClick={() => dispatch(toggleSidebar())}
+//                 sx={{
+//                   position: { xs: 'absolute', sm: 'relative' },
+//                   top: { xs: '0px'},
+//                   left: { xs: sidebarOpen ?'200px':'0px' },
+//                   // right:{lg:'100px'},
+//                   color: '#32B5AD',
+//                   // bgcolor: 'rgba(50,181,173,0.1)',
+//                    bgcolor:'rgba(46, 106, 112, 0.5)',
+//                   //  bgcolor: '#044F80',
+//                   width: 50,
+//                   height: 50,
+//                   borderRadius: 25,
+//                   boxShadow: '0 4px 18px rgba(50,181,173,0.35)',
+//                   transition: 'all 0.3s ease',
+//                   '&:hover': {
+//                     bgcolor: 'rgba(50,181,173,0.3)',
+//                     transform: 'translateY(-3px) scale(1.05)',
+//                     // boxShadow: '0 8px 25px rgba(50,181,173,0.5)',
+//                   },
+//                   zIndex: 1300,
+//                 }}
+//               >
+//                 {sidebarOpen ?
+//                  <ChevronLeftIcon sx={{ fontSize: 30}} /> 
+//                  : <MenuIcon sx={{ fontSize: 30 }} />}
+//               </IconButton>
+//             )}
+
+//       <AppBar position="fixed" open={sidebarOpen} hasSidebar={hasSidebar}>
+//         <Toolbar sx={{
+//           minHeight: { xs: 76, sm: 90 },
+//           px: { },
+//           justifyContent: 'space-between',
+//           alignItems: 'center'
+//         }}>
+//           <Box>
+//             {/* {hasSidebar && (
+//               <IconButton
+//                 onClick={() => dispatch(toggleSidebar())}
+//                 sx={{
+//                   position: { xs: 'absolute', sm: 'relative' },
+//                   top: { xs: '12px', sm: 'auto',lg:'0px' },
+//                   left: { xs: '12px', sm: 'auto',lg:'0px' },
+//                   color: '#32B5AD',
+//                   bgcolor: 'rgba(50,181,173,0.18)',
+//                   width: 50,
+//                   height: 50,
+//                   borderRadius: 3,
+//                   boxShadow: '0 4px 18px rgba(50,181,173,0.35)',
+//                   transition: 'all 0.3s ease',
+//                   '&:hover': {
+//                     bgcolor: 'rgba(50,181,173,0.3)',
+//                     transform: 'translateY(-3px) scale(1.05)',
+//                     boxShadow: '0 8px 25px rgba(50,181,173,0.5)',
+//                   },
+//                   zIndex: 1300,
+//                 }}
+//               >
+//                 {sidebarOpen ?
+//                  <ChevronLeftIcon sx={{ fontSize: 30}} /> 
+//                  : <MenuIcon sx={{ fontSize: 30 }} />}
+//               </IconButton>
+//             )} */}
+
+//             <img
+//               src={logobrand}
+//               alt="ठाणे ग्रामीण पोलीस"
+//               style={{
+//                 // height: hasSidebar ? (sidebarOpen ? 78 : 92) : 110,
+//                 width: '260px',
+//                 // maxWidth: '350px',
+//                 // borderRadius: '16px',
+//                 // boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
+//                 transition: 'all 0.4s ease',
+//                 objectFit: 'contain',
+//                 // marginLeft: hasSidebar ? '8px' : '0'
+//               }}
+//             />
+//           </Box>
+
+//           <Box sx={{
+//             display: { xs: 'none', md: 'flex' },
+//             alignItems: 'center',
+//             gap: { xs: 1.5, sm: 2.5 }
+//           }}>
+//             {showEntryFeedbackButtons && (
+//               <Box sx={{ display: 'flex', gap: 2 }}>
+//                 <Button
+//                   variant="contained"
+//                   onClick={() => navigate('/entryform')}
+//                   sx={{
+//                     bgcolor: '#0040B9',
+//                     fontWeight: 'bold',
+//                     px: 3.5,
+//                     py: 1.5,
+//                     borderRadius: 4,
+//                     textTransform: 'none',
+//                     boxShadow: '0 8px 25px rgba(0,64,185,0.35)',
+//                     '&:hover': { bgcolor: '#002D80', transform: 'translateY(-2px)' }
+//                   }}
+//                 >
+//                   Entry Form
+//                 </Button>
+//                 <Button
+//                   variant="contained"
+//                   onClick={() => navigate('/feedback')}
+//                   sx={{
+//                     bgcolor: '#32B5AD',
+//                     fontWeight: 'bold',
+//                     px: 3.5,
+//                     py: 1.5,
+//                     borderRadius: 4,
+//                     textTransform: 'none',
+//                     boxShadow: '0 8px 25px rgba(50,181,173,0.35)',
+//                     '&:hover': { bgcolor: '#279e97', transform: 'translateY(-2px)' }
+//                   }}
+//                 >
+//                   Feedback Form
+//                 </Button>
+//               </Box>
+//             )}
+
+//             <Box sx={{
+//               display: 'flex',
+//               alignItems: 'center',
+//               bgcolor: 'rgba(251,64,75,0.12)',
+//               border: '2px solid rgba(251,64,75,0.3)',
+//               borderRadius: 6,
+//               px: { xs: 2, sm: 3 },
+//               py: 1.5,
+//               gap: 2,
+//               boxShadow: '0 6px 20px rgba(251,64,75,0.2)'
+//             }}>
+//               <Box>
+//                 <Typography sx={{
+//                   color: '#B00020',
+//                   fontWeight: 'bold',
+//                   fontSize: { xs: 15, sm: 18 },
+//                   letterSpacing: '1px'
+//                 }}>
+//                   {user?.username?.toUpperCase() || 'ADMIN'}
+//                 </Typography>
+//                 <Typography sx={{
+//                   color: '#C62828',
+//                   fontWeight: '600',
+//                   fontSize: { xs: 11, sm: 13 }
+//                 }}>
+//                   {user?.role || 'Officer'}
+//                 </Typography>
+//               </Box>
+
+//               <IconButton
+//                 onClick={handleLogout}
+//                 sx={{
+//                   bgcolor: '#FB404B',
+//                   color: 'white',
+//                   width: 48,
+//                   height: 48,
+//                   '&:hover': {
+//                     bgcolor: '#D32F2F',
+//                     transform: 'scale(1.1)'
+//                   },
+//                   boxShadow: '0 6px 20px rgba(251,64,75,0.4)'
+//                 }}
+//               >
+//                 <PowerSettingsNewIcon />
+//               </IconButton>
+//             </Box>
+
+//             {showEntryFeedbackButtons && (
+//               <IconButton
+//                 onClick={(e) => setMoreMenuAnchor(e.currentTarget)}
+//                 sx={{
+//                   display: { md: 'none' },
+//                   bgcolor: '#0040B9',
+//                   color: 'white',
+//                   '&:hover': { bgcolor: '#002D80' }
+//                 }}
+//               >
+//                 <MoreVertIcon />
+//               </IconButton>
+//             )}
+//           </Box>
+
+//           <Box sx={{
+//             display: 'none'
+//           }}>
+//           </Box>
+//         </Toolbar>
+//       </AppBar>
+
+//       {hasSidebar && (
+//         <Drawer variant="permanent" open={sidebarOpen}>
+//           <Box sx={{
+//             position: 'relative',
+//             minHeight: '100%',
+//             overflowY: 'auto',
+//             backgroundColor: '#26B4AB',
+//             backgroundImage: `linear-gradient(135deg, rgba(0,64,139,0.94), rgba(50,180,173,0.96)), url(${drawerbg})`,
+//             backgroundSize: 'cover, cover',
+//             backgroundPosition: 'center, center',
+//             backgroundAttachment: 'scroll, scroll',
+//             backgroundBlendMode: 'overlay, overlay',
+//             background: 'linear-gradient(135deg, #003366 0%, #004d4d 50%, #006666 100%)',
+//             '&:before': {
+//               content: '""',
+//               backgroundImage: `url(${drawerbg})`,
+//               opacity: 0.22
+//             }
+//           }}>
+//             <Box sx={{ position: 'relative', zIndex: 2, minHeight: '100%' }}>
+//               {sidebarOpen && (
+//                 <Box sx={{
+//                   height: 200,
+//                   display: 'flex',
+//                   flexDirection: 'column',
+//                   justifyContent: 'center',
+//                   alignItems: 'center',
+//                   gap: 2
+//                 }}>
+//                   <img
+//                     src={logo}
+//                     alt="Logo"
+//                     style={{
+//                       height: '160px',
+//                       width: '170px',
+//                       marginLeft: '-20px',
+//                       borderRadius: '28px',
+//                       boxShadow: '0 15px 40px rgba(0,0,0,0.8)',
+//                       border: '5px solid rgba(255,255,255,0.4)',
+//                       objectFit: 'cover'
+//                     }}
+//                   />
+//                 </Box>
+//               )}
+
+//               <Box sx={{
+//                 display: { xs: 'block', md: 'none' },
+//                 px: 2,
+//                 py: 2,
+//                 mt: sidebarOpen ? 2 : 14,
+//               }}>
+//                 {sidebarOpen && (
+//                   <Box sx={{
+//                     bgcolor: 'rgba(251,64,75,0.15)',
+//                     border: '2px solid rgba(251,64,75,0.4)',
+//                     borderRadius: 4,
+//                     p: 2,
+//                     mb: 2,
+//                     display: 'flex',
+//                     flexDirection: 'column',
+//                     gap: 1.5,
+//                     boxShadow: '0 8px 25px rgba(0,0,0,0.4)'
+//                   }}>
+//                     <Box sx={{ textAlign: 'center' }}>
+//                       <Typography sx={{
+//                         color: '#fff',
+//                         fontWeight: 'bold',
+//                         fontSize: 16,
+//                         letterSpacing: '1px',
+//                         textShadow: '2px 2px 8px rgba(0,0,0,0.8)'
+//                       }}>
+//                         {user?.username?.toUpperCase() || 'ADMIN'}
+//                       </Typography>
+//                       <Typography sx={{
+//                         color: '#FFD700',
+//                         fontWeight: '600',
+//                         fontSize: 13,
+//                         textShadow: '1px 1px 6px rgba(0,0,0,0.8)'
+//                       }}>
+//                         {user?.role || 'Officer'}
+//                       </Typography>
+//                     </Box>
+//                     <Button
+//                       onClick={handleLogout}
+//                       fullWidth
+//                       variant="contained"
+//                       startIcon={<PowerSettingsNewIcon />}
+//                       sx={{
+//                         bgcolor: '#FB404B',
+//                         color: 'white',
+//                         fontWeight: 'bold',
+//                         py: 1.5,
+//                         borderRadius: 3,
+//                         '&:hover': {
+//                           bgcolor: '#D32F2F',
+//                           transform: 'scale(1.02)'
+//                         },
+//                         boxShadow: '0 6px 20px rgba(251,64,75,0.5)'
+//                       }}
+//                     >
+//                       Logout
+//                     </Button>
+//                   </Box>
+//                 )}
+//               </Box>
+
+//               <List sx={{ mt: sidebarOpen ? 2 : 14, px: 2 }}>
+              
+
+
+//                     {headOffices.map((headOffice) => (
+//                       <React.Fragment key={headOffice._id}>
+//                         <ListItem disablePadding>
+//                           <ListItemButton
+//                             onClick={() => handleHeadOfficeClick(headOffice._id)}
+//                             sx={{
+//                               borderRadius: 4,
+//                               py: 2.8,
+//                               mb: 2,
+//                               bgcolor: headOfficeOpenStates[headOffice._id] ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.18)',
+//                               '&:hover': {
+//                                 bgcolor: 'rgba(255,255,255,0.35)',
+//                                 transform: 'translateY(-3px)',
+//                                 boxShadow: '0 12px 30px rgba(0,0,0,0.5)'
+//                               },
+//                               transition: 'all 0.4s ease',
+//                               boxShadow: headOfficeOpenStates[headOffice._id] ? '0 12px 35px rgba(0,0,0,0.5)' : '0 4px 15px rgba(0,0,0,0.3)'
+//                             }}
+//                           >
+//                             <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                               <BusinessIcon sx={{ fontSize: 32, filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.7))' }} />
+//                             </ListItemIcon>
+//                             {sidebarOpen && (
+//                               <>
+//                                 <ListItemText
+//                                   primary={headOffice.headOfficeName}
+//                                   primaryTypographyProps={{
+//                                     color: '#fff',
+//                                     fontWeight: 'bold',
+//                                     fontSize: 18,
+//                                     letterSpacing: '1px',
+//                                     textShadow: '3px 3px 10px rgba(0,0,0,0.9)'
+//                                   }}
+//                                 />
+//                                 {headOfficeOpenStates[headOffice._id] ?
+//                                   <ExpandLess sx={{ color: '#fff', fontSize: 34, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.7))' }} /> :
+//                                   <ExpandMore sx={{ color: '#fff', fontSize: 34, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.7))' }} />
+//                                 }
+//                               </>
+//                             )}
+//                           </ListItemButton>
+//                         </ListItem>
+
+//                         {/* <Collapse in={headOfficeOpenStates[headOffice._id]} timeout={600} unmountOnExit>
+//                           <List component="div" disablePadding>
+//                             {loadingStates[headOffice._id] ? (
+//                               <ListItem sx={{ pl: 6 }}>
+//                                 <ListItemText primary="Loading Sub Offices..." primaryTypographyProps={{ color: '#fff', fontStyle: 'italic' }} />
+//                               </ListItem>
+//                             ) : subOfficesMap[headOffice._id]?.length > 0 ? (
+//                               subOfficesMap[headOffice._id].map((office) => (
+//                                 <ListItemButton
+//                                   key={office._id}
+//                                   onClick={() => navigate(`/subofficedashboard/${office._id}`)}
+//                                   sx={{
+//                                     pl: 7,
+//                                     py: 2.2,
+//                                     borderRadius: 3,
+//                                     mb: 1.5,
+//                                     bgcolor: location.pathname.includes(office._id) ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.12)',
+//                                     '&:hover': {
+//                                       bgcolor: 'rgba(255,255,255,0.35)',
+//                                       transform: 'translateX(12px)',
+//                                       boxShadow: '0 8px 25px rgba(0,0,0,0.5)'
+//                                     },
+//                                     transition: 'all 0.4s ease',
+//                                     borderLeft: location.pathname.includes(office._id) ? '4px solid #FFD700' : 'none'
+//                                   }}
+//                                 >
+//                                   <ListItemIcon sx={{ color: '#fff', minWidth: 48 }}>
+//                                     <LocationOnIcon sx={{ fontSize: 26, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.7))' }} />
+//                                   </ListItemIcon>
+//                                   <ListItemText
+//                                     primary={office.subofficeName}
+//                                     primaryTypographyProps={{
+//                                       color: '#fff',
+//                                       fontWeight: '600',
+//                                       fontSize: 15.5,
+//                                       textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
+//                                       noWrap: true
+//                                     }}
+//                                   />
+//                                 </ListItemButton>
+//                               ))
+//                             ) : (
+//                               <ListItem sx={{ pl: 7 }}>
+//                                 <ListItemText primary="No Sub Offices" primaryTypographyProps={{ color: '#ff9999', fontStyle: 'italic' }} />
+//                               </ListItem>
+//                             )}
+//                           </List>
+//                         </Collapse> */}
+//                         <Collapse in={headOfficeOpenStates[headOffice._id]} timeout={600} unmountOnExit>
+//   <List component="div" disablePadding>
+//     {loadingStates[headOffice._id] ? (
+//       <ListItem sx={{ pl: 6 }}>
+//         <ListItemText primary="Loading Sub Offices..." primaryTypographyProps={{ color: '#fff', fontStyle: 'italic' }} />
+//       </ListItem>
+//     ) : subOfficesMap[headOffice._id]?.length > 0 ? (
+//       subOfficesMap[headOffice._id]
+//         .filter((office) => {
+//           // जर लॉगिन युजर Sub Office चा असेल तर फक्त त्याचंच दाखव
+//           if (user?.officeType === "Sub Office") {
+//             return user?.officeName === office.subofficeName;
+//           }
+//           // अन्यथा सगळे दाखव (Head Office/Admin)
+//           return true;
+//         })
+//         .map((office) => (
+//           <ListItemButton
+//             key={office._id}
+//             onClick={() => navigate(`/subofficedashboard/${office._id}`)}
+//             sx={{
+//               pl: 7,
+//               py: 2.2,
+//               borderRadius: 3,
+//               mb: 1.5,
+//               bgcolor: location.pathname.includes(office._id) 
+//                 ? 'rgba(255,255,255,0.4)' 
+//                 : 'rgba(255,255,255,0.12)',
+//               '&:hover': {
+//                 bgcolor: 'rgba(255,255,255,0.35)',
+//                 transform: 'translateX(12px)',
+//                 boxShadow: '0 8px 25px rgba(0,0,0,0.5)'
+//               },
+//               transition: 'all 0.4s ease',
+//               borderLeft: location.pathname.includes(office._id) 
+//                 ? '4px solid #FFD700' 
+//                 : 'none'
+//             }}
+//           >
+//             <ListItemIcon sx={{ color: '#fff', minWidth: 48 }}>
+//               <LocationOnIcon sx={{ fontSize: 26, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.7))' }} />
+//             </ListItemIcon>
+//             <ListItemText
+//               primary={office.subofficeName}
+//               primaryTypographyProps={{
+//                 color: '#fff',
+//                 fontWeight: '600',
+//                 fontSize: 15.5,
+//                 textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
+//                 noWrap: true
+//               }}
+//             />
+//           </ListItemButton>
+//         ))
+//     ) : (
+//       <ListItem sx={{ pl: 7 }}>
+//         <ListItemText primary="No Sub Offices" primaryTypographyProps={{ color: '#ff9999', fontStyle: 'italic' }} />
+//       </ListItem>
+//     )}
+//   </List>
+// </Collapse>
+//                       </React.Fragment>
+//                     ))}
+
+
+//                     {(user?.role === "Super Admin" || 
+//   (user?.role === "Administrative Officer" && user?.officeType === "Head Office"))&& (
+//                     <ListItem disablePadding onClick={() => navigate('/')}>
+//                   <ListItemButton sx={{
+//                     borderRadius: 4, py: 2.5, mb: 2,
+//                     bgcolor: location.pathname === '/' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                     '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                     transition: 'all 0.3s ease',
+//                     boxShadow: location.pathname === '/' ? '0 8px 25px rgba(0,0,0,0.4)' : 'none'
+//                   }}>
+//                     <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                       <DashboardIcon sx={{ fontSize: 30, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))' }} />
+//                     </ListItemIcon>
+//                     {sidebarOpen && <ListItemText primary="S.P.Office" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 17, textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }} />}
+//                   </ListItemButton>
+//                 </ListItem>
+
+//                 )}
+               
+
+               
+//                   { user.role==="Super Admin" && (
+//                         <ListItem disablePadding onClick={() => navigate('/users')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/users' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="User Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+//                   )}
+                
+
+//                     <ListItem disablePadding onClick={() => navigate('/visitorsmaster')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="Visitors Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+
+//                   { user.role==="Super Admin" && (
+//                     <ListItem disablePadding onClick={() => navigate('/officecomponent')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/officecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="Office Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+//                       )}
+
+//                      { user.role==="Super Admin" && (
+//                     <ListItem disablePadding onClick={() => navigate('/headofficecomponent')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/headofficecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="Headoffice Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+//                     )}
+
+
+//                     { user.role==="Super Admin" && (
+//                     <ListItem disablePadding onClick={() => navigate('/subofficecomponent')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/subofficecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="Sub Office" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+//                     )}
+                
+//                     {user.role==="Super Admin" && (
+//                     <ListItem disablePadding onClick={() => navigate('/rolemaster')}>
+//                       <ListItemButton sx={{
+//                         borderRadius: 4, py: 2.5, mb: 2,
+//                         bgcolor: location.pathname === '/rolemaster' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
+//                         '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
+//                         transition: 'all 0.3s ease'
+//                       }}>
+//                         <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
+//                           <VpnKeyIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
+//                         </ListItemIcon>
+//                         {sidebarOpen && <ListItemText primary="Role Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
+//                       </ListItemButton>
+//                     </ListItem>
+//                   )}
+                
+//               </List>
+//             </Box>
+//           </Box>
+//         </Drawer>
+//       )}
+
+//       <Menu
+//         anchorEl={moreMenuAnchor}
+//         open={Boolean(moreMenuAnchor)}
+//         onClose={() => setMoreMenuAnchor(null)}
+//         PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 10px 40px rgba(0,0,0,0.2)', mt: 1 } }}
+//       >
+//         <MenuItem onClick={() => { navigate('/entryform'); setMoreMenuAnchor(null); }} sx={{ fontWeight: 'bold', color: '#0040B9' }}>
+//           Entry Form
+//         </MenuItem>
+//         <MenuItem onClick={() => { navigate('/feedback'); setMoreMenuAnchor(null); }} sx={{ fontWeight: 'bold', color: '#32B5AD' }}>
+//           Feedback Form
+//         </MenuItem>
+//       </Menu>
+//     </>
+//   );
+// }
+
+
+// ================================
+
+// import React, { useState, useEffect } from 'react';
+// import {
+//   Box, IconButton, Typography, Menu, MenuItem, AppBar as MuiAppBar, Toolbar,
+//   CssBaseline, Drawer as MuiDrawer, List, ListItem, ListItemButton, ListItemIcon,
+//   ListItemText, Divider, Button, Collapse, InputBase, Avatar
+// } from '@mui/material';
+// import { styled, useTheme } from '@mui/material/styles';
+// import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
+// import MoreVertIcon from '@mui/icons-material/MoreVert';
+// import MenuIcon from '@mui/icons-material/Menu';
+// import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+// import DashboardIcon from '@mui/icons-material/Dashboard';
+// import GroupIcon from '@mui/icons-material/Group';
+// import VpnKeyIcon from '@mui/icons-material/VpnKey';
+// import ExpandLess from '@mui/icons-material/ExpandLess';
+// import ExpandMore from '@mui/icons-material/ExpandMore';
+// import BusinessIcon from '@mui/icons-material/Business';
+// import LocationOnIcon from '@mui/icons-material/LocationOn';
+// import SearchIcon from '@mui/icons-material/Search';
+
+// import { useNavigate, useLocation } from 'react-router-dom';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { toggleSidebar } from './store/actions/toggleSidebar';
+
+// import logo from './Images/thanegramin.jpeg';
+// import logobrand from './Images/thanegraminpolicebrand.jpeg';
+// import { baseUrl } from './config/config';
+
+// const drawerWidth = 280;
+
+// const AppBar = styled(MuiAppBar, {
+//   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'hasSidebar',
+// })(({ theme, open, hasSidebar }) => ({
+//   backgroundColor: '#ffffff',
+//   backdropFilter: 'blur(20px)',
+//   boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+//   borderBottom: '1px solid rgba(50,181,173,0.2)',
+//   color: '#000',
+//   zIndex: theme.zIndex.drawer + 1,
+//   transition: theme.transitions.create(['margin', 'width'], {
+//     easing: theme.transitions.easing.sharp,
+//     duration: theme.transitions.duration.leavingScreen,
+//   }),
+//   ...(open && hasSidebar && { marginLeft: drawerWidth, width: `calc(100% - ${drawerWidth}px)` }),
+//   ...(!open && hasSidebar && { marginLeft: 72, width: `calc(100% - 72px)` }),
+// }));
+
+// const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+//   ({ theme, open }) => ({
+//     width: drawerWidth,
+//     flexShrink: 0,
+//     '& .MuiDrawer-paper': {
+//       width: open ? drawerWidth : 72,
+//       background: 'linear-gradient(180deg, #0A1C2B 0%, #112A3F 100%)',
+//       color: '#E2E8F0',
+//       borderRight: 'none',
+//       overflowX: 'hidden',
+//       transition: theme.transitions.create('width', {
+//         easing: theme.transitions.easing.easeInOut,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       boxShadow: '8px 0 30px rgba(0,0,0,0.4)',
+//     },
+//   })
+// );
+
+// export default function Sidebar() {
+//   const theme = useTheme();
+//   const navigate = useNavigate();
+//   const location = useLocation();
+//   const dispatch = useDispatch();
+
+//   const user = useSelector((state) => state.auth.user || { username: "Admin", role: "Super Admin" });
+//   const sidebarOpen = useSelector((state) => state.sidebar?.isOpen || false);
+//   const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+//   const isSuperAdminOrAdmin = ['Super Admin', 'Admin'].includes(user?.role);
+//   const isAdministrativeOfficer = user?.role === 'Administrative Officer';
+//   const isDataEntryOperator = user?.role === 'Data Entry Operator';
+
+//   const hasSidebar = isSuperAdminOrAdmin || isAdministrativeOfficer;
+//   const showEntryFeedbackButtons = isDataEntryOperator || isAdministrativeOfficer;
+
+//   const [moreMenuAnchor, setMoreMenuAnchor] = useState(null);
+//   const [headOffices, setHeadOffices] = useState([]);
+//   const [headOfficeOpenStates, setHeadOfficeOpenStates] = useState({});
+//   const [subOfficesMap, setSubOfficesMap] = useState({});
+//   const [loadingStates, setLoadingStates] = useState({});
+
+//   useEffect(() => {
+//     fetchHeadOffices();
+//   }, []);
+
+//   const fetchHeadOffices = async () => {
+//     try {
+//       const response = await fetch(`${baseUrl}/getAllHeadoffice`);
+//       const result = await response.json();
+//       if (result.success && result.data) {
+//         setHeadOffices(result.data);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching head offices:', error);
+//     }
+//   };
+
+//   const handleHeadOfficeClick = (headOfficeId) => {
+//     const isCurrentlyOpen = headOfficeOpenStates[headOfficeId];
+    
+//     setHeadOfficeOpenStates(prev => ({
+//       ...prev,
+//       [headOfficeId]: !isCurrentlyOpen
+//     }));
+    
+//     if (!isCurrentlyOpen && !subOfficesMap[headOfficeId]) {
+//       fetchSubOffices(headOfficeId);
+//     }
+//   };
+
+//   const fetchSubOffices = async (headOfficeId) => {
+//     setLoadingStates(prev => ({ ...prev, [headOfficeId]: true }));
+//     try {
+//       const response = await fetch(`${baseUrl}/getSubOfficesByHeadOfficeId/${headOfficeId}`);
+//       const data = await response.json();
+//       if (data.success && data.suboffices) {
+//         setSubOfficesMap(prev => ({
+//           ...prev,
+//           [headOfficeId]: data.suboffices
+//         }));
+//       }
+//     } catch (error) {
+//       console.error('Error fetching sub offices:', error);
+//     } finally {
+//       setLoadingStates(prev => ({ ...prev, [headOfficeId]: false }));
+//     }
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem('resdata');
+//     dispatch({ type: 'LOGOUT' });
+//     navigate('/login');
+//   };
+
+//   if (isAuthPage) return null;
+
+//   return (
+//     <>
+//       {hasSidebar && (
+//         <IconButton
+//           onClick={() => dispatch(toggleSidebar())}
+//           sx={{
+//             position: 'fixed',
+//             top: 16,
+//             left: sidebarOpen ? 250 : 16,
+//             zIndex: 1400,
+//             bgcolor: '#26B4AB',
+//             color: 'white',
+//             width: 48,
+//             height: 48,
+//             borderRadius: '50%',
+//             boxShadow: '0 6px 20px rgba(38,180,171,0.4)',
+//             transition: 'all 0.3s ease',
+//             '&:hover': {
+//               bgcolor: '#1E9D95',
+//               transform: 'scale(1.1)',
+//             },
+//           }}
+//         >
+//           {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+//         </IconButton>
+//       )}
+
+//       <AppBar position="fixed" open={sidebarOpen} hasSidebar={hasSidebar}>
+//         <Toolbar sx={{ minHeight: { xs: 76, sm: 90 }, justifyContent: 'space-between' }}>
+//           <Box>
+//             <img
+//               src={logobrand}
+//               alt="ठाणे ग्रामीण पोलीस"
+//               style={{
+//                 width: '260px',
+//                 objectFit: 'contain',
+//                 transition: 'all 0.4s ease',
+//               }}
+//             />
+//           </Box>
+
+//           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, alignItems: 'center' }}>
+//             {showEntryFeedbackButtons && (
+//               <>
+//                 <Button variant="contained" onClick={() => navigate('/entryform')} sx={{ bgcolor: '#0040B9', '&:hover': { bgcolor: '#002D80' } }}>
+//                   Entry Form
+//                 </Button>
+//                 <Button variant="contained" onClick={() => navigate('/feedback')} sx={{ bgcolor: '#26B4AB', '&:hover': { bgcolor: '#1E9D95' } }}>
+//                   Feedback Form
+//                 </Button>
+//               </>
+//             )}
+//             {/* User info + Logout - visible only on md+ */}
+//             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, bgcolor: 'rgba(251,64,75,0.12)', borderRadius: 4, p: 2 }}>
+//               <Box textAlign="left">
+//                 <Typography fontWeight="bold" color="#B00020">{user?.username?.toUpperCase() || 'ADMIN'}</Typography>
+//                 <Typography fontSize="0.875rem" color="#C62828">{user?.role || 'Officer'}</Typography>
+//               </Box>
+//               <IconButton onClick={handleLogout} sx={{ bgcolor: '#FB404B', color: 'white', '&:hover': { bgcolor: '#D32F2F' } }}>
+//                 <PowerSettingsNewIcon />
+//               </IconButton>
+//             </Box>
+//           </Box>
+//         </Toolbar>
+//       </AppBar>
+
+//       {hasSidebar && (
+//         <Drawer variant="permanent" open={sidebarOpen}>
+//           <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+           
+//             <Box sx={{ p: 3 }}>
+//               {sidebarOpen && (
+//                 <>
+//                   <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+//                     <img src={logo} alt="Logo" style={{ height: 80, borderRadius: '50%', border: '3px solid rgba(38,180,171,0.4)' }} />
+//                   </Box>
+//                 </>
+//               )}
+//             </Box>
+
+//             {/* New: Logout section visible on small screens inside drawer */}
+//             {sidebarOpen && (
+//               <Box sx={{ display: { xs: 'flex', md: 'none' }, px: 3, mb: 3, alignItems: 'center', gap: 2, bgcolor: 'rgba(251,64,75,0.12)', borderRadius: 4, p: 2 }}>
+//                 <Box textAlign="left">
+//                   <Typography fontWeight="bold" color="#B00020">{user?.username?.toUpperCase() || 'ADMIN'}</Typography>
+//                   <Typography fontSize="0.875rem" color="#C62828">{user?.role || 'Officer'}</Typography>
+//                 </Box>
+//                 <IconButton onClick={handleLogout} sx={{ bgcolor: '#FB404B', color: 'white', '&:hover': { bgcolor: '#D32F2F' } }}>
+//                   <PowerSettingsNewIcon />
+//                 </IconButton>
+//               </Box>
+//             )}
+
+//             {/* Menu Items */}
+//             <List sx={{ flexGrow: 1, px: 2 }}>
+
+//               {/* Head Offices with Collapse */}
+//               {headOffices.map((headOffice) => (
+//                 <React.Fragment key={headOffice._id}>
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => handleHeadOfficeClick(headOffice._id)}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: headOfficeOpenStates[headOffice._id] ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: headOfficeOpenStates[headOffice._id] ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && (
+//                         <>
+//                           <ListItemText primary={headOffice.headOfficeName} sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />
+//                           {headOfficeOpenStates[headOffice._id] ? <ExpandLess /> : <ExpandMore />}
+//                         </>
+//                       )}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <Collapse in={headOfficeOpenStates[headOffice._id]} timeout="auto" unmountOnExit>
+//                     <List component="div" disablePadding>
+//                       {subOfficesMap[headOffice._id]?.filter((office) => {
+//                         if (user?.officeType === "Sub Office") {
+//                           return user?.officeName === office.subofficeName;
+//                         }
+//                         return true;
+//                       }).map((office) => (
+//                         <ListItemButton
+//                           key={office._id}
+//                           onClick={() => navigate(`/subofficedashboard/${office._id}`)}
+//                           selected={location.pathname.includes(office._id)}
+//                           sx={{
+//                             pl: sidebarOpen ? 8 : 2,
+//                             py: 1.5,
+//                             borderRadius: 3,
+//                             color: location.pathname.includes(office._id) ? '#26B4AB' : '#CBD5E1',
+//                             '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                           }}
+//                         >
+//                           <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+//                             <LocationOnIcon fontSize="small" />
+//                           </ListItemIcon>
+//                           {sidebarOpen && <ListItemText primary={office.subofficeName} />}
+//                         </ListItemButton>
+//                       ))}
+//                     </List>
+//                   </Collapse>
+//                 </React.Fragment>
+//               ))}
+
+//               {/* S.P. Office */}
+//               {(user?.role === "Super Admin" || (user?.role === "Administrative Officer" && user?.officeType === "Head Office")) && (
+//                 <ListItem disablePadding sx={{ mb: 1 }}>
+//                   <ListItemButton
+//                     onClick={() => navigate('/')}
+//                     selected={location.pathname === '/'}
+//                     sx={{
+//                       borderRadius: 3,
+//                       py: 1.8,
+//                       bgcolor: location.pathname === '/' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                       color: location.pathname === '/' ? '#26B4AB' : '#94A3B8',
+//                       '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       '&.Mui-selected': { bgcolor: 'rgba(38,180,171,0.3)', color: '#26B4AB' },
+//                     }}
+//                   >
+//                     <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                       <DashboardIcon />
+//                     </ListItemIcon>
+//                     {sidebarOpen && <ListItemText primary="S.P. Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                   </ListItemButton>
+//                 </ListItem>
+//               )}
+
+//               {/* Master Menus */}
+//               {user.role === "Super Admin" && (
+//                 <>
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/users')}
+//                       selected={location.pathname === '/users'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/users' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/users' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <GroupIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="User Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/visitorsmaster')}
+//                       selected={location.pathname === '/visitorsmaster'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/visitorsmaster' ? '#26B4AB' : '#3264B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <GroupIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Visitors Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/officecomponent')}
+//                       selected={location.pathname === '/officecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/officecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/officecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Office Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/headofficecomponent')}
+//                       selected={location.pathname === '/headofficecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/headofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/headofficecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <BusinessIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Headoffice Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/subofficecomponent')}
+//                       selected={location.pathname === '/subofficecomponent'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/subofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/subofficecomponent' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <LocationOnIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Sub Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+
+//                   <ListItem disablePadding sx={{ mb: 1 }}>
+//                     <ListItemButton
+//                       onClick={() => navigate('/rolemaster')}
+//                       selected={location.pathname === '/rolemaster'}
+//                       sx={{
+//                         borderRadius: 3,
+//                         py: 1.8,
+//                         bgcolor: location.pathname === '/rolemaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+//                         color: location.pathname === '/rolemaster' ? '#26B4AB' : '#94A3B8',
+//                         '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+//                       }}
+//                     >
+//                       <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+//                         <VpnKeyIcon />
+//                       </ListItemIcon>
+//                       {sidebarOpen && <ListItemText primary="Role Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+//                     </ListItemButton>
+//                   </ListItem>
+//                 </>
+//               )}
+//             </List>
+
+//             {/* User Profile at Bottom (unchanged, still visible when sidebar open) */}
+//             {sidebarOpen && (
+//               <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+//                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+//                   <Avatar sx={{ bgcolor: '#26B4AB', width: 48, height: 48 }}>
+//                     {user?.username?.[0]?.toUpperCase() || 'A'}
+//                   </Avatar>
+//                   <Box>
+//                     <Typography fontWeight="bold" color="#E2E8F0">
+//                       {user?.username || 'Admin'}
+//                     </Typography>
+//                     <Typography fontSize="0.8rem" color="#94A3B8">
+//                       {user?.role || 'Super Admin'}
+//                     </Typography>
+//                   </Box>
+//                 </Box>
+//               </Box>
+//             )}
+//           </Box>
+//         </Drawer>
+//       )}
+//     </>
+//   );
+// }
+
+
+// ========================================
 
 import React, { useState, useEffect } from 'react';
 import {
   Box, IconButton, Typography, Menu, MenuItem, AppBar as MuiAppBar, Toolbar,
   CssBaseline, Drawer as MuiDrawer, List, ListItem, ListItemButton, ListItemIcon,
-  ListItemText, Divider, Button, Collapse
+  ListItemText, Divider, Button, Collapse, InputBase, Avatar
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
@@ -7526,17 +9226,17 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import BusinessIcon from '@mui/icons-material/Business';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import SearchIcon from '@mui/icons-material/Search';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from './store/actions/toggleSidebar';
 
-import drawerbg from './Images/sidebarimg.jpg';
 import logo from './Images/thanegramin.jpeg';
 import logobrand from './Images/thanegraminpolicebrand.jpeg';
 import { baseUrl } from './config/config';
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open' && prop !== 'hasSidebar',
@@ -7560,33 +9260,16 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
     width: drawerWidth,
     flexShrink: 0,
     '& .MuiDrawer-paper': {
-      borderTopRightRadius: '32px',
-      borderBottomRightRadius: '32px',
-      overflow: 'hidden',
-      backgroundImage: `url(${drawerbg})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
       width: open ? drawerWidth : 72,
+      background: 'linear-gradient(180deg, #0A1C2B 0%, #112A3F 100%)',
+      color: '#E2E8F0',
+      borderRight: 'none',
+      overflowX: 'hidden',
       transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.easeInOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      boxShadow: '8px 0 40px rgba(0,0,0,0.3)',
-      '&::-webkit-scrollbar': {
-        width: '8px',
-      },
-      '&::-webkit-scrollbar-track': {
-        background: 'rgba(38, 180, 171, 0.3)',
-      },
-      '&::-webkit-scrollbar-thumb': {
-        background: 'rgba(0, 64, 139, 0.6)',
-        borderRadius: '10px',
-      },
-      '&::-webkit-scrollbar-thumb:hover': {
-        background: 'rgba(0, 64, 139, 0.8)',
-      },
-      scrollbarWidth: 'thin',
-      scrollbarColor: 'rgba(0, 64, 139, 0.6) rgba(38, 180, 171, 0.3)',
+      boxShadow: '8px 0 30px rgba(0,0,0,0.4)',
     },
   })
 );
@@ -7671,573 +9354,305 @@ export default function Sidebar() {
 
   return (
     <>
-      <CssBaseline />
+      {hasSidebar && (
+        <IconButton
+          onClick={() => dispatch(toggleSidebar())}
+          sx={{
+            position: 'fixed',
+            top: 16,
+            left: sidebarOpen ? 250 : 16,
+            zIndex: 1400,
+            bgcolor: '#26B4AB',
+            color: 'white',
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            boxShadow: '0 6px 20px rgba(38,180,171,0.4)',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              bgcolor: '#1E9D95',
+              transform: 'scale(1.1)',
+            },
+          }}
+        >
+          {sidebarOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+        </IconButton>
+      )}
 
       <AppBar position="fixed" open={sidebarOpen} hasSidebar={hasSidebar}>
-        <Toolbar sx={{
-          minHeight: { xs: 76, sm: 90 },
-          px: { xs: 2, sm: 4 },
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 } }}>
-            {hasSidebar && (
-              <IconButton
-                onClick={() => dispatch(toggleSidebar())}
-                sx={{
-                  position: { xs: 'absolute', sm: 'relative' },
-                  top: { xs: '12px', sm: 'auto' },
-                  left: { xs: '12px', sm: 'auto' },
-                  color: '#32B5AD',
-                  bgcolor: 'rgba(50,181,173,0.18)',
-                  width: 50,
-                  height: 50,
-                  borderRadius: 3,
-                  boxShadow: '0 4px 18px rgba(50,181,173,0.35)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    bgcolor: 'rgba(50,181,173,0.3)',
-                    transform: 'translateY(-3px) scale(1.05)',
-                    boxShadow: '0 8px 25px rgba(50,181,173,0.5)',
-                  },
-                  zIndex: 1300,
-                }}
-              >
-                {sidebarOpen ?
-                 <ChevronLeftIcon sx={{ fontSize: 30 }} /> 
-                 : <MenuIcon sx={{ fontSize: 30 }} />}
-              </IconButton>
-            )}
-
+        <Toolbar sx={{ minHeight: { xs: 76, sm: 90 }, justifyContent: 'space-between' }}>
+          <Box>
             <img
               src={logobrand}
               alt="ठाणे ग्रामीण पोलीस"
               style={{
-                height: hasSidebar ? (sidebarOpen ? 78 : 92) : 110,
-                width: 'auto',
-                maxWidth: '280px',
-                borderRadius: '16px',
-                boxShadow: '0 6px 20px rgba(0,0,0,0.25)',
-                transition: 'all 0.4s ease',
+                width: '260px',
                 objectFit: 'contain',
-                marginLeft: hasSidebar ? '8px' : '0'
+                transition: 'all 0.4s ease',
               }}
             />
           </Box>
 
-          <Box sx={{
-            display: { xs: 'none', md: 'flex' },
-            alignItems: 'center',
-            gap: { xs: 1.5, sm: 2.5 }
-          }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, alignItems: 'center' }}>
             {showEntryFeedbackButtons && (
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate('/entryform')}
-                  sx={{
-                    bgcolor: '#0040B9',
-                    fontWeight: 'bold',
-                    px: 3.5,
-                    py: 1.5,
-                    borderRadius: 4,
-                    textTransform: 'none',
-                    boxShadow: '0 8px 25px rgba(0,64,185,0.35)',
-                    '&:hover': { bgcolor: '#002D80', transform: 'translateY(-2px)' }
-                  }}
-                >
+              <>
+                <Button variant="contained" onClick={() => navigate('/entryform')} sx={{ bgcolor: '#0040B9', '&:hover': { bgcolor: '#002D80' } }}>
                   Entry Form
                 </Button>
-                <Button
-                  variant="contained"
-                  onClick={() => navigate('/feedback')}
-                  sx={{
-                    bgcolor: '#32B5AD',
-                    fontWeight: 'bold',
-                    px: 3.5,
-                    py: 1.5,
-                    borderRadius: 4,
-                    textTransform: 'none',
-                    boxShadow: '0 8px 25px rgba(50,181,173,0.35)',
-                    '&:hover': { bgcolor: '#279e97', transform: 'translateY(-2px)' }
-                  }}
-                >
+                <Button variant="contained" onClick={() => navigate('/feedback')} sx={{ bgcolor: '#26B4AB', '&:hover': { bgcolor: '#1E9D95' } }}>
                   Feedback Form
                 </Button>
-              </Box>
+              </>
             )}
-
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              bgcolor: 'rgba(251,64,75,0.12)',
-              border: '2px solid rgba(251,64,75,0.3)',
-              borderRadius: 6,
-              px: { xs: 2, sm: 3 },
-              py: 1.5,
-              gap: 2,
-              boxShadow: '0 6px 20px rgba(251,64,75,0.2)'
-            }}>
-              <Box>
-                <Typography sx={{
-                  color: '#B00020',
-                  fontWeight: 'bold',
-                  fontSize: { xs: 15, sm: 18 },
-                  letterSpacing: '1px'
-                }}>
-                  {user?.username?.toUpperCase() || 'ADMIN'}
-                </Typography>
-                <Typography sx={{
-                  color: '#C62828',
-                  fontWeight: '600',
-                  fontSize: { xs: 11, sm: 13 }
-                }}>
-                  {user?.role || 'Officer'}
-                </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, bgcolor: 'rgba(251,64,75,0.12)', borderRadius: 4, p: 2 }}>
+              <Box textAlign="left">
+                <Typography fontWeight="bold" color="#B00020">{user?.username?.toUpperCase() || 'ADMIN'}</Typography>
+                <Typography fontSize="0.875rem" color="#C62828">{user?.role || 'Officer'}</Typography>
               </Box>
-
-              <IconButton
-                onClick={handleLogout}
-                sx={{
-                  bgcolor: '#FB404B',
-                  color: 'white',
-                  width: 48,
-                  height: 48,
-                  '&:hover': {
-                    bgcolor: '#D32F2F',
-                    transform: 'scale(1.1)'
-                  },
-                  boxShadow: '0 6px 20px rgba(251,64,75,0.4)'
-                }}
-              >
+              <IconButton onClick={handleLogout} sx={{ bgcolor: '#FB404B', color: 'white', '&:hover': { bgcolor: '#D32F2F' } }}>
                 <PowerSettingsNewIcon />
               </IconButton>
             </Box>
-
-            {showEntryFeedbackButtons && (
-              <IconButton
-                onClick={(e) => setMoreMenuAnchor(e.currentTarget)}
-                sx={{
-                  display: { md: 'none' },
-                  bgcolor: '#0040B9',
-                  color: 'white',
-                  '&:hover': { bgcolor: '#002D80' }
-                }}
-              >
-                <MoreVertIcon />
-              </IconButton>
-            )}
-          </Box>
-
-          <Box sx={{
-            display: 'none'
-          }}>
           </Box>
         </Toolbar>
       </AppBar>
 
       {hasSidebar && (
         <Drawer variant="permanent" open={sidebarOpen}>
-          <Box sx={{
-            position: 'relative',
-            minHeight: '100%',
-            overflowY: 'auto',
-            backgroundColor: '#26B4AB',
-            backgroundImage: `linear-gradient(135deg, rgba(0,64,139,0.94), rgba(50,180,173,0.96)), url(${drawerbg})`,
-            backgroundSize: 'cover, cover',
-            backgroundPosition: 'center, center',
-            backgroundAttachment: 'scroll, scroll',
-            backgroundBlendMode: 'overlay, overlay',
-            background: 'linear-gradient(135deg, #003366 0%, #004d4d 50%, #006666 100%)',
-            '&:before': {
-              content: '""',
-              backgroundImage: `url(${drawerbg})`,
-              opacity: 0.22
-            }
-          }}>
-            <Box sx={{ position: 'relative', zIndex: 2, minHeight: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+           
+            <Box sx={{ p: 3 }}>
               {sidebarOpen && (
-                <Box sx={{
-                  height: 200,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: 2
-                }}>
-                  <img
-                    src={logo}
-                    alt="Logo"
-                    style={{
-                      height: '180px',
-                      width: '190px',
-                      marginLeft: '-20px',
-                      borderRadius: '28px',
-                      boxShadow: '0 15px 40px rgba(0,0,0,0.8)',
-                      border: '5px solid rgba(255,255,255,0.4)',
-                      objectFit: 'cover'
-                    }}
-                  />
-                </Box>
+                <>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                    <img src={logo} alt="Logo" style={{ height: 80, borderRadius: '50%', border: '3px solid rgba(38,180,171,0.4)' }} />
+                  </Box>
+                </>
               )}
+            </Box>
 
-              <Box sx={{
-                display: { xs: 'block', md: 'none' },
-                px: 2,
-                py: 2,
-                mt: sidebarOpen ? 2 : 14,
-              }}>
-                {sidebarOpen && (
-                  <Box sx={{
-                    bgcolor: 'rgba(251,64,75,0.15)',
-                    border: '2px solid rgba(251,64,75,0.4)',
-                    borderRadius: 4,
-                    p: 2,
-                    mb: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1.5,
-                    boxShadow: '0 8px 25px rgba(0,0,0,0.4)'
-                  }}>
-                    <Box sx={{ textAlign: 'center' }}>
-                      <Typography sx={{
-                        color: '#fff',
-                        fontWeight: 'bold',
-                        fontSize: 16,
-                        letterSpacing: '1px',
-                        textShadow: '2px 2px 8px rgba(0,0,0,0.8)'
-                      }}>
-                        {user?.username?.toUpperCase() || 'ADMIN'}
-                      </Typography>
-                      <Typography sx={{
-                        color: '#FFD700',
-                        fontWeight: '600',
-                        fontSize: 13,
-                        textShadow: '1px 1px 6px rgba(0,0,0,0.8)'
-                      }}>
-                        {user?.role || 'Officer'}
-                      </Typography>
-                    </Box>
-                    <Button
-                      onClick={handleLogout}
-                      fullWidth
-                      variant="contained"
-                      startIcon={<PowerSettingsNewIcon />}
+            {/* Menu Items */}
+            <List sx={{ flexGrow: 1, px: 2 }}>
+
+              {/* Head Offices with Collapse */}
+              {headOffices.map((headOffice) => (
+                <React.Fragment key={headOffice._id}>
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => handleHeadOfficeClick(headOffice._id)}
                       sx={{
-                        bgcolor: '#FB404B',
-                        color: 'white',
-                        fontWeight: 'bold',
-                        py: 1.5,
                         borderRadius: 3,
-                        '&:hover': {
-                          bgcolor: '#D32F2F',
-                          transform: 'scale(1.02)'
-                        },
-                        boxShadow: '0 6px 20px rgba(251,64,75,0.5)'
+                        py: 1.8,
+                        bgcolor: headOfficeOpenStates[headOffice._id] ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: headOfficeOpenStates[headOffice._id] ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
                       }}
                     >
-                      Logout
-                    </Button>
-                  </Box>
-                )}
-              </Box>
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <BusinessIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && (
+                        <>
+                          <ListItemText primary={headOffice.headOfficeName} sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />
+                          {headOfficeOpenStates[headOffice._id] ? <ExpandLess /> : <ExpandMore />}
+                        </>
+                      )}
+                    </ListItemButton>
+                  </ListItem>
 
-              <List sx={{ mt: sidebarOpen ? 2 : 14, px: 2 }}>
-              
+                  <Collapse in={headOfficeOpenStates[headOffice._id]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {subOfficesMap[headOffice._id]?.filter((office) => {
+                        if (user?.officeType === "Sub Office") {
+                          return user?.officeName === office.subofficeName;
+                        }
+                        return true;
+                      }).map((office) => (
+                        <ListItemButton
+                          key={office._id}
+                          onClick={() => navigate(`/subofficedashboard/${office._id}`)}
+                          selected={location.pathname.includes(office._id)}
+                          sx={{
+                            pl: sidebarOpen ? 8 : 2,
+                            py: 1.5,
+                            borderRadius: 3,
+                            color: location.pathname.includes(office._id) ? '#26B4AB' : '#CBD5E1',
+                            '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                          }}
+                        >
+                          <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+                            <LocationOnIcon fontSize="small" />
+                          </ListItemIcon>
+                          {sidebarOpen && <ListItemText primary={office.subofficeName} />}
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Collapse>
+                </React.Fragment>
+              ))}
 
-
-                    {headOffices.map((headOffice) => (
-                      <React.Fragment key={headOffice._id}>
-                        <ListItem disablePadding>
-                          <ListItemButton
-                            onClick={() => handleHeadOfficeClick(headOffice._id)}
-                            sx={{
-                              borderRadius: 4,
-                              py: 2.8,
-                              mb: 2,
-                              bgcolor: headOfficeOpenStates[headOffice._id] ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.18)',
-                              '&:hover': {
-                                bgcolor: 'rgba(255,255,255,0.35)',
-                                transform: 'translateY(-3px)',
-                                boxShadow: '0 12px 30px rgba(0,0,0,0.5)'
-                              },
-                              transition: 'all 0.4s ease',
-                              boxShadow: headOfficeOpenStates[headOffice._id] ? '0 12px 35px rgba(0,0,0,0.5)' : '0 4px 15px rgba(0,0,0,0.3)'
-                            }}
-                          >
-                            <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                              <BusinessIcon sx={{ fontSize: 32, filter: 'drop-shadow(0 3px 10px rgba(0,0,0,0.7))' }} />
-                            </ListItemIcon>
-                            {sidebarOpen && (
-                              <>
-                                <ListItemText
-                                  primary={headOffice.headOfficeName}
-                                  primaryTypographyProps={{
-                                    color: '#fff',
-                                    fontWeight: 'bold',
-                                    fontSize: 18,
-                                    letterSpacing: '1px',
-                                    textShadow: '3px 3px 10px rgba(0,0,0,0.9)'
-                                  }}
-                                />
-                                {headOfficeOpenStates[headOffice._id] ?
-                                  <ExpandLess sx={{ color: '#fff', fontSize: 34, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.7))' }} /> :
-                                  <ExpandMore sx={{ color: '#fff', fontSize: 34, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.7))' }} />
-                                }
-                              </>
-                            )}
-                          </ListItemButton>
-                        </ListItem>
-
-                        {/* <Collapse in={headOfficeOpenStates[headOffice._id]} timeout={600} unmountOnExit>
-                          <List component="div" disablePadding>
-                            {loadingStates[headOffice._id] ? (
-                              <ListItem sx={{ pl: 6 }}>
-                                <ListItemText primary="Loading Sub Offices..." primaryTypographyProps={{ color: '#fff', fontStyle: 'italic' }} />
-                              </ListItem>
-                            ) : subOfficesMap[headOffice._id]?.length > 0 ? (
-                              subOfficesMap[headOffice._id].map((office) => (
-                                <ListItemButton
-                                  key={office._id}
-                                  onClick={() => navigate(`/subofficedashboard/${office._id}`)}
-                                  sx={{
-                                    pl: 7,
-                                    py: 2.2,
-                                    borderRadius: 3,
-                                    mb: 1.5,
-                                    bgcolor: location.pathname.includes(office._id) ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.12)',
-                                    '&:hover': {
-                                      bgcolor: 'rgba(255,255,255,0.35)',
-                                      transform: 'translateX(12px)',
-                                      boxShadow: '0 8px 25px rgba(0,0,0,0.5)'
-                                    },
-                                    transition: 'all 0.4s ease',
-                                    borderLeft: location.pathname.includes(office._id) ? '4px solid #FFD700' : 'none'
-                                  }}
-                                >
-                                  <ListItemIcon sx={{ color: '#fff', minWidth: 48 }}>
-                                    <LocationOnIcon sx={{ fontSize: 26, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.7))' }} />
-                                  </ListItemIcon>
-                                  <ListItemText
-                                    primary={office.subofficeName}
-                                    primaryTypographyProps={{
-                                      color: '#fff',
-                                      fontWeight: '600',
-                                      fontSize: 15.5,
-                                      textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
-                                      noWrap: true
-                                    }}
-                                  />
-                                </ListItemButton>
-                              ))
-                            ) : (
-                              <ListItem sx={{ pl: 7 }}>
-                                <ListItemText primary="No Sub Offices" primaryTypographyProps={{ color: '#ff9999', fontStyle: 'italic' }} />
-                              </ListItem>
-                            )}
-                          </List>
-                        </Collapse> */}
-                        <Collapse in={headOfficeOpenStates[headOffice._id]} timeout={600} unmountOnExit>
-  <List component="div" disablePadding>
-    {loadingStates[headOffice._id] ? (
-      <ListItem sx={{ pl: 6 }}>
-        <ListItemText primary="Loading Sub Offices..." primaryTypographyProps={{ color: '#fff', fontStyle: 'italic' }} />
-      </ListItem>
-    ) : subOfficesMap[headOffice._id]?.length > 0 ? (
-      subOfficesMap[headOffice._id]
-        .filter((office) => {
-          // जर लॉगिन युजर Sub Office चा असेल तर फक्त त्याचंच दाखव
-          if (user?.officeType === "Sub Office") {
-            return user?.officeName === office.subofficeName;
-          }
-          // अन्यथा सगळे दाखव (Head Office/Admin)
-          return true;
-        })
-        .map((office) => (
-          <ListItemButton
-            key={office._id}
-            onClick={() => navigate(`/subofficedashboard/${office._id}`)}
-            sx={{
-              pl: 7,
-              py: 2.2,
-              borderRadius: 3,
-              mb: 1.5,
-              bgcolor: location.pathname.includes(office._id) 
-                ? 'rgba(255,255,255,0.4)' 
-                : 'rgba(255,255,255,0.12)',
-              '&:hover': {
-                bgcolor: 'rgba(255,255,255,0.35)',
-                transform: 'translateX(12px)',
-                boxShadow: '0 8px 25px rgba(0,0,0,0.5)'
-              },
-              transition: 'all 0.4s ease',
-              borderLeft: location.pathname.includes(office._id) 
-                ? '4px solid #FFD700' 
-                : 'none'
-            }}
-          >
-            <ListItemIcon sx={{ color: '#fff', minWidth: 48 }}>
-              <LocationOnIcon sx={{ fontSize: 26, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.7))' }} />
-            </ListItemIcon>
-            <ListItemText
-              primary={office.subofficeName}
-              primaryTypographyProps={{
-                color: '#fff',
-                fontWeight: '600',
-                fontSize: 15.5,
-                textShadow: '2px 2px 8px rgba(0,0,0,0.9)',
-                noWrap: true
-              }}
-            />
-          </ListItemButton>
-        ))
-    ) : (
-      <ListItem sx={{ pl: 7 }}>
-        <ListItemText primary="No Sub Offices" primaryTypographyProps={{ color: '#ff9999', fontStyle: 'italic' }} />
-      </ListItem>
-    )}
-  </List>
-</Collapse>
-                      </React.Fragment>
-                    ))}
-
-
-                    {(user?.role === "Super Admin" || 
-  (user?.role === "Administrative Officer" && user?.officeType === "Head Office"))&& (
-                    <ListItem disablePadding onClick={() => navigate('/')}>
-                  <ListItemButton sx={{
-                    borderRadius: 4, py: 2.5, mb: 2,
-                    bgcolor: location.pathname === '/' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                    '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                    transition: 'all 0.3s ease',
-                    boxShadow: location.pathname === '/' ? '0 8px 25px rgba(0,0,0,0.4)' : 'none'
-                  }}>
-                    <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                      <DashboardIcon sx={{ fontSize: 30, filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.6))' }} />
+              {/* S.P. Office - only for allowed roles */}
+              {(user?.role === "Super Admin" || (user?.role === "Administrative Officer" && user?.officeType === "Head Office")) && (
+                <ListItem disablePadding sx={{ mb: 1 }}>
+                  <ListItemButton
+                    onClick={() => navigate('/')}
+                    selected={location.pathname === '/'}
+                    sx={{
+                      borderRadius: 3,
+                      py: 1.8,
+                      bgcolor: location.pathname === '/' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                      color: location.pathname === '/' ? '#26B4AB' : '#94A3B8',
+                      '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                    }}
+                  >
+                    <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                      <DashboardIcon />
                     </ListItemIcon>
-                    {sidebarOpen && <ListItemText primary="S.P.Office" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 17, textShadow: '2px 2px 8px rgba(0,0,0,0.8)' }} />}
+                    {sidebarOpen && <ListItemText primary="S.P. Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
                   </ListItemButton>
                 </ListItem>
+              )}
 
-                )}
-               
+              {/* Master Menus - Super Admin only */}
+              {user.role === "Super Admin" && (
+                <>
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/users')}
+                      selected={location.pathname === '/users'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/users' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/users' ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <GroupIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="User Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
 
-               
-                  { user.role==="Super Admin" && (
-                        <ListItem disablePadding onClick={() => navigate('/users')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/users' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="User Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
-                  )}
-                
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/visitorsmaster')}
+                      selected={location.pathname === '/visitorsmaster'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/visitorsmaster' ? '#26B4AB' : '#3264B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <GroupIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Visitors Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
 
-                    <ListItem disablePadding onClick={() => navigate('/visitorsmaster')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="Visitors Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/officecomponent')}
+                      selected={location.pathname === '/officecomponent'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/officecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/officecomponent' ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <BusinessIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Office Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
 
-                  { user.role==="Super Admin" && (
-                    <ListItem disablePadding onClick={() => navigate('/officecomponent')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/officecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="Office Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
-                      )}
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/headofficecomponent')}
+                      selected={location.pathname === '/headofficecomponent'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/headofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/headofficecomponent' ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <BusinessIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Headoffice Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
 
-                     { user.role==="Super Admin" && (
-                    <ListItem disablePadding onClick={() => navigate('/headofficecomponent')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/headofficecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="Headoffice Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
-                    )}
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/subofficecomponent')}
+                      selected={location.pathname === '/subofficecomponent'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/subofficecomponent' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/subofficecomponent' ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <LocationOnIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Sub Office" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
+
+                  <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/rolemaster')}
+                      selected={location.pathname === '/rolemaster'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/rolemaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/rolemaster' ? '#26B4AB' : '#94A3B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <VpnKeyIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Role Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
+                </>
+              )}
+            </List>
+
+            {/* Logout Section at Bottom - for all screens when sidebar open */}
+            {sidebarOpen && (
+              <Box sx={{ p: 3, borderTop: '1px solid rgba(255,255,255,0.1)', display: { xs: 'flex', md: 'none' } }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, bgcolor: 'rgba(251,64,75,0.12)', borderRadius: 4, p: 2 }}>
+                  <Box textAlign="left" sx={{ flexGrow: 1 }}>
+                    <Typography fontWeight="bold" color="#E2E8F0">{user?.username || 'Admin'}</Typography>
+                    <Typography fontSize="0.875rem" color="#94A3B8">{user?.role || 'Super Admin'}</Typography>
+                  </Box>
+                  <IconButton onClick={handleLogout} sx={{ bgcolor: '#FB404B', color: 'white', '&:hover': { bgcolor: '#D32F2F' } }}>
+                    <PowerSettingsNewIcon />
+                  </IconButton>
+                </Box>
+              </Box>
+            )}
 
 
-                    { user.role==="Super Admin" && (
-                    <ListItem disablePadding onClick={() => navigate('/subofficecomponent')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/subofficecomponent' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <GroupIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="Sub Office" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
-                    )}
-                
-                    {user.role==="Super Admin" && (
-                    <ListItem disablePadding onClick={() => navigate('/rolemaster')}>
-                      <ListItemButton sx={{
-                        borderRadius: 4, py: 2.5, mb: 2,
-                        bgcolor: location.pathname === '/rolemaster' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.15)',
-                        '&:hover': { bgcolor: 'rgba(255,255,255,0.3)', transform: 'translateY(-2px)' },
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <ListItemIcon sx={{ color: '#fff', minWidth: 56 }}>
-                          <VpnKeyIcon sx={{ fontSize: 28, filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))' }} />
-                        </ListItemIcon>
-                        {sidebarOpen && <ListItemText primary="Role Master" primaryTypographyProps={{ color: '#fff', fontWeight: 'bold', fontSize: 16, textShadow: '1px 1px 6px rgba(0,0,0,0.8)' }} />}
-                      </ListItemButton>
-                    </ListItem>
-                  )}
-                
-              </List>
-            </Box>
+            
           </Box>
         </Drawer>
       )}
-
-      <Menu
-        anchorEl={moreMenuAnchor}
-        open={Boolean(moreMenuAnchor)}
-        onClose={() => setMoreMenuAnchor(null)}
-        PaperProps={{ sx: { borderRadius: 4, boxShadow: '0 10px 40px rgba(0,0,0,0.2)', mt: 1 } }}
-      >
-        <MenuItem onClick={() => { navigate('/entryform'); setMoreMenuAnchor(null); }} sx={{ fontWeight: 'bold', color: '#0040B9' }}>
-          Entry Form
-        </MenuItem>
-        <MenuItem onClick={() => { navigate('/feedback'); setMoreMenuAnchor(null); }} sx={{ fontWeight: 'bold', color: '#32B5AD' }}>
-          Feedback Form
-        </MenuItem>
-      </Menu>
     </>
   );
 }
