@@ -3428,6 +3428,10 @@ import * as XLSX from 'xlsx';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
+import SettingsIcon from '@mui/icons-material/Settings';
+import AddIcon from '@mui/icons-material/Add';
+import IconButton from '@mui/material/IconButton';
+
 const marathiFontStyle = `
   @import url('https://fonts.googleapis.com/css2?family=Mangal:wght@400;700&display=swap');
   body { font-family: 'Mangal', Arial, sans-serif !important; }
@@ -3439,8 +3443,12 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   backgroundColor: 'white',
   boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
   '& .MuiDataGrid-row': {
+    paddingTop: '8px', // 👈 virtual gap effect
     cursor: 'pointer',
     '&:hover': { backgroundColor: '#e3f2fd !important' },
+  },
+  '& .MuiDataGrid-virtualScrollerRenderZone': {
+    gap: '4px', // 👈 proper spacing between rows
   },
 }));
 
@@ -3718,47 +3726,91 @@ const VisitorsMaster = () => {
         ? params.row.visits[params.row.visits.length - 1].visitorPhoto
         : null);
 
-    return (
-      <Avatar
-        src={photoUrl || undefined}
-        alt={params.row.fullName}
-        variant="square"
-        onClick={(e) => {
-          if (photoUrl) {
-            e.stopPropagation();
-            handlePhotoClick(params.row);
-          }
-        }}
-        sx={{
-          width: 56,
-          height: 56,
-          borderRadius: 2,
-          border: '3px solid #fff',
-          boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
-          fontSize: '1.6rem',
-          fontWeight: 'bold',
-          bgcolor: '#e3f2fd',
-          color: '#1976d2',
-          cursor: photoUrl ? 'pointer' : 'default',
-          transition: 'all 0.25s ease',
-          p: 0, // remove default padding from Avatar
-          '& > img': {
-            objectFit: 'cover',
-            width: 'calc(100% - 3px)',   // 1.5px left + 1.5px right
-            height: 'calc(100% - 3px)',   // 1.5px top + 1.5px bottom
-            margin: '1.5px',              // this creates exact 1.5px padding all around
-          },
-          '&:hover': photoUrl
-            ? {
-                transform: 'scale(1.1)',
-                boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
-              }
-            : {},
-        }}
-      >
-        {params.row.fullName?.charAt(0).toUpperCase() || '?'}
-      </Avatar>
-    );
+    // return (
+    //   <Avatar
+    //     src={photoUrl || undefined}
+    //     alt={params.row.fullName}
+    //     variant="square"
+    //     onClick={(e) => {
+    //       if (photoUrl) {
+    //         e.stopPropagation();
+    //         handlePhotoClick(params.row);
+    //       }
+    //     }}
+    //     sx={{
+    //       width: 56,
+    //       height: 56,
+    //       borderRadius: 2,
+    //       border: '3px solid #fff',
+    //       boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+    //       fontSize: '1.6rem',
+    //       fontWeight: 'bold',
+    //       bgcolor: '#e3f2fd',
+    //       color: '#1976d2',
+    //       cursor: photoUrl ? 'pointer' : 'default',
+    //       transition: 'all 0.25s ease',
+    //       p: 0, // remove default padding from Avatar
+    //       '& > img': {
+    //         objectFit: 'cover',
+    //         width: 'calc(100% - 3px)',   // 1.5px left + 1.5px right
+    //         height: 'calc(100% - 3px)',   // 1.5px top + 1.5px bottom
+    //         margin: '1.5px',              // this creates exact 1.5px padding all around
+    //       },
+    //       '&:hover': photoUrl
+    //         ? {
+    //             transform: 'scale(1.1)',
+    //             boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+    //           }
+    //         : {},
+    //     }}
+    //   >
+    //     {params.row.fullName?.charAt(0).toUpperCase() || '?'}
+    //   </Avatar>
+    // );
+ 
+ // ===== हे Avatar code replace करा =====
+return (
+  <Avatar
+    src={photoUrl || undefined}
+    alt={params.row.fullName}
+    variant="circular" // Circular shape like screenshot
+    onClick={(e) => {
+      if (photoUrl) {
+        e.stopPropagation();
+        handlePhotoClick(params.row);
+      }
+    }}
+    sx={{
+      width: 48, // Screenshot प्रमाणे थोडा छोटा
+      height: 48,
+      border: '2px solid #e5e7eb', // Light gray border like screenshot
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)', // Subtle shadow
+      fontSize: '1.25rem', // Slightly smaller font
+      fontWeight: '600',
+      bgcolor: '#f3f4f6', // Light gray background like screenshot
+      color: '#6b7280', // Gray text
+      cursor: photoUrl ? 'pointer' : 'default',
+      transition: 'all 0.2s ease', // Faster transition
+      p: 0,
+      '& > img': {
+        objectFit: 'cover',
+        width: '100%',
+        height: '100%',
+        borderRadius: '50%', // Ensure circular crop
+      },
+      '&:hover': {
+        borderColor: '#d1d5db', // Slightly darker border on hover
+        boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.15), 0 2px 4px 0 rgba(0, 0, 0, 0.1)',
+        transform: 'scale(1.05)', // Subtle scale on hover
+      },
+    }}
+  >
+    {params.row.fullName?.charAt(0).toUpperCase() || '?'}
+  </Avatar>
+);
+ 
+ 
+ 
   },
 },
 
@@ -4040,7 +4092,14 @@ const VisitorsMaster = () => {
       <Container maxWidth={false} sx={{ p: '0 !important' }}>
         <Paper elevation={0} sx={{ p: isMobile ? '20px 15px' : '30px 25px', borderRadius: '16px', bgcolor: 'white', boxShadow: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexDirection: isMobile ? 'column' : 'row', gap: 2 }}>
-            <Typography variant={isMobile ? "h5" : "h4"} sx={{ color: '#0d2136', fontWeight: 600 }}>
+            <Typography 
+           variant={isMobile ? "h4" : "h3"} 
+    sx={{ 
+      color: '#0d2136', 
+      fontWeight: 800,
+      letterSpacing: '0.5px',
+    }}
+            >
               Visitors Master
               {isFiltered && startDate && endDate && (
                 <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500, mt: 1 }}>
@@ -4055,10 +4114,28 @@ const VisitorsMaster = () => {
                   variant="contained"
                   startIcon={<FilterListIcon />}
                   onClick={() => setDateFilterOpen(true)}
-                  sx={{
-                    bgcolor: isFiltered ? '#ed6c02' : '#1976d2',
-                    '&:hover': { bgcolor: isFiltered ? '#e65100' : '#1565c0' }
-                  }}
+                  // sx={{
+                  //   bgcolor: isFiltered ? '#ed6c02' : '#1976d2',
+                  //   '&:hover': { bgcolor: isFiltered ? '#e65100' : '#1565c0' }
+                  // }}
+
+                     sx={{
+        
+          borderRadius: '50px',
+          textTransform: 'none',
+          fontWeight: 'bold',
+          px: 3,
+
+          borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0B1D2C',
+          '&:hover': {
+               borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0E2840',
+            opacity:0.9
+          },
+        }}
                 >
                   {isFiltered ? 'फिल्टर सक्रिय' : 'तारीख फिल्टर'}
                 </Button>
@@ -4086,7 +4163,24 @@ const VisitorsMaster = () => {
                   variant="contained"
                   startIcon={<DownloadIcon />}
                   onClick={handleDownloadExcel}
-                  sx={{ bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}
+                  // sx={{ bgcolor: '#2e7d32', '&:hover': { bgcolor: '#1b5e20' } }}
+
+                     sx={{
+        
+          borderRadius: '50px',
+          textTransform: 'none',
+          px: 3,
+          fontWeight: 'bold',
+        borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0B1D2C',
+          '&:hover': {
+               borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0E2840',
+            opacity:0.9
+          },
+        }}
                 >
                   Excel
                 </Button>
@@ -4097,12 +4191,122 @@ const VisitorsMaster = () => {
                   variant="contained"
                   startIcon={<PictureAsPdfIcon />}
                   onClick={handleDownloadPDF}
-                  sx={{ bgcolor: '#d32f2f', '&:hover': { bgcolor: '#b71c1c' } }}
+                  // sx={{ bgcolor: '#d32f2f', '&:hover': { bgcolor: '#b71c1c' } }}
+
+   sx={{
+       
+       
+          borderRadius: '50px',
+          textTransform: 'none',
+          fontWeight: 500,
+          px: 3,
+           fontWeight: 'bold',
+        borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0B1D2C',
+          '&:hover': {
+               borderColor: '#e3f2fd',
+           color: '#fff',
+            bgcolor: '#0E2840',
+            opacity:0.9
+          },
+        }}
+
                 >
                   PDF
                 </Button>
               </Tooltip>
             </Box>
+
+
+            
+
+{/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4, flexDirection: isMobile ? 'column' : 'row', gap: 2 }}>
+  
+  <Typography variant={isMobile ? "h5" : "h4"} sx={{ color: '#0d2136', fontWeight: 700 }}>
+    Visitors Master
+    {isFiltered && startDate && endDate && (
+      <Typography variant="body2" sx={{ color: '#d32f2f', fontWeight: 500, mt: 1, display: 'block' }}>
+        फिल्टर: {dayjs(startDate).format('DD/MM/YYYY')} ते {dayjs(endDate).format('DD/MM/YYYY')}
+      </Typography>
+    )}
+  </Typography>
+
+  
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+   
+    <Tooltip title="तारीख फिल्टर">
+      <Button
+        variant="outlined"
+        startIcon={<FilterListIcon />}
+        onClick={() => setDateFilterOpen(true)}
+        sx={{
+          borderColor: '#e0e0e0',
+          color: '#666',
+          borderRadius: '50px',
+          textTransform: 'none',
+          fontWeight: 500,
+          px: 3,
+
+          
+          '&:hover': {
+            borderColor: '#1976d2',
+            color: '#1976d2',
+            bgcolor: '#e3f2fd',
+          },
+        }}
+      >
+        Filter
+      </Button>
+    </Tooltip>
+
+    
+    <Tooltip title="Settings">
+      <IconButton
+        sx={{
+          color: '#666',
+          border: '1px solid #e0e0e0',
+          borderRadius: '50%',
+          p: 1.2,
+          '&:hover': {
+            color: '#1976d2',
+            bgcolor: '#e3f2fd',
+            borderColor: '#1976d2',
+          },
+        }}
+      >
+        <SettingsIcon />
+      </IconButton>
+    </Tooltip>
+
+  
+    <Tooltip title="नवीन अभ्यागत जोडा">
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={() => {
+        
+          toast.info("Add Visitor feature येत आहे...");
+        }}
+        sx={{
+          bgcolor: '#6366f1',
+          '&:hover': { bgcolor: '#4f46e5' },
+          borderRadius: '50px',
+          textTransform: 'none',
+          fontWeight: 600,
+          px: 4,
+          boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)',
+        }}
+      >
+        Add Visitor
+      </Button>
+    </Tooltip>
+
+    
+  </Box>
+</Box> */}
+
+
           </Box>
 
           <Box sx={{ width: '100%', height: isMobile ? 500 : 650 }}>
