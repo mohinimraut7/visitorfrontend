@@ -9535,24 +9535,7 @@ export default function Sidebar() {
                     </ListItemButton>
                   </ListItem>
 
-                  <ListItem disablePadding sx={{ mb: 1 }}>
-                    <ListItemButton
-                      onClick={() => navigate('/visitorsmaster')}
-                      selected={location.pathname === '/visitorsmaster'}
-                      sx={{
-                        borderRadius: 3,
-                        py: 1.8,
-                        bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
-                        color: location.pathname === '/visitorsmaster' ? '#26B4AB' : '#3264B8',
-                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
-                      }}
-                    >
-                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
-                        <GroupIcon />
-                      </ListItemIcon>
-                      {sidebarOpen && <ListItemText primary="Visitors Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
-                    </ListItemButton>
-                  </ListItem>
+                  
 
                   <ListItem disablePadding sx={{ mb: 1 }}>
                     <ListItemButton
@@ -9630,6 +9613,28 @@ export default function Sidebar() {
                     </ListItemButton>
                   </ListItem>
                 </>
+              )}
+
+
+              {user.role==="Admin" && (
+                <ListItem disablePadding sx={{ mb: 1 }}>
+                    <ListItemButton
+                      onClick={() => navigate('/visitorsmaster')}
+                      selected={location.pathname === '/visitorsmaster'}
+                      sx={{
+                        borderRadius: 3,
+                        py: 1.8,
+                        bgcolor: location.pathname === '/visitorsmaster' ? 'rgba(38,180,171,0.3)' : 'transparent',
+                        color: location.pathname === '/visitorsmaster' ? '#26B4AB' : '#3264B8',
+                        '&:hover': { bgcolor: 'rgba(38,180,171,0.2)', color: '#E2E8F0' },
+                      }}
+                    >
+                      <ListItemIcon sx={{ color: 'inherit', minWidth: 48 }}>
+                        <GroupIcon />
+                      </ListItemIcon>
+                      {sidebarOpen && <ListItemText primary="Visitors Master" sx={{ '& .MuiTypography-root': { fontWeight: 600 } }} />}
+                    </ListItemButton>
+                  </ListItem>
               )}
             </List>
 

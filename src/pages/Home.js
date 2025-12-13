@@ -6946,6 +6946,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [suboffice, setSuboffice] = useState(null);
 
+const [branchChartData, setBranchChartData] = useState({ labels: [], visitors: [], colors: [] });
   const isFirstLoad = useRef(true);
 
   useEffect(() => {
@@ -7099,6 +7100,32 @@ const Home = () => {
         entryTime: new Date(v.entryAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
       }));
 
+
+            // === Department-wise (spOfficeBranch) Count ===
+      const branchCount = {};
+      filtered.forEach(v => {
+        const branch = v.spOfficeBranch || 'Unknown';  // Use spOfficeBranch field
+        branchCount[branch] = (branchCount[branch] || 0) + 1;
+      });
+
+      const branchLabels = Object.keys(branchCount);
+      const branchValues = Object.values(branchCount);
+
+      // Generate distinct colors
+      const branchColors = branchLabels.map((_, i) => {
+        const colors = [
+          '#0040B9', '#9C27B0', '#00A86B', '#FF8F00', '#E91E63',
+          '#26A69A', '#7B1FA2', '#F44336', '#3F51B5', '#FFC107'
+        ];
+        return colors[i % colors.length];
+      });
+
+      setBranchChartData({
+        labels: branchLabels.length ? branchLabels : ['No Data'],
+        visitors: branchValues.length ? branchValues : [1],
+        colors: branchColors.length ? branchColors : ['#cccccc']
+      });
+
       setLatestVisitors(finalList);
 
     } catch (err) {
@@ -7116,6 +7143,10 @@ const Home = () => {
     const interval = setInterval(fetchVisitors, 30000);
     return () => clearInterval(interval);
   }, [fetchVisitors]);
+
+
+    const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } };
+
 
   // Charts Config
   const dayBarConfig = {
@@ -7159,6 +7190,39 @@ const Home = () => {
     }]
   };
 
+  // === NEW === Department-wise Pie Config
+   const branchPieConfig = {
+    labels: branchChartData.labels,
+    datasets: [{
+      data: branchChartData.visitors,
+      backgroundColor: branchChartData.colors.length ? branchChartData.colors : ['#cccccc'],
+      borderColor: '#fff',
+      borderWidth: 4,
+    }]
+  };
+
+  // Add options with Marathi tooltip
+  const branchPieOptions = {
+    ...chartOptions,
+    plugins: {
+      ...chartOptions.plugins,
+      legend: { position: 'bottom' },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            let label = context.label || '';
+            if (label) label += ': ';
+            const value = context.parsed || 0;
+            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) + '%' : '0%';
+            return `${label}${value} अभ्यागत (${percentage})`;
+          }
+        }
+      }
+    }
+  };
+  
+
   const visitTypePieConfig = {
     labels: ['Single Visit', 'Repeat Visit'],
     datasets: [{
@@ -7169,7 +7233,6 @@ const Home = () => {
     }]
   };
 
-  const chartOptions = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } };
 
   if (loading && isFirstLoad.current) {
     return (
@@ -7363,7 +7426,7 @@ const Home = () => {
             </motion.div>
           </Grid>
 
-          <Grid item xs={12} md={6}>
+          {/* <Grid item xs={12} md={6}>
             <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
               <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 5, bgcolor: '#F0F4F8', height: '100%' }}>
                 <Typography variant="h5" fontWeight={800} mb={2} color="#0040B9">
@@ -7371,6 +7434,23 @@ const Home = () => {
                 </Typography>
                 <Box sx={{ height: { xs: 280, md: 320 }, bgcolor: 'white', borderRadius: 3, p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <Pie data={adminOfficerPieConfig} options={{ ...chartOptions, plugins: { ...chartOptions.plugins, legend: { position: 'bottom' } } }} />
+                </Box>
+              </Paper>
+            </motion.div>
+          </Grid> */}
+
+
+       <Grid item xs={12} md={6}>
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+              <Paper sx={{ p: { xs: 3, md: 4 }, borderRadius: 5, bgcolor: '#F0F4F8', height: '100%' }}>
+                <Typography variant="h5" fontWeight={800} mb={2} color="#0040B9">
+                  Department-wise Visitor Count
+                </Typography>
+                <Box sx={{ height: { xs: 280, md: 320 }, bgcolor: 'white', borderRadius: 3, p: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Pie 
+                    data={branchPieConfig} 
+                    options={branchPieOptions}  // Use the new options with Marathi tooltip
+                  />
                 </Box>
               </Paper>
             </motion.div>
