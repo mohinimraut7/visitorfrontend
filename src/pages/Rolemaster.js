@@ -461,7 +461,21 @@ const Rolemaster = () => {
             flexDirection: isMobile ? 'column' : 'row',
             gap: isMobile ? 2 : 0
           }}>
-            <Typography 
+
+  <Typography 
+              variant={isMobile ? "h5" : "h4"} 
+              sx={{ 
+                color: '#0d2136', 
+                fontWeight: 800,
+                letterSpacing: '0.5px',
+              }}
+            >
+               ROLE MASTER
+            </Typography>
+
+
+
+            {/* <Typography 
               variant={isMobile ? "h5" : "h4"}
               sx={{
                 color: '#0d2136',
@@ -472,8 +486,25 @@ const Rolemaster = () => {
               }}
             >
               ROLE MASTER
-            </Typography>
-            <Button
+            </Typography> */}
+
+  <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddRoleOpen}
+              sx={{
+                bgcolor: '#20B2AA',
+                '&:hover': { bgcolor: '#1a9a8f' },
+                textTransform: 'uppercase',
+                fontWeight: 600,
+              }}
+            >
+              Add Role
+            </Button>
+
+
+
+            {/* <Button
             size="small"
               variant="outlined"
               startIcon={<AddIcon />}
@@ -501,7 +532,7 @@ const Rolemaster = () => {
               onClick={handleAddRoleOpen}
             >
               Add Role
-            </Button>
+            </Button> */}
           </Box>
 
           <Box sx={{ 

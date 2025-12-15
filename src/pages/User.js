@@ -514,7 +514,7 @@ const User = () => {
             flexDirection: isMobile ? 'column' : 'row',
             gap: isMobile ? 2 : 0
           }}>
-            <Typography 
+            {/* <Typography 
               variant={isMobile ? "h5" : "h4"}
               sx={{
                 color: '#0d2136',
@@ -525,7 +525,25 @@ const User = () => {
               }}
             >
               USER MASTER
+            </Typography> */}
+
+
+
+
+ <Typography 
+              variant={isMobile ? "h5" : "h4"} 
+              sx={{ 
+                color: '#0d2136', 
+                fontWeight: 800,
+                letterSpacing: '0.5px',
+              }}
+            >
+               USER MASTER
             </Typography>
+
+
+
+
             <Button
               size="small"
               variant="outlined"

@@ -6864,7 +6864,7 @@ import {
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { motion } from 'framer-motion';
-
+import './Home.css';
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, BarElement, ArcElement
 );
@@ -7245,7 +7245,9 @@ const [branchChartData, setBranchChartData] = useState({ labels: [], visitors: [
 
   return (
     <Box
+  
       component="main"
+      
       sx={{
         flexGrow: 1,
         bgcolor: '#f0f4f8',
@@ -7271,12 +7273,14 @@ const [branchChartData, setBranchChartData] = useState({ labels: [], visitors: [
             </Typography>
           </motion.div>
         ) : (
-          <Typography sx={{ 
+          <Typography 
+          className='headHP'
+          sx={{ 
             textAlign: 'center', 
-            fontWeight: 700,
-            letterSpacing: '0.5px'
-          }} variant="h3" fontWeight={900} color="#0d2136" mb={4}>
-            Thane Rural Police
+            fontWeight: 500,
+            letterSpacing: '0.9px'
+          }} variant="h5" fontWeight={700} color="#0d2136" mb={4}>
+            THANE RURAL POLICE
           </Typography>
         )}
 

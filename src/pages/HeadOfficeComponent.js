@@ -832,7 +832,7 @@ const HeadOfficeMaster = () => {
         <Paper elevation={0} sx={{ p: isMobile ? '20px 15px' : '30px 25px', borderRadius: '16px', bgcolor: 'white', boxShadow: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexDirection: isMobile ? 'column' : 'row', gap: 2 }}>
             <Typography 
-              variant={isMobile ? "h4" : "h3"} 
+              variant={isMobile ? "h5" : "h4"} 
               sx={{ 
                 color: '#0d2136', 
                 fontWeight: 800,
@@ -860,7 +860,7 @@ const HeadOfficeMaster = () => {
                 },
               }}
             >
-              + ADD HEAD OFFICE
+              ADD HEAD OFFICE
             </Button>
           </Box>
 
