@@ -7479,7 +7479,7 @@ const [branchChartData, setBranchChartData] = useState({ labels: [], visitors: [
           <Paper sx={{ p: 4, borderRadius: 5, boxShadow: 5 }}>
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
               <Typography variant="h5" fontWeight={800} sx={{ color: '#0d2136' }}>
-                Latest Visitors (Live)
+                Visitors
               </Typography>
               <TextField
                 size="small"

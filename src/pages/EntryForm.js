@@ -3762,15 +3762,48 @@ useEffect(() => {
         }
       ];
 
-      if (res.data.success && res.data.suboffices) {
-        const apiOffices = res.data.suboffices.map(office => ({
-          id: office._id,
-          englishName: office.subofficeName,
-          marathiName: marathiPoliceStationMap[office.subofficeName] || office.subofficeName
-        }));
+      // if (res.data.success && res.data.suboffices) {
+      //   const apiOffices = res.data.suboffices.map(office => ({
+      //     id: office._id,
+      //     englishName: office.subofficeName,
+      //     marathiName: marathiPoliceStationMap[office.subofficeName] || office.subofficeName
+      //   }));
 
-        offices = [...offices, ...apiOffices];
-      }
+      //   offices = [...offices, ...apiOffices];
+      // }
+
+      if (res.data.success && res.data.suboffices) {
+  const apiOffices = res.data.suboffices.map(office => ({
+    id: office._id,
+    englishName: office.subofficeName,
+    marathiName: marathiPoliceStationMap[office.subofficeName] || office.subofficeName
+  }));
+
+  // 🔐 ROLE BASED FILTER (Super Admin 제외)
+  if (
+    loggedInUser &&
+    loggedInUser.role !== "Super Admin" &&
+    loggedInUser.officeName
+  ) {
+    const matchedOffice = apiOffices.find(
+      o => o.englishName === loggedInUser.officeName
+    );
+
+    if (matchedOffice) {
+      offices = [matchedOffice];
+
+      // ✅ AUTO SELECT
+      formik.setFieldValue(
+        "policeStation",
+        matchedOffice.marathiName
+      );
+    }
+  } else {
+    // Super Admin → सर्व स्टेशन
+    offices = [...offices, ...apiOffices];
+  }
+}
+
 
       setPoliceStations(offices);
 
